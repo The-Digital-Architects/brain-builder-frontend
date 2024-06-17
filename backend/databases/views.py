@@ -4,7 +4,7 @@ from rest_framework import status
 
 from .models import Row, TaskDescription, Progress, Quiz, Intro
 from .serializers import *
-from .process_data import process
+from middleware.process_http_request import process
 from django.http import JsonResponse
 
 from django.shortcuts import render

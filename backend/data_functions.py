@@ -1,3 +1,65 @@
+# TODOs for reorganisation
+# - make superclass CustomDataloader()
+# - debugging
+
+import os
+from io import BytesIO  # for saving the images
+import numpy as np
+import math
+import pandas as pd
+import torch
+from torch.utils.data import Dataset, DataLoader
+#from matplotlib import pyplot as plt
+import matplotlib.figure as mf
+from matplotlib.lines import Line2D
+from matplotlib.cm import ScalarMappable
+from matplotlib.colors import Normalize
+
+import pandas as pd
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+
+
+def get_data(dataset, type:int=None, normalization=False, test_size=None, val_size=None, data=None):  # TODO: test this
+    magic_box = {'datasets': datasets, 'normalization': normalization}
+    
+    # if the dataset has been passed on, just use that
+    if data is not None:
+        pass
+
+    elif type(dataset) is str and dataset.startswith('load_'):
+        # import a dataset from sklearn
+        exec('data = DataFromSklearn1(datasets.' + dataset + ', normalize=normalization)', magic_box)
+        data = magic_box['data']
+        # Note: exec may cause security problems if games is defined elsewhere, but should be fine for now
+
+    elif type(dataset) is str and dataset.startswith('make_'):
+        # import a dataset from sklearn
+        exec('data = DataFromSklearn2(datasets.' + dataset + ', normalize=normalization, data_type=' + str(type) + ')', magic_box)
+        data = magic_box['data']
+        # Note: exec may cause security problems if games is defined elsewhere, but should be fine for now
+
+    elif type(dataset) is str and dataset.startswith('['):
+        # Note: I had to use eval here on the external csv file,
+        # so first some basic security measures:
+        if (len(dataset) < 100 and list(dataset)[-1] == ']' and
+                not dataset.__contains__('(') and not dataset.__contains__(')')):
+            data = DataFromFunction(eval(dataset), normalize=normalization)
+
+    elif type(dataset) is str:
+        # load the dataset from Excel -> use custom dataset class
+        data = DataFromExcel(os.path.join(os.path.dirname(__file__), dataset), data_type=type, normalize=normalization)
+
+
+    if test_size is not None or val_size is not None:
+        train, test_val = train_test_split(data, test_size=(test_size+val_size))
+        test, val = train_test_split(test_val, test_size=val_size/(test_size+val_size))
+        return train, test, val
+    else: 
+        return data
+
+
+
 """
 This module contains 3 classes:
 - DataFromExcel: creates a dataset from a .csv file (e.g. Clas2a.csv), useful for real-world data
@@ -13,58 +75,7 @@ These classes and their functions are used in the building.py and levels.py modu
 # idea: add sklearn.preprocessing.MinMaxScaler(), .Normalizer() and .StandardScaler to scale the data
 # idea: add class for images
 
-import os
-from io import BytesIO  # for saving the images
-import numpy as np
-import math
-import pandas as pd
-import torch
-from torch.utils.data import Dataset, DataLoader
-#from matplotlib import pyplot as plt
-import matplotlib.figure as mf
-from matplotlib.lines import Line2D
-from matplotlib.cm import ScalarMappable
-from matplotlib.colors import Normalize
-
-# first, some plotting functions:
-def create_plot11(x=None, y=None, a=None, b=None):
-    """
-    Creates a plot of some datapoints, along with a line ax + b. 
-    Limits are -10 and +10 for both x and y. 
-    Returns the plot as the value of a BytesIO object.
-    """
-    
-    fig = mf.Figure()
-    ax = fig.add_subplot(111)
-    if x is not None and y is not None:
-        ax.scatter(x, y, color=(4/255, 151/255, 185/255))
-        if a is not None and b is not None:
-            x_s = torch.linspace(-10, 10, 200)
-            y_s = a*x_s + b
-            ax.plot(x_s, y_s, color=(185/255,38/255,4/255))
-        ax.set_xlim(-10, 10)
-        ax.set_ylim(-10, 10)
-        # save the image to a BytesIO and return it
-        img = BytesIO()
-        fig.savefig(img, format='png')
-        img.seek(0)
-        fig.clear()
-
-        mse = torch.mean((a*x + b - y)**2).item()
-        r2 = 1 - mse / torch.var(y).item()
-
-        return img.getvalue(), (mse, r2)
-
-    else: 
-        # set up the plot
-        a = round(torch.tan((torch.rand(1)/3)*math.pi).item(), 3)
-        b = round(torch.randint(-5, 6, size=(1,)).item(), 3)
-        x = torch.randint(-10, 10, size=(100,))
-        y = a*x + b + torch.normal(0, 1.41, size=(100,))
-        return x, y
-
-
-# now the dataset classes:
+# imports moved to top
 
 class DataFromExcel(Dataset):
     """Create a dataset from a CSV file with column labels in the first row.

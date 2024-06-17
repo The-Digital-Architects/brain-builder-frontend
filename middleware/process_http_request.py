@@ -14,30 +14,30 @@ Messages:
 # Improvements:
 # Idea: make the normalization an integer value so it's easier to expand
 
-from . import building 
-from . import levels 
-from . import data_functions as df
+from ..backend.processing import building 
+from . import processes 
+from ..backend import data_functions as df
 import os
 import pickle
 import requests
 import pandas as pd
 import json
 from base64 import b64encode, b64decode
-from django_react_proj.consumers import Coach
+from middleware.consumers import Transceiver
+
 from django.core.cache import cache
 import time
 from asgiref.sync import sync_to_async
 import asyncio
 
 async def process(req):
-    print("Processing action ", req['action'])
 
     req = dict(req)
     task_id, user_id = req['task_id'], req['user_id']
 
     # load the games dataframe 
-    levels.games = json.loads(req['games_data'])  # use without pako
-    levels.games = pd.DataFrame(levels.games).set_index('task_id')
+    processes.games = json.loads(req['games_data'])  # use without pako
+    processes.games = pd.DataFrame(processes.games).set_index('task_id')
 
 
     if req['action'] == 0:  # load the data and send the feature names and images to the frontend
@@ -45,24 +45,24 @@ async def process(req):
         tag = int(req['task_id'])
         normalization = bool(req['normalization'])
 
-        data, (training_set, test_set) = levels.get_data(tag, normalization)
+        data, (training_set, test_set) = processes.get_data(tag, normalization)
         cache.set(f'{user_id}_data', pickle.dumps(data), 10*60)  # cache the data for 10 minutes
         print("Data loaded and stored in cache")
 
-        d['title'] = 'data'
+        d['header'] = 'data'
         d['feature_names'] = [x.replace('_', ' ') for x in data.feature_names]
         d['plot'] = b64encode(data.images[-1]).decode()  # base64 encoded image, showing pyplot of the data
         d['n_objects'] = data.n_objects
 
-        coach = Coach.connections.get((str(user_id), str(task_id)))
+        tc = Transceiver.connections.get((str(user_id), str(task_id)))
         t = 0
-        while coach is None and t < 10:
+        while tc is None and t < 10:
             time.sleep(0.1)
-            print("Waiting for coach")
+            print("Waiting for switchboard")
             t += 0.1
-        if coach is not None:
-            print('Sending data to coach')
-            await coach.send_data(d)
+        if tc is not None:
+            print('Sending data to switchboard')
+            await tc.send_data(d)
 
 
     elif req['action'] == 1:  # create and train a network
@@ -83,16 +83,16 @@ async def process(req):
 
         network, data, training_set, test_set = building.build_nn(input_list, tag, dat=data, af=af)
         print("Network initiated, starting training")
-        d['title'] = 'progress'
+        d['header'] = 'progress'
         d['progress'] = 0  # just update the progress
-        coach = Coach.connections.get((str(user_id), str(task_id)))
-        if coach is not None:
-            await coach.send_data(d)
+        tc = Transceiver.connections.get((str(user_id), str(task_id)))
+        if tc is not None:
+            await tc.send_data(d)
         
-        u['title'] = 'update'
+        u['header'] = 'update'
         
         for epoch in range(1, epochs+1):
-            if Coach.cancelVars.get((str(user_id), str(task_id))):
+            if Transceiver.cancelVars.get((str(user_id), str(task_id))):
                 print("Training cancelled")
                 break
             print("Epoch: ", epoch)
@@ -118,15 +118,15 @@ async def process(req):
 
                     print("Epoch: ", epoch, ", Error: ", errors[-1])
 
-                    coach = Coach.connections.get((str(user_id), str(task_id)))
-                    if coach is not None:
-                        print('Sending data to coach')
-                        await coach.send_data(u)
+                    tc = Transceiver.connections.get((str(user_id), str(task_id)))
+                    if tc is not None:
+                        print('Sending data to switchboard')
+                        await tc.send_data(u)
 
-                coach = Coach.connections.get((str(user_id), str(task_id)))
-                if coach is not None:
-                    print('Sending data to coach')
-                    await coach.send_data(d)
+                tc = Transceiver.connections.get((str(user_id), str(task_id)))
+                if tc is not None:
+                    print('Sending data to switchboard')
+                    await tc.send_data(d)
         
         data.plot_decision_boundary(network)  # plot the current decision boundary (will be ignored if the dataset has too many dimensions)
 
@@ -145,13 +145,13 @@ async def process(req):
         cache.set(f'{user_id}_data', data, 10*60)  # cache the data for 10 minutes
         print("Network and data successfully saved to cache!")
         
-        coach = Coach.connections.get((str(user_id), str(task_id)))
-        if coach is not None:
-            print('Sending double data to coach')
-            await coach.send_data(d)
-            await coach.send_data(u)
+        tc = Transceiver.connections.get((str(user_id), str(task_id)))
+        if tc is not None:
+            print('Sending double data to switchboard')
+            await tc.send_data(d)
+            await tc.send_data(u)
             # if the websocket is still open, close it
-            await coach.close()
+            await tc.close()
 
 
 
