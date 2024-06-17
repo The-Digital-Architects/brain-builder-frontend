@@ -21,6 +21,8 @@ import subprocess
 import select
 #from functools import partial
 import json
+from django.forms.models import model_to_dict
+from backend.databases.models import TaskDescription
 
 
 cancel_vars = {}  # these will be used to cancel the process from consumers.py
@@ -29,7 +31,7 @@ cancel_vars = {}  # these will be used to cancel the process from consumers.py
 # function to start subprocesses
 def start_process(user_id, task_id, process_code:str, args=None, send_fn=None):  
     if type(args) == dict:
-        block_info = find_module(args['block_id'])
+        block_info = find_module(args['task_id'])
         args += block_info
         args = json.dumps(args)  # convert the dictionary to a json string
     read_pipe, write_pipe = os.pipe()  # create a pipe to the subprocess
@@ -68,16 +70,6 @@ def start_process(user_id, task_id, process_code:str, args=None, send_fn=None):
         
     os.close(read_pipe)
 
-#     # create a thread to read the output and errors
-#     if send_fn is not None:
-#         thread = threading.Thread(target=partial(handle_output, send_fn), args=(process))
-#         thread.start()
-#         # process has started, report back to frontend
-
-
-# def handle_output(send_fn): 
-#     pass
-
 
 
 # when the file is imported, read out the csv containing the process codes and store in a dataframe
@@ -95,13 +87,18 @@ def find_file(process_code:str):
         # TODO: check error handling
 
 
-# when the file is imported, read out the block database and store in a dataframe
-blocks = None  # TODO: find a way to import the block database
 
 def find_module(block_id:int):  # TODO: test this
-    if block_id in blocks['task_id'].values:
-        # convert the block's row into a dictionary
-        return blocks.loc[blocks['task_id'] == block_id].to_dict(orient='records')[0]
+    try:
+        block = TaskDescription.objects.get(task_id=block_id)
+        return model_to_dict(block)
+    except TaskDescription.DoesNotExist:
+        block = None
+        raise KeyError("Block not found")
+    
+    # if block_id in blocks['task_id'].values:
+    #     # convert the block's row into a dictionary
+    #     return blocks.loc[blocks['task_id'] == block_id].to_dict(orient='records')[0]
 
 
 
@@ -110,9 +107,6 @@ def find_module(block_id:int):  # TODO: test this
 if __name__ == '__main__':
     code = input("Try a process code: ")
     start_process(code, 'yako', send_fn=print)
-
-
-
 
 
 

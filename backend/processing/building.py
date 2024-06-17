@@ -228,23 +228,3 @@ if __name__ == '__main__':
         main(sys.argv[1])
     else: 
         raise ValueError("building.py needs json input to work")
-
-
-    # # extensive code: 
-    # if len(sys.argv) == 1:
-    #     # just run the main code
-    #     main()
-    
-    # elif len(sys.argv) == 3:
-    #     # run the function given by argv[1]
-    #     if sys.argv[1] in globals():
-    #         globals()[sys.argv[1]](sys.argv[2])
-    #     else:
-    #         raise ValueError("Function not found")
-    #         # TODO: look into error handling
-    #         sys.exit(1)
-    
-    # else:
-    #     raise ValueError("Use either no or two arguments")
-    #     # TODO: look into error handling
-    #     sys.exit(1)
