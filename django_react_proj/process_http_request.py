@@ -23,7 +23,7 @@ import requests
 import pandas as pd
 import json
 from base64 import b64encode, b64decode
-from middleware.consumers import Transceiver
+from django_react_proj.consumers import Transceiver
 
 from django.core.cache import cache
 import time
