@@ -15,7 +15,7 @@ Messages:
 # Idea: make the normalization an integer value so it's easier to expand
 
 from backend.processing import building 
-import processes 
+from django_react_proj import processes 
 from backend import data_functions as df
 import os
 import pickle

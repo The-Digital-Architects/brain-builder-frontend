@@ -2,8 +2,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 
-from .models import Row, TaskDescription, Progress, Quiz, Intro
-from .serializers import *
+from backend.databases.models import Row, TaskDescription, Progress, Quiz, Intro
+from backend.databases.serializers import *
 from django_react_proj.process_http_request import process
 from django.http import JsonResponse
 
