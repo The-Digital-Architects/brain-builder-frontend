@@ -14,10 +14,10 @@ and calls the levels module for information on the games, and the modular_networ
 # Idea: 
 
 import sys
-from modular_network import * 
 if __name__ == '__main__':
     import os
     sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
+from backend.processing.modular_network import * 
 import backend.data_functions as df
 import json
 import pickle
