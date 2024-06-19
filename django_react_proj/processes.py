@@ -22,7 +22,6 @@ import select
 #from functools import partial
 import json
 from django.forms.models import model_to_dict
-from backend.databases.models import TaskDescription
 
 
 cancel_vars = {}  # these will be used to cancel the process from consumers.py
@@ -89,6 +88,7 @@ def find_file(process_code:str):
 
 
 def find_module(block_id:int):  # TODO: test this
+    from backend.databases.models import TaskDescription
     try:
         block = TaskDescription.objects.get(task_id=block_id)
         return model_to_dict(block)
