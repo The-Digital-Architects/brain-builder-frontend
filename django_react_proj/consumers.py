@@ -35,6 +35,7 @@ class Transceiver(AsyncWebsocketConsumer):
             processes.cancel_vars[(self.user_id, task_id)] = True
 
         elif task_type == 'code':
+            print(instructions['code'])
             nb_id = instructions['notebook_id']
             processes.cancel_vars[(self.user_id, nb_id)] = False
             processes.execute_code(instructions['code'], self.user_id, nb_id, self.send)

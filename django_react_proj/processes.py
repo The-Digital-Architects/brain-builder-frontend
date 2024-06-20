@@ -137,9 +137,9 @@ def execute_code(code:str, user_id, notebook_id, send_fn):
                         print("Sending json output")
                         send_fn(output)  # send the encoded output to the frontend
                     except json.JSONDecodeError:
-                        output = dict(header='output', output=output)
+                        output = dict(header='output', notebook_id=notebook_id, output=output)
                         output = json.dumps(output)
-                        print("Sending print")
+                        print("Sending print: ", output)
                         send_fn(output)
                         # # or alternatively
                         # print(output)
