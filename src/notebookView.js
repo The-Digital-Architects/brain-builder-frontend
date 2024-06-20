@@ -48,6 +48,7 @@ class NotebookView extends React.Component {
         }
 
         this.ws.onmessage = (event) => {
+            console.log('ws message received')
             const data = JSON.parse(event.data);
             alert(data.output)
             // TODO: handle the message

@@ -134,10 +134,12 @@ def execute_code(code:str, user_id, notebook_id, send_fn):
                 if output:
                     try:  # check if the output is in json format
                         _ = json.loads(output)
+                        print("Sending json output")
                         send_fn(output)  # send the encoded output to the frontend
                     except json.JSONDecodeError:
                         output = dict(header='output', output=output)
                         output = json.dumps(output)
+                        print("Sending print")
                         send_fn(output)
                         # # or alternatively
                         # print(output)
