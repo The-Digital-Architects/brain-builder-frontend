@@ -48,12 +48,14 @@ class NotebookView extends React.Component {
         }
 
         this.ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.header == "output" && data.notebook_id == this.props.notebookPath) {
-                console.log('ws message received')
-                alert(data.output)
-                // TODO: handle the message
-            }
+            console.log('ws message received');
+            try {
+                const data = JSON.parse(event.data);
+                if (data.header == "output" && data.notebook_id == this.props.notebookPath) {
+                    alert(data.output)
+                    // TODO: handle the message
+                }
+            } catch (error) {console.error('Error receiving message:', error);}
         }
     }
 
