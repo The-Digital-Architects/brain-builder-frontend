@@ -16,6 +16,9 @@ from urllib.parse import urlparse
 
 import asyncio
 
+import os
+import requests
+
 
 def index(request, path=''):
     user_id = request.GET.get('user_id')
@@ -261,3 +264,18 @@ def feedback(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def get_notebook(request, notebook_path):
+    if os.getenv("NOTEBOOK_URL") is not None: 
+        notebook_url = os.getenv("NOTEBOOK_URL") + notebook_path
+        headers = {'Authorization': f'token {os.getenv("NOTEBOOK_TOKEN")}'}
+
+        response = requests.get(notebook_url, headers=headers)
+
+        if response.ok:
+            return JsonResponse(response.json())
+        else:
+            return JsonResponse({'error': 'Error loading notebook'}, status=500)  # internal server error
+    
+    else: return JsonResponse({'error': 'No GitHub linked'}, status=500)  # internal server error

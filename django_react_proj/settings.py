@@ -28,6 +28,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
+NOTEBOOK_URL = os.environ.get('NOTEBOOK_URL', None)  # URL of the (private) repo containing the notebooks
+NOTEBOOK_TOKEN = os.environ.get('NOTEBOOK_TOKEN', None)  # token granting access to this private repo
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', get_random_secret_key())
 

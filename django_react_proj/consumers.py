@@ -8,14 +8,13 @@ class Transceiver(AsyncWebsocketConsumer):
     async def connect(self):
         print(f'Connection scope: {self.scope}')
         self.user_id = self.scope['url_route']['kwargs']['userId']
-        self.task_id = self.scope['url_route']['kwargs']['taskId']
-        Transceiver.connections[(self.user_id, self.task_id)] = self
-        processes.cancel_vars[(self.user_id, self.task_id)] = False
+        #self.task_id = self.scope['url_route']['kwargs']['taskId']
+        Transceiver.connections[self.user_id] = self
         print("switchboard connected")
         await self.accept()
 
     async def disconnect(self, close_code):
-        del Transceiver.connections[(self.user_id, self.task_id)]
+        del Transceiver.connections[self.user_id]
         print("switchboard disconnected")
         
     # Receive message from WebSocket
@@ -26,11 +25,19 @@ class Transceiver(AsyncWebsocketConsumer):
 
         if task_type == 'start':
             # start the process
+            task_id = instructions['task_id']
+            processes.cancel_vars[(self.user_id, task_id)] = False
             pc = instructions['process_code']
-            processes.start_process(self.user_id, self.task_id, pc, instructions, self.send)
+            processes.start_process(self.user_id, task_id, pc, instructions, self.send)
         
         elif task_type == 'cancel':
-            processes.cancel_vars[(self.user_id, self.task_id)] = True
+            task_id = instructions['task_id']  # watch out: this should be the notebook_id for notebooks!
+            processes.cancel_vars[(self.user_id, task_id)] = True
+
+        elif task_type == 'code':
+            nb_id = instructions['notebook_id']
+            processes.cancel_vars[(self.user_id, nb_id)] = False
+            processes.execute_code(instructions['code'], self.send)
         
 
     # Send an update to the frontend

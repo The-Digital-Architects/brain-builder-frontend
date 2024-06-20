@@ -100,13 +100,106 @@ def find_module(block_id:int):  # TODO: test this
     #     # convert the block's row into a dictionary
     #     return blocks.loc[blocks['task_id'] == block_id].to_dict(orient='records')[0]
 
+# Generated with GH Copilot
+# Warning: this is vulnerable to Code Injection Attacks!
+# Cannot handle plots yet
+def execute_code(code:str, user_id, notebook_id, send_fn):
+    if is_suspicious(code):
+        output = {'header': 'error', 'output': 'Code execution was blocked due to suspicious code'}
+        send_fn(json.dumps(output))
+        return
+
+    # Write the code to a temporary Python file
+    with open('/tmp/code.py', 'w') as f:
+        f.write(code)
+
+    read_pipe, write_pipe = os.pipe()  # create a pipe to the subprocess
+
+    # Run the Python file in a subprocess
+    process = subprocess.Popen(['python', '/tmp/code.py'], stdout=write_pipe, stderr=write_pipe)
+    os.close(write_pipe)
 
 
+    if send_fn is not None:
+        # While the process is running, read updates from the pipe and send them over the WebSocket
+        while process.poll() is None:
+            # Check if the process was cancelled
+            if cancel_vars.get((str(user_id), str(notebook_id))):
+                process.terminate()
+                print("Process cancelled")
+                break
+
+            while select.select([read_pipe], [], [], 0.1)[0]:
+                output = os.read(read_pipe, 1024).decode()
+                if output:
+                    try:  # check if the output is in json format
+                        _ = json.loads(output)
+                        send_fn(output)  # send the encoded output to the frontend
+                    except json.JSONDecodeError:
+                        output = dict(header='output', output=output)
+                        output = json.dumps(output)
+                        send_fn(output)
+                        # # or alternatively
+                        # print(output)
+                else: 
+                    break 
+        
+    os.close(read_pipe)
+    os.remove('/tmp/code.py')  # Delete the temporary Python file
+    
+    
+    
+    if process.returncode != 0:
+        send_fn(process.stderr.decode())
+    else:
+        send_fn(process.stdout.decode())
+
+
+# TODO: Warning: this is a very basic safety function, needs to be improved!
+def is_suspicious(code):
+    # Check #1: length of the code: 
+    max_char = 2000
+    max_lines = 50
+    if len(code) > max_char or code.count('\n') > max_lines:
+        print("Wrong")
+        return True
+
+    # Check #2: suspicious words 
+    code += ' '  # add a space at the end to avoid index errors
+    suspicious_letters = ["getattr", "import", "subprocess", "exec", "eval", "open", "write", "unlink", "rmdir", "remove", "compile", "globals", "locals"]
+    suspicious_words = ["os", "sys", "input"]
+
+    for x in suspicious_letters:
+        if x in code:
+            print('Wrong')
+            return True
+        
+    for x in suspicious_words:
+        start = 0
+        while start < len(code):
+            try:
+                # find the index of x in code starting from 'start'
+                idx = start + code[start::].index(x)
+                print(idx)
+                # check the characters around it
+                if code[idx-1] in ['"', "'", " ", "\n", ".", "(", ")"] and code[idx+len(x)] in ['"', "'", " ", "\n", ".", "(", ")"]:
+                    return True
+                # move 'start' to next character after current 'x'
+                start = idx + 1
+            except ValueError:
+                # no more occurrences of 'x' in 'code'
+                break
+
+    return False
 
 
 if __name__ == '__main__':
-    code = input("Try a process code: ")
-    start_process(code, 'yako', send_fn=print)
+    #print('Check')
+    while True: 
+        #code = input("Try a process code: ")
+        #start_process(code, 'yako', send_fn=print)
+        inp = input("Input: ")
+        print(is_suspicious(inp))
 
 
 

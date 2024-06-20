@@ -6,7 +6,7 @@ import * as Slider from '@radix-ui/react-slider';
 import '@radix-ui/themes/styles.css';
 import tu_delft_pic from "./tud_black_new.png";
 import { Link, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { PlusIcon, MinusIcon, RocketIcon, HomeIcon, DrawingPinIcon, Pencil2Icon, Link2Icon } from '@radix-ui/react-icons';
+import { PlusIcon, MinusIcon, RocketIcon, HomeIcon, DrawingPinIcon, Pencil2Icon, Link2Icon, CodeIcon } from '@radix-ui/react-icons';
 import { styled } from '@stitches/react';
 import axios from 'axios';
 import BuildView from './buildView';
@@ -20,6 +20,7 @@ import Tutorial from './tutorial';
 import FeedbackApp from './feedback';
 import LinksPage from './links';
 import NotFound from './notFound';
+import NotebookView from './notebookView';
 
 
 const colorScale = chroma.scale(['#49329b', '#5e5cc2', '#8386d8', '#afb0e1', '#dddddd', '#e3a692', '#d37254', '#b64124', '#8f0500']).domain([-1, -0.75, -0.5, -0.25, 0, 0.25, 0.52, 0.75, 1]);
@@ -201,7 +202,7 @@ function App() {
       games_data: gamesData,
     };
     // first, set up the websocket
-    const ws = new WebSocket(`wss://${window.location.host}/ws/${userId}/${taskId}/`);
+    const ws = new WebSocket(`wss://${window.location.host}/ws/${userId}/`);
     let timeoutId;
 
     ws.onclose = () => {
@@ -746,7 +747,6 @@ function App() {
       normalization = false;
       af = false;
     }
-    console.log("AF setting: ", af);  // for debugging
 
     var userId = getCookie('user_id');
     var csrftoken = getCookie('csrftoken');
@@ -788,15 +788,18 @@ function App() {
     cytoLayers[0] = nOfInputs;
     cytoLayers[cytoLayers.length - 1] = nOfOutputs;
     const trainingData = {
-      action: 1,
+      //action: 1,
+      header: 'start',
+      process_code: 'B01',
       user_id: userId,
       task_id: taskId,
       learning_rate: parseFloat(learningRate),
       epochs: iterations,
       normalization: normalization,
       activations_on: af,
-      network_input: JSON.stringify(cytoLayers),
-      games_data: gamesData,  
+      nodes: JSON.stringify(cytoLayers),
+      //network_input: JSON.stringify(cytoLayers),
+      //games_data: gamesData,  
     };
     console.log("trainingData: ", trainingData);  // for debugging
     setApiData(prevApiData => {
@@ -819,7 +822,7 @@ function App() {
     if (ws && ws.readyState !== WebSocket.CLOSED) {
       ws.close();
     }    
-    const ws = new WebSocket(`wss://${window.location.host}/ws/${userId}/${taskId}/`);
+    const ws = new WebSocket(`wss://${window.location.host}/ws/${userId}/`);
 
     let timeoutId = null;
     
@@ -846,6 +849,7 @@ function App() {
     ws.onopen = () => {
       console.log('WebSocket connection opened');
 
+      /*
       axios.get(window.location.origin + `/api/backend/?user_id=${userId}&task_id=${taskId}`, {
         headers: {
           'X-CSRFToken': csrftoken
@@ -892,6 +896,9 @@ function App() {
             alert("An axios error occurred. Please try again. If the problem persists, please contact us.");
           }
       })
+      */
+
+      ws.send(JSON.stringify(trainingData));
 
       timeoutId = setTimeout(() => {
         ws.close();
@@ -1358,6 +1365,16 @@ function App() {
               <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
                 <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>&gt;_Wrapping Up</Heading>
                 <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(136px, 136px))', gap: '15px', alignItems: 'start', justifyContent: 'start'}}>
+                  
+                  <Link to='notebookTest' style={{ color: 'inherit', textDecoration: 'none' }}>
+                    <ChallengeButton size="1" variant="outline">
+                      <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
+                        <label>Notebook</label>
+                        <div><CodeIcon width="27" height="27" /></div>
+                      </Flex>
+                    </ChallengeButton>
+                  </Link>  
+                  
                   <Link to='feedback' style={{ color: 'inherit', textDecoration: 'none' }}>
                     <ChallengeButton size="1" variant="outline">
                       <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
@@ -1366,14 +1383,16 @@ function App() {
                       </Flex>
                     </ChallengeButton>
                   </Link>
-                <Link to='links' style={{ color: 'inherit', textDecoration: 'none' }}>
-                  <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                      <label>Useful Links</label>
-                      <div><Link2Icon width="27" height="27" /></div>
-                    </Flex>
-                  </ChallengeButton>
-                </Link>  
+                  
+                  <Link to='links' style={{ color: 'inherit', textDecoration: 'none' }}>
+                    <ChallengeButton size="1" variant="outline">
+                      <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
+                        <label>Useful Links</label>
+                        <div><Link2Icon width="27" height="27" /></div>
+                      </Flex>
+                    </ChallengeButton>
+                  </Link>  
+
                 </Box>
               </Box>
             </Flex>
@@ -1452,6 +1471,14 @@ function App() {
             <CustomBlock
             host = {window.location.host}
             customId = {11}
+            userId = {getCookie('user_id')}
+            />
+          } />
+
+          <Route path="/notebookTest" element={
+            <NotebookView
+            host = {window.location.host}
+            notebookPath = {'test.ipynb'}
             userId = {getCookie('user_id')}
             />
           } />
