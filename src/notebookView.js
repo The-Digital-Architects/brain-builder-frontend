@@ -63,6 +63,8 @@ class NotebookView extends React.Component {
         if (this.ws.readyState === this.ws.OPEN && this.state.notebook) {
             this.setState({ currentCell: index });
             const data = {
+                header: 'code',
+                notebook_id: this.props.notebookPath,
                 code: this.state.notebook.cells[index].source.join(''),
                 cell: index,
             };
