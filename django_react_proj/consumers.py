@@ -37,7 +37,7 @@ class Transceiver(AsyncWebsocketConsumer):
         elif task_type == 'code':
             nb_id = instructions['notebook_id']
             processes.cancel_vars[(self.user_id, nb_id)] = False
-            processes.execute_code(instructions['code'], user_id, nb_id, self.send)
+            processes.execute_code(instructions['code'], self.user_id, nb_id, self.send)
         
 
     # Send an update to the frontend
