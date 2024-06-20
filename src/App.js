@@ -263,7 +263,7 @@ function App() {
 
     ws.onmessage = function(event) {
       const data = JSON.parse(event.data);
-      if (data.title === "data") { 
+      if (data.header === "data") { 
 
         setFeatureNames(prevFeatureNames => {
           const newFeatureNames = [...prevFeatureNames];
@@ -927,7 +927,7 @@ function App() {
       }, intervalTimeout); // stop after n milliseconds
 
       const data = JSON.parse(event.data);
-      if (data.title === 'progress') {  // every 1%; includes progress, error_list, and network_weights
+      if (data.header === 'progress') {  // every 1%; includes progress, error_list, and network_weights
 
         if (JSON.stringify(data.progress) !== JSON.stringify(progress[index])) {
           setProgress(prevProgress => {
@@ -958,7 +958,7 @@ function App() {
           }
           
         }
-      } else if (data.title === 'update') {  // every 2%; includes network_biases and plots
+      } else if (data.header === 'update') {  // every 2%; includes network_biases and plots
         // update the weights if they changed 
         if (weights[index].length === 0 || data.network_weights[0][0] !== weights[index][0][0]) {
           setWeights(prevWeights => {
@@ -998,7 +998,7 @@ function App() {
 
     function cancelRequest() {
       if (ws && ws.readyState === WebSocket.OPEN) {
-        let message = {'title': 'cancel'};
+        let message = {'header': 'cancel'};
         ws.send(JSON.stringify(message));
   
         ws.close();

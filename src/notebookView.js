@@ -49,7 +49,7 @@ class NotebookView extends React.Component {
 
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            console.log(data.output);
+            alert(data.output)
             // TODO: handle the message
         }
     }

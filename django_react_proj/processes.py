@@ -146,6 +146,7 @@ def execute_code(code:str, user_id, notebook_id, send_fn):
         
     os.close(read_pipe)
     os.remove('/tmp/code.py')  # Delete the temporary Python file
+    print('Code executed')
 
 
 # TODO: Warning: this is a very basic safety function, needs to be improved!
@@ -192,7 +193,7 @@ if __name__ == '__main__':
         #code = input("Try a process code: ")
         #start_process(code, 'yako', send_fn=print)
         inp = input("Input: ")
-        print(is_suspicious(inp))
+        execute_code(inp, 1, 1, print)
 
 
 
