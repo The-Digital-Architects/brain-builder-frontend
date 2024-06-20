@@ -146,13 +146,6 @@ def execute_code(code:str, user_id, notebook_id, send_fn):
         
     os.close(read_pipe)
     os.remove('/tmp/code.py')  # Delete the temporary Python file
-    
-    
-    
-    if process.returncode != 0:
-        send_fn(process.stderr.decode())
-    else:
-        send_fn(process.stdout.decode())
 
 
 # TODO: Warning: this is a very basic safety function, needs to be improved!
