@@ -1076,7 +1076,7 @@ function App() {
       <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
       <Router>
         <Routes>
-          <Route path="/" element={<StartPage levelNames={levelNames} taskNames={taskNames} introData={introData} quizData={quizData} />} />
+          <Route path="/" element={<StartPage levelNames={levelNames} taskNames={taskNames} introData={introData} quizData={quizData} taskIds={taskIds} quizIds={quizIds} introIds={introIds} />} />
           
           {introIds.map((introId, index) => (
             <>
