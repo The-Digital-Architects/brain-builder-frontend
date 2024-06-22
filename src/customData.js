@@ -7,7 +7,7 @@ import tu_delft_pic from "./tud_black_new.png";
 import color_scale_pic from "./color_scale_2.png";
 import { Link } from 'react-router-dom';
 import CytoscapeComponent from 'react-cytoscapejs';
-import { PlayIcon, ChevronLeftIcon, ChevronRightIcon, HomeIcon } from '@radix-ui/react-icons';
+import { PlayIcon, HomeIcon } from '@radix-ui/react-icons';
 import Joyride from 'react-joyride';
 //import { create } from 'filepond';
 import 'filepond/dist/filepond.css';
@@ -29,6 +29,7 @@ import axios from 'axios';
 import { FilePond, registerPlugin } from 'react-filepond'
 // Import FilePond styles
 import 'filepond/dist/filepond.min.css'
+import { GenerateFloatingButtons, LayerRemoveButton, LayerAddButton } from './floatingButtons';
 
 // Register the plugin
 registerPlugin(FilePondPluginFileValidateType);
@@ -319,49 +320,11 @@ class Building extends React.Component {
                 </Flex>
               )}
 
-              {this.props.generateFloatingButtons(window.innerHeight - 223, 0.1 * (window.innerWidth * 0.97) - 16.5, 0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1), true, this.props.cytoLayers.length, this.props.cytoLayers, this.props.setCytoLayers, this.props.taskId, this.props.index)}                    
-              {this.props.generateFloatingButtons(window.innerHeight - 178, 0.1 * (window.innerWidth * 0.97) - 16.5, 0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1), false, this.props.cytoLayers.length, this.props.cytoLayers, this.props.setCytoLayers, this.props.taskId, this.props.index)}
+              {GenerateFloatingButtons(window.innerHeight - 223, 0.1 * (window.innerWidth * 0.97) - 16.5, 0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1), true, this.props.cytoLayers.length, this.props.cytoLayers, this.props.setCytoLayers, this.props.taskId, this.props.index, this.props.maxNodes, this.props.isTraining)}                    
+              {GenerateFloatingButtons(window.innerHeight - 178, 0.1 * (window.innerWidth * 0.97) - 16.5, 0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1), false, this.props.cytoLayers.length, this.props.cytoLayers, this.props.setCytoLayers, this.props.taskId, this.props.index, this.props.maxNodes, this.props.isTraining)}
 
-              <this.props.FloatingButton
-                variant="outline"
-                onClick = {this.props.taskId !== 0 ? () => this.props.addLayer(this.props.setCytoLayers, this.props.nOfOutputs, this.props.index, this.props.maxLayers) : () => {}}
-                size="0"
-                disabled={this.props.cytoLayers.length>this.props.maxLayers-1 || this.props.isTraining===1}
-                style={{top: window.innerHeight*0.285, 
-                        left: window.innerWidth*0.60, 
-                        position: 'absolute',
-                        zIndex: 9999,
-                        borderRadius: 'var(--radius-5)',
-                        width: 35,
-                        height: 60,
-                        boxShadow: '0 2px 8px var(--slate-a11)'
-                }}
-              >
-                {<ChevronRightIcon 
-                style={{height: 30, width: 30}}
-                /> }
-              </this.props.FloatingButton>
-
-              <this.props.FloatingButton
-                variant="outline"
-                onClick = {this.props.taskId !== 0 ? () => this.props.removeLayer(this.props.setCytoLayers, this.props.index) : () => {}}
-                size="0"
-                disabled={this.props.cytoLayers.length<3 || this.props.isTraining===1}
-                style= {{ top: window.innerHeight*0.285, 
-                          left: window.innerWidth*0.56,
-                          position: 'absolute',
-                          zIndex: 9999,
-                          borderRadius: 'var(--radius-5)',
-                          width: 35,
-                          height: 60,
-                          boxShadow: '0 2px 8px var(--slate-a11)'
-                        }}
-              >
-                {<ChevronLeftIcon 
-                style={{height: 30, width: 30}}
-                />}
-              </this.props.FloatingButton>
-
+              <LayerRemoveButton setCytoLayers={this.props.setCytoLayers} index={this.props.index} taskId={this.props.taskId} cytoLayers={this.props.cytoLayers} isTraining={this.props.isTraining}/>
+              <LayerAddButton setCytoLayers={this.props.setCytoLayers} index={this.props.index} taskId={this.props.taskId} cytoLayers={this.props.cytoLayers} nOfOutputs={this.props.nOfOutputs} maxLayers={this.props.maxLayers} isTraining={this.props.isTraining}/>
 
             </Flex>
           </Box>

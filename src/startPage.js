@@ -19,7 +19,38 @@ const ChallengeButton = styled(Button, {
   boxShadow: '0 1px 3px var(--slate-a11)'
 });
 
-function StartPage({ tasksByLevel, quizzesByLevel, introsByLevel, levelNames, taskNames, introData, quizData }) {
+
+function StartPage({ levelNames, taskNames, introData, quizData, taskIds, quizIds, introIds }) {
+    const tasksByLevel = taskIds.reduce((acc, taskId) => {
+        const level = Math.floor(taskId / 10);
+        const challenge = taskId % 10;
+        if (!acc[level]) {
+            acc[level] = [];
+        }
+        acc[level].push(challenge);
+        return acc;
+    }, {});
+
+    const quizzesByLevel = quizIds.reduce((acc, quizId) => {
+        const level = Math.floor(quizId / 10);
+        const challenge = quizId % 10;
+        if (!acc[level]) {
+            acc[level] = [];
+        }
+        acc[level].push(challenge);
+        return acc;
+    }, {});
+
+    const introsByLevel = introIds.reduce((acc, introId) => {
+        const level = Math.floor(introId / 10);
+        const challenge = introId % 10;
+        if (!acc[level]) {
+            acc[level] = [];
+        }
+        acc[level].push(challenge);
+        return acc;
+    }, {});
+
   return (
     <div>
         <Header />

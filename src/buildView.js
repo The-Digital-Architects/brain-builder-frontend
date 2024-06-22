@@ -14,6 +14,7 @@ import Joyride from 'react-joyride';
 import { useNavigate } from 'react-router-dom';
 import CodePreview from './codePreview';
 import layersToCode from './codeExplainTools';
+import {GenerateFloatingButtons, LayerRemoveButton, LayerAddButton} from './floatingButtons';
 import { 
   Chart, 
   CategoryScale, 
@@ -497,49 +498,12 @@ class Building extends React.Component {
                 </Flex>
               )}
 
-              {this.props.generateFloatingButtons(window.innerHeight - 223, 0.1 * (window.innerWidth * 0.97) - 16.5, 0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1), true, this.props.cytoLayers.length, this.props.cytoLayers, this.props.setCytoLayers, this.props.taskId, this.props.index)}                    
-              {this.props.generateFloatingButtons(window.innerHeight - 178, 0.1 * (window.innerWidth * 0.97) - 16.5, 0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1), false, this.props.cytoLayers.length, this.props.cytoLayers, this.props.setCytoLayers, this.props.taskId, this.props.index)}
-
-              <this.props.FloatingButton
-                variant="outline"
-                onClick = {this.props.taskId !== 0 ? () => this.props.addLayer(this.props.setCytoLayers, this.props.nOfOutputs, this.props.index, this.props.maxLayers) : () => {}}
-                size="0"
-                disabled={this.props.cytoLayers.length>this.props.maxLayers-1 || this.props.isTraining===1}
-                style={{top: window.innerHeight*0.285, 
-                        left: window.innerWidth*0.60, 
-                        position: 'absolute',
-                        zIndex: 9999,
-                        borderRadius: 'var(--radius-5)',
-                        width: 35,
-                        height: 60,
-                        boxShadow: '0 2px 8px var(--slate-a11)'
-                }}
-              >
-                {<ChevronRightIcon 
-                style={{height: 30, width: 30}}
-                /> }
-              </this.props.FloatingButton>
-
-              <this.props.FloatingButton
-                variant="outline"
-                onClick = {this.props.taskId !== 0 ? () => this.props.removeLayer(this.props.setCytoLayers, this.props.index) : () => {}}
-                size="0"
-                disabled={this.props.cytoLayers.length<3 || this.props.isTraining===1}
-                style= {{ top: window.innerHeight*0.285, 
-                          left: window.innerWidth*0.56,
-                          position: 'absolute',
-                          zIndex: 9999,
-                          borderRadius: 'var(--radius-5)',
-                          width: 35,
-                          height: 60,
-                          boxShadow: '0 2px 8px var(--slate-a11)'
-                        }}
-              >
-                {<ChevronLeftIcon 
-                style={{height: 30, width: 30}}
-                />}
-              </this.props.FloatingButton>
-
+              {GenerateFloatingButtons(window.innerHeight - 223, 0.1 * (window.innerWidth * 0.97) - 16.5, 0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1), true, this.props.cytoLayers.length, this.props.cytoLayers, this.props.setCytoLayers, this.props.taskId, this.props.index, this.props.maxNodes, this.props.isTraining)}                    
+              {GenerateFloatingButtons(window.innerHeight - 178, 0.1 * (window.innerWidth * 0.97) - 16.5, 0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1), false, this.props.cytoLayers.length, this.props.cytoLayers, this.props.setCytoLayers, this.props.taskId, this.props.index, this.props.maxNodes, this.props.isTraining)}
+             
+              
+              <LayerRemoveButton setCytoLayers={this.props.setCytoLayers} index={this.props.index} taskId={this.props.taskId} cytoLayers={this.props.cytoLayers} isTraining={this.props.isTraining}/>
+              <LayerAddButton setCytoLayers={this.props.setCytoLayers} index={this.props.index} taskId={this.props.taskId} cytoLayers={this.props.cytoLayers} nOfOutputs={this.props.nOfOutputs} maxLayers={this.props.maxLayers} isTraining={this.props.isTraining}/>
 
             </Flex>
           </Box>
@@ -769,21 +733,6 @@ class Building extends React.Component {
           </Flex>
         )}
         </Tabs.Content>
-
-
-
-        {/*<Tabs.Content value="settings">
-          <Box style={{ display: 'flex', height: '100vh' }}>
-          <form>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <label className="Label" htmlFor="monty-python-mode" style={{ paddingRight: 15 }}>
-                Monty Python lover mode
-              </label>
-              <this.props.MontyPythonSwitch />
-            </div>
-          </form>
-          </Box>
-        </Tabs.Content>*/}
         </Box>
         </Tabs.Root>
 

@@ -6,8 +6,7 @@ import * as Slider from '@radix-ui/react-slider';
 import '@radix-ui/themes/styles.css';
 import tu_delft_pic from "./tud_black_new.png";
 import { Link, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { PlusIcon, MinusIcon, HomeIcon } from '@radix-ui/react-icons';
-import { styled } from '@stitches/react';
+import { HomeIcon } from '@radix-ui/react-icons';
 import axios from 'axios';
 import BuildView from './buildView';
 import BuildViewWithUpload from './customData';
@@ -21,20 +20,10 @@ import LinksPage from './links';
 import NotFound from './notFound';
 import NotebookView from './notebookView';
 import StartPage from './startPage';
+import {GenerateFloatingButtons} from './floatingButtons';
 
 
 const colorScale = chroma.scale(['#49329b', '#5e5cc2', '#8386d8', '#afb0e1', '#dddddd', '#e3a692', '#d37254', '#b64124', '#8f0500']).domain([-1, -0.75, -0.5, -0.25, 0, 0.25, 0.52, 0.75, 1]);
-
-// ------- STYLED COMPONENTS -------
-
-const FloatingButton = styled(IconButton, {
-  position: 'absolute',
-  zIndex: 9999,
-  borderRadius: 'var(--radius-3)',
-  width: 33,
-  height: 33,
-  boxShadow: '0 2px 8px var(--slate-a11)'
-});
 
 // ------- COOKIE FUNCTION -------
 function getCookie(name) {
@@ -651,75 +640,6 @@ function App() {
     ));
   }, [taskIds, cytoLayers]);
 
-  // function to add a layer
-  const addLayer = useCallback((setCytoLayers, nOfOutputs, index, max_layers) => {
-    setCytoLayers(prevLayers => {
-      const newLayers = [...prevLayers];
-      console.log("max_layers: ", max_layers);  // for debugging");
-      if (newLayers[index].length < max_layers) {newLayers[index].push(nOfOutputs)};
-      return newLayers;
-    });
-  }, []);
-
-  // function to remove a layer
-  const removeLayer = useCallback((setCytoLayers, index) => {
-    setCytoLayers(prevLayers => {
-      const newLayers = [...prevLayers];
-      if (newLayers[index].length > 2) {newLayers[index].splice(-2, 1)}
-      return newLayers;
-    });
-  }, []);
-
-  // function to add a node to a layer
-  const addNode = useCallback((column, setCytoLayers, taskId, index, max_nodes) => {
-    setCytoLayers(prevLayers => {
-      const newLayers = [...prevLayers];
-      newLayers[index][column] < max_nodes ? newLayers[index][column] += 1 : newLayers[index][column] = max_nodes;
-      document.getElementById(taskId + "-input" + column).value = newLayers[index][column];
-      return newLayers;
-    });
-  }, []);
-
-  // function to remove a node from a layer
-  const removeNode = useCallback((column, setCytoLayers, taskId, index) => {
-    setCytoLayers(prevLayers => {
-      const newLayers = [...prevLayers];
-      newLayers[index][column] > 1 ? newLayers[index][column] -= 1 : newLayers[index][column] = 1;
-      document.getElementById(taskId + "-input" + column).value = newLayers[index][column];
-      return newLayers;
-    });
-  }, []);
-
-  // function to set a custom number of nodes for a layer
-  const setNodes = useCallback((column, cytoLayers, setCytoLayers, taskId, index) => {
-    try {
-      var nodeInput = Number(document.getElementById(taskId + "-input" + column).value)
-    } catch (error) {
-      console.log(`Error when getting nodeInput: ${error}`);
-      console.log(`taskId + "-input" + column: ${taskId + "-input" + column}`);
-    }
-    if (nodeInput && Number.isInteger(nodeInput)) {
-      if (nodeInput < 1) {
-        nodeInput = 1;
-      } else if (nodeInput > maxNodes[index]) {
-        nodeInput = maxNodes[index];
-      }
-      try {
-        setCytoLayers(prevLayers => {
-          const newLayers = [...prevLayers];
-          newLayers[index][column] = nodeInput;
-          return newLayers;
-        });
-      } catch (error) {
-        console.log(`Error when setting cytoLayers (maybe wrong type?): ${error}`);
-      }
-    } else {
-      nodeInput = cytoLayers[index][column];
-      console.log("Invalid input: ", nodeInput);
-    }
-    document.getElementById(taskId + "-input" + column).value = nodeInput;
-  }, [maxNodes]);
-
 
   const cancelRequestRef = useRef(null);
 
@@ -1017,61 +937,6 @@ function App() {
   };
 
 
-  // ------- FLOATING BUTTONS -------
-
-  // function to generate floating buttons
-  function generateFloatingButtons(top, left, dist, isItPlus, nLayers, cytoLayers, setCytoLayers, taskId, index) {
-    const buttons = [];
-    const icon = isItPlus ? <PlusIcon /> : <MinusIcon />;
-    for (let i = 1; i < nLayers-1; i++) {
-      const style = { top: top, left: left + i * dist };
-      const button = (
-        <div>
-          <FloatingButton
-            variant="outline"
-            disabled={(isItPlus && cytoLayers[i] >= maxNodes[index]) | (!isItPlus && cytoLayers[i] < 2) | isTraining[index] === 1}
-            onClick = {taskId !== 0 ? (isItPlus ? () => addNode(i, setCytoLayers, taskId, index, maxNodes[index]) : () => removeNode(i, setCytoLayers, taskId, index)) : () => {}}
-            style={{...style}}
-            key={i}
-          >
-            {icon}
-          </FloatingButton>
-          {isItPlus &&
-          <form>
-            {console.log(taskId + "-input" + i)}
-            <input
-            id={taskId + "-input" + i}
-            type="text"
-            defaultValue={cytoLayers[i]}
-            style={{
-              border: 'none',
-              width: 0.02 * (window.innerWidth * 0.97),
-              textAlign: 'center',
-              position: 'absolute',
-              top: window.innerHeight - 258,
-              left: left + i * dist + 16.5,
-              transform: 'translateX(-50%)',
-              fontSize: 'var(--font-size-2)',
-              color: 'var(--cyan-12)',
-              fontWeight: 'bold'
-            }}
-            onBlur={(taskId !== 0 && isTraining[index] !== 1) ? () => setNodes(i, cytoLayers, setCytoLayers, taskId, index) : () => {}}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && taskId !== 0 && isTraining[index] !== 1) {
-                event.preventDefault();
-                setNodes(i, cytoLayers, setCytoLayers, taskId, index);
-              }
-            }}
-            />
-          </form>
-          }
-        </div>
-      );
-      buttons.push(button);
-    }
-    return buttons;
-  }
-
   // ------- FORMS -------
 
   const handleSubmit = (event, setIsResponding, setApiData, taskId, index) => {
@@ -1117,8 +982,7 @@ function App() {
     .catch((error) => {
       console.log(error);
     });
-};
-
+  };
 
 
   // ------- SLIDERS -------
@@ -1204,47 +1068,15 @@ function App() {
     });
   };
 
-  const tasksByLevel = taskIds.reduce((acc, taskId) => {
-    const level = Math.floor(taskId / 10);
-    const challenge = taskId % 10;
-    if (!acc[level]) {
-      acc[level] = [];
-    }
-    acc[level].push(challenge);
-    return acc;
-  }, {});
-
-  const quizzesByLevel = quizIds.reduce((acc, quizId) => {
-    const level = Math.floor(quizId / 10);
-    const challenge = quizId % 10;
-    if (!acc[level]) {
-      acc[level] = [];
-    }
-    acc[level].push(challenge);
-    return acc;
-  }, {});
-
-  const introsByLevel = introIds.reduce((acc, introId) => {
-    const level = Math.floor(introId / 10);
-    const challenge = introId % 10;
-    if (!acc[level]) {
-      acc[level] = [];
-    }
-    acc[level].push(challenge);
-    return acc;
-  }, {});
-
-
   const [levelNames, setLevelNames] = useState(["Regression", "Classification", "Hyperparameters", "Preprocessing"]);
-  const [tutorialDescription, setTutorialDescription] = useState("This would normally be a task description, but we are in a tutorial, so instead you can read a few cool facts. Did you know that snails have teeth? Also, the shortest war in history lasted 38 minutes and bananas are technically berries.");
-
+  
   // ------- RETURN THE APP CONTENT -------
   return (
     <body class='light-theme' >
       <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
       <Router>
         <Routes>
-          <Route path="/" element={<StartPage tasksByLevel={tasksByLevel} quizzesByLevel={quizzesByLevel} introsByLevel={introsByLevel} levelNames={levelNames} taskNames={taskNames} introData={introData} quizData={quizData} />} />
+          <Route path="/" element={<StartPage levelNames={levelNames} taskNames={taskNames} introData={introData} quizData={quizData} />} />
           
           {introIds.map((introId, index) => (
             <>
@@ -1263,12 +1095,8 @@ function App() {
               maxLayers={10}
               taskId={0}
               index={null}
-              generateFloatingButtons={generateFloatingButtons}
               updateCytoLayers={null}
               loadLastCytoLayers={null}
-              FloatingButton={FloatingButton}
-              addLayer={null}
-              removeLayer={null}
               iterations={null}
               setIterations={null}
               learningRate={null}
@@ -1337,14 +1165,10 @@ function App() {
                   index={index}
                   cytoElements={cytoElements[index]}
                   cytoStyle={cytoStyle[index]}
-                  generateFloatingButtons={generateFloatingButtons}
                   cytoLayers={cytoLayers[index]}
                   setCytoLayers={setCytoLayers}
                   updateCytoLayers={updateCytoLayers}
                   loadLastCytoLayers={loadLastCytoLayers}
-                  FloatingButton={FloatingButton}
-                  addLayer={addLayer}
-                  removeLayer={removeLayer}
                   iterationsSlider={iterationsSliders[index]}
                   iterations={iterations[index]}
                   setIterations={setIterations}
@@ -1404,14 +1228,10 @@ function App() {
                   index={index}
                   cytoElements={cytoElements[index]}
                   cytoStyle={cytoStyle[index]}
-                  generateFloatingButtons={generateFloatingButtons}
                   cytoLayers={cytoLayers[index]}
                   setCytoLayers={setCytoLayers}
                   updateCytoLayers={updateCytoLayers}
                   loadLastCytoLayers={loadLastCytoLayers}
-                  FloatingButton={FloatingButton}
-                  addLayer={addLayer}
-                  removeLayer={removeLayer}
                   iterationsSlider={iterationsSliders[index]}
                   iterations={iterations[index]}
                   setIterations={setIterations}

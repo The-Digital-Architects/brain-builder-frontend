@@ -11,10 +11,8 @@ function Tutorial({ nOfInputs,
   maxLayers,
   taskId,
   index,
-  generateFloatingButtons,
   updateCytoLayers,
   loadLastCytoLayers,
-  FloatingButton,
   addLayer,
   removeLayer,
   iterations,
@@ -47,7 +45,7 @@ function Tutorial({ nOfInputs,
   setProgress,
   setErrorList,
   setWeights,
-  setBiases }) {
+  setBiases}) {
   
   const [tutorialCytoElements, setTutorialCytoElements] = useState([]);
   const [tutorialCytoStyle, setTutorialCytoStyle] = useState([]);
@@ -101,12 +99,10 @@ function Tutorial({ nOfInputs,
         maxLayers={maxLayers}
         cytoElements={tutorialCytoElements}
         cytoStyle={tutorialCytoStyle}
-        generateFloatingButtons={generateFloatingButtons}
         cytoLayers={tutorialCytoLayers}
         setCytoLayers={setTutorialCytoLayers}
         updateCytoLayers={updateCytoLayers}
         loadLastCytoLayers={loadLastCytoLayers}
-        FloatingButton={FloatingButton}
         addLayer={addLayer}
         removeLayer={removeLayer}
         iterationsSlider={tutorialIterationsSlider}
