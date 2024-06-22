@@ -1,18 +1,17 @@
 /* eslint-disable no-lone-blocks */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
-import { Theme, Flex, Box, Heading, Grid, IconButton, Button } from '@radix-ui/themes';
+import { Theme, Box, Heading, Grid, IconButton } from '@radix-ui/themes';
 import * as Slider from '@radix-ui/react-slider';
 import '@radix-ui/themes/styles.css';
 import tu_delft_pic from "./tud_black_new.png";
 import { Link, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { PlusIcon, MinusIcon, RocketIcon, HomeIcon, DrawingPinIcon, Pencil2Icon, Link2Icon, CodeIcon } from '@radix-ui/react-icons';
+import { PlusIcon, MinusIcon, HomeIcon } from '@radix-ui/react-icons';
 import { styled } from '@stitches/react';
 import axios from 'axios';
 import BuildView from './buildView';
 import BuildViewWithUpload from './customData';
 import chroma from 'chroma-js';
-import Readme from './readme';
 import Introduction from './introduction';
 import QuizApp from './quiz';
 import CustomBlock from './customBlocks';
@@ -21,6 +20,7 @@ import FeedbackApp from './feedback';
 import LinksPage from './links';
 import NotFound from './notFound';
 import NotebookView from './notebookView';
+import StartPage from './startPage';
 
 
 const colorScale = chroma.scale(['#49329b', '#5e5cc2', '#8386d8', '#afb0e1', '#dddddd', '#e3a692', '#d37254', '#b64124', '#8f0500']).domain([-1, -0.75, -0.5, -0.25, 0, 0.25, 0.52, 0.75, 1]);
@@ -34,14 +34,6 @@ const FloatingButton = styled(IconButton, {
   width: 33,
   height: 33,
   boxShadow: '0 2px 8px var(--slate-a11)'
-});
-
-const ChallengeButton = styled(Button, {
-  width: 136,   
-  height: 84,
-  fontSize: 'var(--font-size-2)',
-  fontWeight: '500',
-  boxShadow: '0 1px 3px var(--slate-a11)'
 });
 
 // ------- COOKIE FUNCTION -------
@@ -1129,20 +1121,6 @@ function App() {
 
 
 
-  // ------- SWITCHES -------
-/*
-  const [isMontyPythonLover, setIsMontyPythonLover] = useState(false);
-
-  const MontyPythonSwitch = () => {
-    return (
-      <Switch.Root className="SwitchRoot" id="monty-python-switch" checked={isMontyPythonLover} onClick={() => setIsMontyPythonLover(!isMontyPythonLover)}>
-        <Switch.Thumb className="SwitchThumb" />
-      </Switch.Root>
-    )
-  }
-*/
-
-
   // ------- SLIDERS -------
 
   // initialize an array to store the state for each slider
@@ -1266,147 +1244,7 @@ function App() {
       <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
       <Router>
         <Routes>
-          <Route path="/" element={
-          <div>
-            <Box py="2" style={{ backgroundColor: "var(--cyan-10)"}}>
-            <Grid columns='3' mt='1'>
-                <Box style={{ flex:1 }}/>
-                <Link to={window.location.origin} style={{ flex:1, textDecoration: 'none' }}>
-                <Heading as='h1' align='center' size='6' style={{ color: 'var(--gray-1)', marginTop: 2, marginBottom: 0, textDecoration: 'none', fontFamily:'monospace, Courier New, Courier' }}><b>brAIn builder</b></Heading>
-                </Link>
-                <Box align='end' mr='3' style={{ flex:1 }}>
-                    <Link to="https://www.tudelft.nl/en/" target="_blank" style={{ textDecoration: 'none'}}>
-                    <img src={tu_delft_pic} alt='Tu Delft Logo' width='auto' height='30'/>
-                    </Link>
-                </Box>
-            </Grid>
-            </Box>
-            <Flex direction='row' gap='3' style={{padding:'10px 10px', alignItems: 'flex-start' }}>
-            <Flex direction='column' gap='3' style={{ flex:1 }}>
-              <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-                <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>&gt;_Get Started</Heading>
-                <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(136px, 136px))', gap: '15px', alignItems: 'start', justifyContent: 'start'}}>
-                <Link to="tutorial" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Tutorial</label>
-                        <div><RocketIcon width="27" height="27" /></div>
-                    </Flex>
-                    </ChallengeButton>
-                </Link>
-                <Link to="custom11" style={{ color: 'inherit', textDecoration: 'none' }}>
-                  <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                      <label>The Perceptron 1</label>
-                      <div><RocketIcon width="27" height="27" /></div>
-                    </Flex>
-                  </ChallengeButton>
-                </Link>  
-                </Box>
-              </Box>
-              {Object.entries(tasksByLevel).map(([level, challenges]) => (
-                <Box key={level} style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-                  <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>&gt;_Level {level} - {levelNames[level-1]}</Heading>
-                  <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(136px, 136px))', gap: '15px', alignItems: 'start', justifyContent: 'start'}}>
-                    
-                    {introsByLevel[level] && introsByLevel[level].map((intro, index) => (
-                      <>
-                      { introData.find(entry => entry.intro_id === 10*level+intro).visibility &&
-                      <Link to={`introduction${level}${intro}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                      <ChallengeButton size="1" variant="outline">
-                      <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                          <label>Key Concepts</label>
-                          <div><DrawingPinIcon width="30" height="30" /></div>
-                      </Flex>
-                      </ChallengeButton>
-                    </Link>
-                      }
-                      </>
-                    ))}
-                    {challenges.map((challenge, index) => (
-                      <Link key={index} to={`challenge${level}${challenge}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                        <ChallengeButton size="1" variant="outline">
-                          <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                            <label>{taskNames[`${level}${challenge}`]}</label>
-                            <div><RocketIcon width="27" height="27" /></div>
-                          </Flex>
-                        </ChallengeButton>
-                      </Link>
-                    ))}
-
-                    {/*challenges.map((challenge, index) => (
-                      <Link key={index} to={`customData${level}${challenge}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                        <ChallengeButton size="1" variant="outline">
-                          <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                            <label>{taskNames[`${level}${challenge}`]}</label>
-                            <div><RocketIcon width="27" height="27" /></div>
-                          </Flex>
-                        </ChallengeButton>
-                      </Link>
-                    ))*/}
-
-                    {quizzesByLevel[level] && quizzesByLevel[level].map((quiz, index) => (
-                      <>
-                      { quizData.find(entry => entry.quiz_id === 10*level+quiz).visibility &&
-                      <Link to={`quiz${level}${quiz}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                        <ChallengeButton size="1" variant="outline">
-                          <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                            <label>Quiz</label>
-                            <div><Pencil2Icon width="27" height="27" /></div>
-                          </Flex>
-                        </ChallengeButton>
-                      </Link>
-                      }
-                      </>
-                    ))}
-                  </Box>
-                </Box>
-              ))} 
-              <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-                <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>&gt;_Wrapping Up</Heading>
-                <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(136px, 136px))', gap: '15px', alignItems: 'start', justifyContent: 'start'}}>
-                  
-                  <Link to='notebookTest' style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                      <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Notebook</label>
-                        <div><CodeIcon width="27" height="27" /></div>
-                      </Flex>
-                    </ChallengeButton>
-                  </Link>  
-                  
-                  <Link to='feedback' style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                      <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Give Feedback</label>
-                        <div><Pencil2Icon width="27" height="27" /></div>
-                      </Flex>
-                    </ChallengeButton>
-                  </Link>
-                  
-                  <Link to='links' style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                      <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Useful Links</label>
-                        <div><Link2Icon width="27" height="27" /></div>
-                      </Flex>
-                    </ChallengeButton>
-                  </Link>  
-
-                </Box>
-              </Box>
-            </Flex>
-            <Flex direction='column' gap='3' style={{ flex: 1 }}>
-              <Box style={{ flex: 1, border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 30px' }}>
-                <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7 }}>&gt;_Readme</Heading>
-                <Box>
-                    <Readme file="README.md"/>
-                </Box>
-              </Box>
-            </Flex>
-            </Flex>
-          </div>
-          } />
+          <Route path="/" element={<StartPage tasksByLevel={tasksByLevel} quizzesByLevel={quizzesByLevel} introsByLevel={introsByLevel} levelNames={levelNames} taskNames={taskNames} introData={introData} quizData={quizData} />} />
           
           {introIds.map((introId, index) => (
             <>
@@ -1691,152 +1529,3 @@ function App() {
 }
 
 export default App;
-
-/*
-<DropdownMenu.Root>
-  <DropdownMenu.Trigger>
-  <Box align='start' ml='3' >
-    <IconButton size="1" mt="2" variant="solid">
-      <DotsHorizontalIcon />
-    </IconButton>
-  </Box>
-  </DropdownMenu.Trigger>
-  <DropdownMenu.Content>
-    <DropdownMenu.Item shortcut="⌘ E">Edit</DropdownMenu.Item>
-    <DropdownMenu.Item shortcut="⌘ D">Duplicate</DropdownMenu.Item>
-    <DropdownMenu.Separator />
-    <DropdownMenu.Item shortcut="⌘ N">Archive</DropdownMenu.Item>
-
-    <DropdownMenu.Sub>
-      <DropdownMenu.SubTrigger>More</DropdownMenu.SubTrigger>
-      <DropdownMenu.SubContent>
-        <DropdownMenu.Item>Move to project…</DropdownMenu.Item>
-        <DropdownMenu.Item>Move to folder…</DropdownMenu.Item>
-
-        <DropdownMenu.Separator />
-        <DropdownMenu.Item>Advanced options…</DropdownMenu.Item>
-      </DropdownMenu.SubContent>
-    </DropdownMenu.Sub>
-
-    <DropdownMenu.Separator />
-    <DropdownMenu.Item>Share</DropdownMenu.Item>
-    <DropdownMenu.Item>Add to favorites</DropdownMenu.Item>
-    <DropdownMenu.Separator />
-    <DropdownMenu.Item shortcut="⌘ ⌫" color="red">
-      Delete
-    </DropdownMenu.Item>
-  </DropdownMenu.Content>
-</DropdownMenu.Root>
-*/
-
-
-/*
-            <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-                <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>&gt;_Get Started</Heading>
-                <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '8px', alignItems: 'start', justifyContent: 'center'}}>
-                <Link to="introduction" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Introduction</label>
-                        <div><RocketIcon width="27" height="27" /></div>
-                    </Flex>
-                    </ChallengeButton>
-                </Link>
-                <Link to="tutorial" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Tutorial</label>
-                        <div><RocketIcon width="27" height="27" /></div>
-                    </Flex>
-                    </ChallengeButton>
-                </Link>
-                </Box>
-              </Box>
-              <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-                <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>&gt;_Level 1</Heading>
-                <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '8px', alignItems: 'start', justifyContent: 'center'}}>
-                <Link to="challenge11" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Challenge 1</label>
-                        <div><RocketIcon width="27" height="27" /></div>
-                    </Flex>
-                    </ChallengeButton>
-                </Link>
-                <Link to="challenge12" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}> 
-                        <label>Challenge 2</label>
-                        <div><RocketIcon width="27" height="27" /></div>
-                    </Flex>
-                    </ChallengeButton>
-                </Link>
-                <Link to="challenge13" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Challenge 3</label>
-                        <div><RocketIcon width="27" height="27" /></div>
-                    </Flex>
-                    </ChallengeButton>
-                </Link>
-                </Box>
-              </Box>
-              <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-                <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>&gt;_Level 2</Heading>
-                <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '8px', alignItems: 'start', justifyContent: 'center'}}>
-                <Link to="challenge11" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Challenge 1</label>
-                        <div><RocketIcon width="27" height="27" /></div>
-                    </Flex>
-                    </ChallengeButton>
-                </Link>
-                <Link to="challenge12" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Challenge 2</label>
-                        <div><RocketIcon width="27" height="27" /></div>
-                    </Flex>
-                    </ChallengeButton>
-                </Link>
-                <Link to="challenge13" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Challenge 3</label>
-                        <div><RocketIcon width="27" height="27" /></div>
-                    </Flex>
-                    </ChallengeButton>
-                </Link>
-                </Box>
-              </Box>
-              <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-                <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>&gt;_Level 3</Heading>
-                <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '8px', alignItems: 'start', justifyContent: 'center'}}>
-                <Link to="challenge11" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Challenge 1</label>
-                        <div><RocketIcon width="27" height="27" /></div>
-                    </Flex>
-                    </ChallengeButton>
-                </Link>
-                <Link to="challenge12" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Challenge 2</label>
-                        <div><RocketIcon width="27" height="27" /></div>
-                    </Flex>
-                    </ChallengeButton>
-                </Link>
-                <Link to="challenge13" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <ChallengeButton size="1" variant="outline">
-                    <Flex gap="2" style={{ flexDirection: "column", alignItems: "center"}}>
-                        <label>Challenge 3</label>
-                        <div><RocketIcon width="27" height="27" /></div>
-                    </Flex>
-                    </ChallengeButton>
-                </Link>
-                </Box>
-              </Box>
-            */
