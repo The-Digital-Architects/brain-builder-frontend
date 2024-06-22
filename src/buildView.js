@@ -498,8 +498,8 @@ class Building extends React.Component {
                 </Flex>
               )}
 
-              {GenerateFloatingButtons(window.innerHeight - 223, 0.1 * (window.innerWidth * 0.97) - 16.5, 0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1), true, this.props.cytoLayers.length, this.props.cytoLayers, this.props.setCytoLayers, this.props.taskId, this.props.index, this.props.maxNodes, this.props.isTraining)}                    
-              {GenerateFloatingButtons(window.innerHeight - 178, 0.1 * (window.innerWidth * 0.97) - 16.5, 0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1), false, this.props.cytoLayers.length, this.props.cytoLayers, this.props.setCytoLayers, this.props.taskId, this.props.index, this.props.maxNodes, this.props.isTraining)}
+              <GenerateFloatingButtons top={window.innerHeight - 223} left={0.1 * (window.innerWidth * 0.97) - 16.5} dist={0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1)} isItPlus={true} nLayers={this.props.cytoLayers.length} cytoLayers={this.props.cytoLayers} setCytoLayers={this.props.setCytoLayers} taskId={this.props.taskId} index={this.props.index} maxNodes={this.props.maxNodes} isTraining={this.props.isTraining}/>                    
+              <GenerateFloatingButtons top={window.innerHeight - 178} left={0.1 * (window.innerWidth * 0.97) - 16.5} dist={0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1)} isItPlus={false} nLayers={this.props.cytoLayers.length} cytoLayers={this.props.cytoLayers} setCytoLayers={this.props.setCytoLayers} taskId={this.props.taskId} index={this.props.index} maxNodes={this.props.maxNodes} isTraining={this.props.isTraining}/>
              
               
               <LayerRemoveButton setCytoLayers={this.props.setCytoLayers} index={this.props.index} taskId={this.props.taskId} cytoLayers={this.props.cytoLayers} isTraining={this.props.isTraining}/>

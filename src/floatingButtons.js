@@ -91,7 +91,7 @@ function LayerAddButton({setCytoLayers, index, taskId, cytoLayers, nOfOutputs, m
 }
 
 
-function GenerateFloatingButtons(top, left, dist, isItPlus, nLayers, cytoLayers, setCytoLayers, taskId, index, maxNodes, isTraining) {
+function GenerateFloatingButtons({top, left, dist, isItPlus, nLayers, cytoLayers, setCytoLayers, taskId, index, maxNodes, isTraining}) {
 
   // function to add a node to a layer
   const addNode = useCallback((column, setCytoLayers, taskId, index, max_nodes) => {
@@ -144,55 +144,50 @@ function GenerateFloatingButtons(top, left, dist, isItPlus, nLayers, cytoLayers,
   }, [maxNodes]);
 
 
-    const buttons = [];
-    const icon = isItPlus ? <PlusIcon /> : <MinusIcon />;
-    for (let i = 1; i < nLayers-1; i++) {
-        const style = { top: top, left: left + i * dist };
-        const button = (
-        <div>
+  return (
+    <>
+      {Array.from({ length: nLayers - 1 }, (_, i) => (
+        <div key={i} style={{ top: top, left: left + i * dist }}>
             <FloatingButton
             variant="outline"
-            disabled={(isItPlus && cytoLayers[i] >= maxNodes[index]) | (!isItPlus && cytoLayers[i] < 2) | isTraining[index] === 1}
+            disabled={(isItPlus && cytoLayers[i] >= maxNodes[index]) || (!isItPlus && cytoLayers[i] < 2) || isTraining[index] === 1}
             onClick = {taskId !== 0 ? (isItPlus ? () => addNode(i, setCytoLayers, taskId, index, maxNodes[index]) : () => removeNode(i, setCytoLayers, taskId, index)) : () => {}}
-            style={{...style}}
-            key={i}
+            style={{ top: top, left: left + i * dist }}
             >
-            {icon}
+            {isItPlus ? <PlusIcon /> : <MinusIcon />}
             </FloatingButton>
-            {isItPlus &&
+            {isItPlus && (
             <form>
-            {console.log(taskId + "-input" + i)}
-            <input
-            id={taskId + "-input" + i}
-            type="text"
-            defaultValue={cytoLayers[i]}
-            style={{
-                border: 'none',
-                width: 0.02 * (window.innerWidth * 0.97),
-                textAlign: 'center',
-                position: 'absolute',
-                top: window.innerHeight - 258,
-                left: left + i * dist + 16.5,
-                transform: 'translateX(-50%)',
-                fontSize: 'var(--font-size-2)',
-                color: 'var(--cyan-12)',
-                fontWeight: 'bold'
-            }}
-            onBlur={(taskId !== 0 && isTraining[index] !== 1) ? () => setNodes(i, cytoLayers, setCytoLayers, taskId, index) : () => {}}
-            onKeyDown={(event) => {
-                if (event.key === "Enter" && taskId !== 0 && isTraining[index] !== 1) {
-                event.preventDefault();
-                setNodes(i, cytoLayers, setCytoLayers, taskId, index);
-                }
-            }}
-            />
+              <input
+              id={taskId + "-input" + i}
+              type="text"
+              defaultValue={cytoLayers[i]}
+              style={{
+                  border: 'none',
+                  width: 0.02 * (window.innerWidth * 0.97),
+                  textAlign: 'center',
+                  position: 'absolute',
+                  top: window.innerHeight - 258,
+                  left: left + i * dist + 16.5,
+                  transform: 'translateX(-50%)',
+                  fontSize: 'var(--font-size-2)',
+                  color: 'var(--cyan-12)',
+                  fontWeight: 'bold'
+              }}
+              onBlur={(taskId !== 0 && isTraining[index] !== 1) ? () => setNodes(i, cytoLayers, setCytoLayers, taskId, index) : () => {}}
+              onKeyDown={(event) => {
+                  if (event.key === "Enter" && taskId !== 0 && isTraining[index] !== 1) {
+                  event.preventDefault();
+                  setNodes(i, cytoLayers, setCytoLayers, taskId, index);
+                  }
+              }}
+              />
             </form>
-            }
+            )}
         </div>
-        );
-        buttons.push(button);
-    }
-return buttons;
+        ))}
+    </>
+  );
 }
 
 export { GenerateFloatingButtons, LayerRemoveButton, LayerAddButton};
