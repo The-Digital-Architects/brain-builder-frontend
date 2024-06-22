@@ -146,39 +146,39 @@ function GenerateFloatingButtons({top, left, dist, isItPlus, nLayers, cytoLayers
 
   return (
     <>
-      {Array.from({ length: nLayers - 1 }, (_, i) => (
-        <div key={i} style={{ top: top, left: left + i * dist }}>
+      {Array.from({ length: nLayers-2 }, (_, i) => (
+        <div key={i} style={{ top: top, left: left + (i+1) * dist }}>
             <FloatingButton
             variant="outline"
-            disabled={(isItPlus && cytoLayers[i] >= maxNodes[index]) || (!isItPlus && cytoLayers[i] < 2) || isTraining[index] === 1}
-            onClick = {taskId !== 0 ? (isItPlus ? () => addNode(i, setCytoLayers, taskId, index, maxNodes[index]) : () => removeNode(i, setCytoLayers, taskId, index)) : () => {}}
-            style={{ top: top, left: left + i * dist }}
+            disabled={(isItPlus && cytoLayers[i+1] >= maxNodes[index]) || (!isItPlus && cytoLayers[i+1] < 2) || isTraining[index] === 1}
+            onClick = {taskId !== 0 ? (isItPlus ? () => addNode(i+1, setCytoLayers, taskId, index, maxNodes[index]) : () => removeNode(i+1, setCytoLayers, taskId, index)) : () => {}}
+            style={{ top: top, left: left + (i+1) * dist }}
             >
             {isItPlus ? <PlusIcon /> : <MinusIcon />}
             </FloatingButton>
             {isItPlus && (
             <form>
               <input
-              id={taskId + "-input" + i}
+              id={taskId + "-input" + i+1}
               type="text"
-              defaultValue={cytoLayers[i]}
+              defaultValue={cytoLayers[i+1]}
               style={{
                   border: 'none',
                   width: 0.02 * (window.innerWidth * 0.97),
                   textAlign: 'center',
                   position: 'absolute',
                   top: window.innerHeight - 258,
-                  left: left + i * dist + 16.5,
+                  left: left + (i+1) * dist + 16.5,
                   transform: 'translateX(-50%)',
                   fontSize: 'var(--font-size-2)',
                   color: 'var(--cyan-12)',
                   fontWeight: 'bold'
               }}
-              onBlur={(taskId !== 0 && isTraining[index] !== 1) ? () => setNodes(i, cytoLayers, setCytoLayers, taskId, index) : () => {}}
+              onBlur={(taskId !== 0 && isTraining[index] !== 1) ? () => setNodes(i+1, cytoLayers, setCytoLayers, taskId, index) : () => {}}
               onKeyDown={(event) => {
                   if (event.key === "Enter" && taskId !== 0 && isTraining[index] !== 1) {
                   event.preventDefault();
-                  setNodes(i, cytoLayers, setCytoLayers, taskId, index);
+                  setNodes(i+1, cytoLayers, setCytoLayers, taskId, index);
                   }
               }}
               />
