@@ -1130,6 +1130,7 @@ function App() {
               setErrorList={null}
               setWeights={null}
               setBiases={null}
+              maxNodes={maxNodes}
             />
           }/>
 
@@ -1210,6 +1211,7 @@ function App() {
                   setBiases={setBiases}
                   pendingTime={pendingTime}
                   cancelRequest={cancelRequestRef.current}
+                  maxNodes={maxNodes}
                 />
                 </>
               }
@@ -1273,6 +1275,7 @@ function App() {
                   setBiases={setBiases}
                   pendingTime={pendingTime}
                   cancelRequest={cancelRequestRef.current}
+                  maxNodes={maxNodes}
                 />
                 </>
               }
