@@ -159,7 +159,7 @@ function GenerateFloatingButtons({top, left, dist, isItPlus, nLayers, cytoLayers
             {isItPlus && (
             <form>
               <input
-              id={taskId + "-input" + i+1}
+              id={taskId + "-input" + (i+1)}
               type="text"
               defaultValue={cytoLayers[i+1]}
               style={{
