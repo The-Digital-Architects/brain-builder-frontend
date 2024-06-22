@@ -1,10 +1,10 @@
 /* eslint-disable no-lone-blocks */
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import './App.css';
+import React, { useState, useEffect, useRef } from 'react';
+import './css/App.css';
 import { Theme, Box, Heading, Grid, IconButton } from '@radix-ui/themes';
 import * as Slider from '@radix-ui/react-slider';
 import '@radix-ui/themes/styles.css';
-import tu_delft_pic from "./tud_black_new.png";
+import tu_delft_pic from './images/tud_black_new.png';
 import { Link, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { HomeIcon } from '@radix-ui/react-icons';
 import axios from 'axios';
@@ -20,7 +20,6 @@ import LinksPage from './links';
 import NotFound from './notFound';
 import NotebookView from './notebookView';
 import StartPage from './startPage';
-import {GenerateFloatingButtons} from './floatingButtons';
 
 
 const colorScale = chroma.scale(['#49329b', '#5e5cc2', '#8386d8', '#afb0e1', '#dddddd', '#e3a692', '#d37254', '#b64124', '#8f0500']).domain([-1, -0.75, -0.5, -0.25, 0, 0.25, 0.52, 0.75, 1]);

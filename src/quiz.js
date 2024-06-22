@@ -4,10 +4,10 @@ import { CheckCircledIcon, CrossCircledIcon } from '@radix-ui/react-icons';
 import '@radix-ui/themes/styles.css';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import * as Progress from '@radix-ui/react-progress';
-import './App.css';
+import './css/App.css';
 import axios from 'axios';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import a11yDark from './a11y-dark';
+import a11yDark from './code_preview/a11y-dark';
 
 const ScoreScreen = ({ score, userAnswers, handleRetry }) => (
   <Box style={{ boxShadow: '0 2px 8px var(--slate-a11)', borderRadius: "var(--radius-3)", width:window.innerWidth/3, padding: '30px 50px', background:"solid", backgroundColor:"white" }}>

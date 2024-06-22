@@ -1,13 +1,10 @@
 import React from 'react';
-import './App.css';
+import './css/App.css';
 import { Theme, Box, Grid, Heading, IconButton, Flex, Button, Separator } from '@radix-ui/themes';
-import { ChevronDownIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
 import { HomeIcon } from '@radix-ui/react-icons';
-import tu_delft_pic from "./tud_black_new.png";
+import tu_delft_pic from "./images/tud_black_new.png";
 import axios from 'axios';
-import Slider from 'react-animated-slider';
-import horizontalCss from './horizontalSlides.css';
 
 class Introduction extends React.Component {
     constructor(props) {

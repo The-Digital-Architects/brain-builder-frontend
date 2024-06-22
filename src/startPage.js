@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from './header';
-import './App.css';
+import Header from './common/header';
+import './css/App.css';
 import { Flex, Box, Heading, Button } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import { RocketIcon, DrawingPinIcon, Pencil2Icon, Link2Icon, CodeIcon } from '@radix-ui/react-icons';

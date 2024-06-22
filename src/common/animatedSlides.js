@@ -1,7 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import Slider from 'react-animated-slider';
-import './horizontalSlides.css';
+import '../css/horizontalSlides.css';
 import { Heading } from '@radix-ui/themes';
 
 function MySlider(slideContent) {

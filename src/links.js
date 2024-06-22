@@ -1,9 +1,9 @@
 import React from 'react';
-import './App.css';
+import './css/App.css';
 import { Theme, Box, Grid, Heading, IconButton } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
 import { HomeIcon } from '@radix-ui/react-icons';
-import tu_delft_pic from "./tud_black_new.png";
+import tu_delft_pic from "./images/tud_black_new.png";
 import Readme from './readme';
 
 function LinksPage () {

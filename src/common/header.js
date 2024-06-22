@@ -1,8 +1,8 @@
 import React from 'react';
-import './App.css';
+import '../css/App.css';
 import { Box, Heading, Grid } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
-import tu_delft_pic from "./tud_black_new.png";
+import tu_delft_pic from "../images/tud_black_new.png";
 import { Link, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function Header() {

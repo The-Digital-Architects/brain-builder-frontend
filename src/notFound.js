@@ -13,7 +13,7 @@ function NotFound() {
     return (
         <Box style={{ 
             overflow: 'hidden', 
-            backgroundImage: `url(${isMontyPythonLover ? require('./monty-python.jpeg') : ''})`, // Set the image as the background
+            backgroundImage: `url(${isMontyPythonLover ? require('./images/monty-python.jpeg') : ''})`, // Set the image as the background
             backgroundSize: 'cover', // Cover the entire area
             backgroundPosition: 'top left', // Align the image to the top left
             width: '100vw',

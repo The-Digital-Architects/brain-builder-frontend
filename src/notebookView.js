@@ -1,9 +1,9 @@
 import React from 'react';
-import './App.css';
+import './css/App.css';
 import { Theme, Box, Grid, Heading, IconButton, Flex } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
 import { HomeIcon, PlayIcon } from '@radix-ui/react-icons';
-import tu_delft_pic from "./tud_black_new.png";
+import tu_delft_pic from "./images/tud_black_new.png";
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';

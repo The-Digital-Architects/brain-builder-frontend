@@ -1,19 +1,19 @@
 import React from 'react'
-import './App.css';
+import './css/App.css';
 import { Theme, Flex, Box, Tabs, Heading, Grid, IconButton, Separator, Checkbox, Text, Button } from '@radix-ui/themes';
 import * as Form from '@radix-ui/react-form';
-import horizontalCss from './horizontalSlides.css';
+import horizontalCss from './css/horizontalSlides.css';
 import '@radix-ui/themes/styles.css';
-import tu_delft_pic from "./tud_black_new.png";
-import color_scale_pic from "./color_scale_2.png";
+import tu_delft_pic from "./images/tud_black_new.png";
+import color_scale_pic from "./images/color_scale_2.png";
 import Slider from 'react-animated-slider';
 import { Link } from 'react-router-dom';
 import CytoscapeComponent from 'react-cytoscapejs';
 import { PlayIcon, ChevronLeftIcon, ChevronRightIcon, HomeIcon, CodeIcon } from '@radix-ui/react-icons';
 import Joyride from 'react-joyride';
 import { useNavigate } from 'react-router-dom';
-import CodePreview from './codePreview';
-import layersToCode from './codeExplainTools';
+import CodePreview from './code_preview/codePreview';
+import layersToCode from './code_preview/codeExplainTools';
 import {GenerateFloatingButtons, LayerRemoveButton, LayerAddButton} from './floatingButtons';
 import { 
   Chart, 

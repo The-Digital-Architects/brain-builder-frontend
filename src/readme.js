@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
-import './App.css';
+import './css/App.css';
 
 function Readme({ file }) {
   const [readme, setReadme] = useState('');

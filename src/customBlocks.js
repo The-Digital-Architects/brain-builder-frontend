@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import * as Slider from '@radix-ui/react-slider';
-import './App.css';
+import './css/App.css';
 import { Flex, Theme, Box, Grid, Heading, IconButton, Separator } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
 import { HomeIcon } from '@radix-ui/react-icons';
-import tu_delft_pic from "./tud_black_new.png";
+import tu_delft_pic from "./images/tud_black_new.png";
 
 
 class CustomBlock extends Component {
