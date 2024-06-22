@@ -7,7 +7,8 @@ function Readme({ file }) {
   const [readme, setReadme] = useState('');
 
   useEffect(() => {
-    axios.get(`https://raw.githubusercontent.com/pawel024/brain-builder/django_app/${file}`)
+    const filePath = process.env.PUBLIC_URL + `/${file}`;
+    axios.get(filePath)
       .then(response => {
         setReadme(response.data);
       });

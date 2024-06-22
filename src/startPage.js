@@ -162,7 +162,7 @@ function StartPage({ levelNames, taskNames, introData, quizData, taskIds, quizId
             <Box style={{ flex: 1, border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 30px' }}>
             <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7 }}>&gt;_Readme</Heading>
             <Box>
-                <Readme file="README.md"/>
+                <Readme file="Welcome.md"/>
             </Box>
             </Box>
         </Flex>
