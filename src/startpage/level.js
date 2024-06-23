@@ -10,19 +10,23 @@ function Level({ level, levelNames, taskNames, introData, quizData, introsByLeve
         <LevelHeading level={level} name={levelNames[level-1]} />
         {showContent && (
             <GridBox>
-                {introsByLevel[level] && introsByLevel[level].map((intro, index) => (
-                    introData.find(entry => entry.intro_id === 10*level+intro).visibility &&
-                    <ChallengeButton key={`intro${level}${intro}_button`} link={`introduction${level}${intro}`} label="Introduction" Icon={RocketIcon}/>
-                ))}
+                {introsByLevel[level] && introsByLevel[level].map((intro, index) => {
+                    const entry = introData.find(entry => entry.intro_id === 10*level+intro);
+                    return entry && entry.visibility ? (
+                        <ChallengeButton key={`intro${level}${intro}_button`} link={`introduction${level}${intro}`} label="Introduction" Icon={RocketIcon}/>
+                    ) : null;
+                })}
 
                 {challenges.map((challenge, index) => (
                     <ChallengeButton key={`challenge${level}${challenge}_button`} link={`challenge${level}${challenge}`} label={taskNames[`${level}${challenge}`]} Icon={RocketIcon} />
                 ))}
 
-                {quizzesByLevel[level] && quizzesByLevel[level].map((quiz, index) => (
-                    quizData.find(entry => entry.quiz_id === 10*level+quiz).visibility &&
-                    <ChallengeButton key={`quiz${level}${quiz}_button`} link={`quiz${level}${quiz}`} label="Quiz" Icon={Pencil2Icon} />
-                ))}
+                {quizzesByLevel[level] && quizzesByLevel[level].map((quiz, index) => {
+                    const entry = quizData.find(entry => entry.quiz_id === 10*level+quiz);
+                    return entry && entry.visibility ? (
+                        <ChallengeButton key={`quiz${level}${quiz}_button`} link={`quiz${level}${quiz}`} label="Quiz" Icon={Pencil2Icon} />
+                    ) : null;
+                })}
             </GridBox>
         )}
     </LevelBox>
