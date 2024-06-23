@@ -7,7 +7,7 @@ import { RocketIcon, DrawingPinIcon, Pencil2Icon } from '@radix-ui/react-icons';
 function Level({ level, levelNames, taskNames, introData, quizData, introsByLevel, quizzesByLevel, challenges, showContent, handleShowContent }) {
 
   return (
-    <Box key={level} style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }} onClick={showContent ? () => handleShowContent(level, false) : () => this.handleShowContent(level, true)}>
+    <Box key={level} style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }} onClick={showContent ? () => handleShowContent(level, false) : () => handleShowContent(level, true)}>
         <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>&gt;_Level {level} - {levelNames[level-1]}</Heading>
         {showContent && (
             <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(136px, 136px))', gap: '15px', alignItems: 'start', justifyContent: 'start'}}>

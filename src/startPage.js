@@ -117,6 +117,16 @@ class StartPage extends React.Component {
         });
     };
 
+    componentDidUpdate(prevProps) {
+        if (this.props.taskIds !== prevProps.taskIds || this.props.quizIds !== prevProps.quizIds || this.props.introIds !== prevProps.introIds) {
+            this.setState({
+                tasksByLevel: this.groupByIds(this.props.taskIds),
+                quizzesByLevel: this.groupByIds(this.props.quizIds),
+                introsByLevel: this.groupByIds(this.props.introIds),
+            });
+        }
+    }
+
     render () { return(
     <div>
         <Header />
