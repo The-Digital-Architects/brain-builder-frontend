@@ -20,9 +20,3 @@ This project was made using:
 - [Radix UI](https://www.radix-ui.com/)
 - [Cytoscape.js](https://js.cytoscape.org/)
 - [PQINA](https://pqina.nl)
-
-## License
-
-Licensed under the MIT License, Copyright © 2023 Paweł Rok and Laurens Ledeganck.
-
-See [LICENSE](https://github.com/Pawel024/brain-builder/blob/django_app/LICENSE) for more information.
