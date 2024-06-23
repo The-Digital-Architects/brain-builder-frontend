@@ -5,7 +5,7 @@ from rest_framework import status
 from backend.databases.models import Row, TaskDescription, Progress, Quiz, Intro
 from backend.databases.serializers import *
 from django_react_proj.process_http_request import process
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
 from django.shortcuts import render
 
@@ -41,6 +41,13 @@ def index(request, path=''):
 
     return render(request, 'index.html', {'user_id': user_id})
 
+def serve_readme(request):
+    with open('public/Welcome.md', 'r') as file:
+        return HttpResponse(file.read(), content_type='text/plain')
+    
+def serve_links(request):
+    with open('public/Links.md', 'r') as file:
+        return HttpResponse(file.read(), content_type='text/plain')
 
 @csrf_protect
 @api_view(['GET', 'POST'])

@@ -21,6 +21,8 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index),
+    path('readme', views.serve_readme),
+    path('links', views.serve_links),
     re_path('api/notebooks/(?P<notebook_path>.+)/$', views.get_notebook),
 #    path('events/', include('django_eventstream.urls')),
     re_path(r'^api/backend$', views.query_list),
