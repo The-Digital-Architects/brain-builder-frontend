@@ -73,38 +73,47 @@ function WrappingUp() {
     );
 }
 
-function StartPage({ levelNames, taskNames, introData, quizData, taskIds, quizIds, introIds }) {
-    const tasksByLevel = taskIds.reduce((acc, taskId) => {
-        const level = Math.floor(taskId / 10);
-        const challenge = taskId % 10;
-        if (!acc[level]) {
-            acc[level] = [];
-        }
-        acc[level].push(challenge);
-        return acc;
-    }, {});
+class StartPage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            tasksByLevel: this.groupByIds(props.taskIds),
+            quizzesByLevel: this.groupByIds(props.quizIds),
+            introsByLevel: this.groupByIds(props.introIds),
+            showContent: Array(props.levelNames.length).fill(false),
+            printedContent: '',
+            currentSlide: 0,
+        };
+    }
 
-    const quizzesByLevel = quizIds.reduce((acc, quizId) => {
-        const level = Math.floor(quizId / 10);
-        const challenge = quizId % 10;
-        if (!acc[level]) {
-            acc[level] = [];
-        }
-        acc[level].push(challenge);
-        return acc;
-    }, {});
+    groupByIds(ids) {
+        return ids.reduce((acc, id) => {
+            const level = Math.floor(id / 10);
+            const challenge = id % 10;
+            if (!acc[level]) {
+                acc[level] = [];
+            }
+            acc[level].push(challenge);
+            return acc;
+        }, {});
+    }
 
-    const introsByLevel = introIds.reduce((acc, introId) => {
-        const level = Math.floor(introId / 10);
-        const challenge = introId % 10;
-        if (!acc[level]) {
-            acc[level] = [];
-        }
-        acc[level].push(challenge);
-        return acc;
-    }, {});
+    goToSlide = (index) => {
+    this.setState({ currentSlide: index });
+    console.log("Going to slide " + index)
+    };
 
-  return (
+    handleShowContent = (index, expand) => {
+    if (expand) {
+        //set showContent[index] to true hence expand the content
+        this.setState({ showContent: this.state.showContent.map((value, i) => i === index ? true : false) });
+    } else {
+        //set showContent[index] to false hence collapse the content
+        this.setState({ showContent: this.state.showContent.map((value, i) => i === index ? false : value) });
+    }
+    };
+
+    render () { return(
     <div>
         <Header />
         <Flex direction='row' gap='3' style={{padding:'10px 10px', alignItems: 'flex-start' }}>
@@ -113,8 +122,10 @@ function StartPage({ levelNames, taskNames, introData, quizData, taskIds, quizId
 
                 <GettingStarted />
 
-                {Object.entries(tasksByLevel).map(([level, challenges]) => (
-                    <Level key={level} level={level} levelNames={levelNames} taskNames={taskNames} introData={introData} quizData={quizData} introsByLevel={introsByLevel} quizzesByLevel={quizzesByLevel} challenges={challenges} />
+                {Object.entries(this.state.tasksByLevel).map(([level, challenges]) => (
+                    <div onClick={this.state.showContent[level] ? () => this.handleShowContent(level, false) : () => this.handleShowContent(level, true)}>
+                        <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel } challenges={challenges} showContent={this.state.showContent[level]} />
+                    </div>
                 ))} 
 
                 <WrappingUp />
@@ -132,7 +143,7 @@ function StartPage({ levelNames, taskNames, introData, quizData, taskIds, quizId
 
         </Flex>
     </div>
-  );
+    )}
 }
 
 export default StartPage;
