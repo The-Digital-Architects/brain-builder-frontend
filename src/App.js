@@ -1067,7 +1067,7 @@ function App() {
     });
   };
 
-  const [levelNames, setLevelNames] = useState(["Regression", "Classification", "Hyperparameters", "Preprocessing"]);
+  const [levelNames, setLevelNames] = useState(["Introduction to AI", "Classification", "Neural Networks Part 1", "Neural Networks Part 2", "Dimensionality Reduction", "Ethics & Green AI", "Clustering"]);
   
   // ------- RETURN THE APP CONTENT -------
   return (
