@@ -73,6 +73,18 @@ function WrappingUp() {
     );
 }
 
+function ReadmeBox() {
+    return (
+        <Box style={{ flex: 1, border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 30px' }}>
+            <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7 }}>&gt;_Readme</Heading>
+            <Box>
+                <Readme file="readme"/>
+            </Box>
+        </Box>
+    );
+}
+
+
 class StartPage extends React.Component {
     constructor(props) {
         super(props);
@@ -81,7 +93,6 @@ class StartPage extends React.Component {
             quizzesByLevel: this.groupByIds(props.quizIds),
             introsByLevel: this.groupByIds(props.introIds),
             showContent: Array(props.levelNames.length).fill(false),
-            printedContent: '',
             currentSlide: 0,
         };
     }
@@ -98,19 +109,12 @@ class StartPage extends React.Component {
         }, {});
     }
 
-    goToSlide = (index) => {
-    this.setState({ currentSlide: index });
-    console.log("Going to slide " + index)
-    };
-
     handleShowContent = (index, expand) => {
-    if (expand) {
-        //set showContent[index] to true hence expand the content
-        this.setState({ showContent: this.state.showContent.map((value, i) => i === index ? true : false) });
-    } else {
-        //set showContent[index] to false hence collapse the content
-        this.setState({ showContent: this.state.showContent.map((value, i) => i === index ? false : value) });
-    }
+        this.setState({
+            showContent: this.state.showContent.map((value, i) => 
+                i === index ? expand : (expand ? false : value)
+            )
+        });
     };
 
     render () { return(
@@ -123,9 +127,7 @@ class StartPage extends React.Component {
                 <GettingStarted />
 
                 {Object.entries(this.state.tasksByLevel).map(([level, challenges]) => (
-                    <div onClick={this.state.showContent[level] ? () => this.handleShowContent(level, false) : () => this.handleShowContent(level, true)}>
-                        <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel } challenges={challenges} showContent={this.state.showContent[level]} />
-                    </div>
+                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level]} handleShowContent={this.handleShowContent} />
                 ))} 
 
                 <WrappingUp />
@@ -133,12 +135,7 @@ class StartPage extends React.Component {
             </Flex>
 
             <Flex direction='column' gap='3' style={{ flex: 1 }}>
-                <Box style={{ flex: 1, border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 30px' }}>
-                    <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7 }}>&gt;_Readme</Heading>
-                    <Box>
-                        <Readme file="readme"/>
-                    </Box>
-                </Box>
+                <ReadmeBox />
             </Flex>
 
         </Flex>
