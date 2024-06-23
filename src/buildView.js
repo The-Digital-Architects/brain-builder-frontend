@@ -1,20 +1,19 @@
 import React from 'react'
 import './css/App.css';
-import { Theme, Flex, Box, Tabs, Heading, Grid, IconButton, Separator, Checkbox, Text, Button } from '@radix-ui/themes';
+import { Theme, Flex, Box, Tabs, Heading, IconButton, Separator, Checkbox, Text } from '@radix-ui/themes';
 import * as Form from '@radix-ui/react-form';
 import horizontalCss from './css/horizontalSlides.css';
 import '@radix-ui/themes/styles.css';
-import tu_delft_pic from "./images/tud_black_new.png";
 import color_scale_pic from "./images/color_scale_2.png";
 import Slider from 'react-animated-slider';
-import { Link } from 'react-router-dom';
 import CytoscapeComponent from 'react-cytoscapejs';
-import { PlayIcon, ChevronLeftIcon, ChevronRightIcon, HomeIcon, CodeIcon } from '@radix-ui/react-icons';
+import { PlayIcon, ChevronLeftIcon, ChevronRightIcon, CodeIcon } from '@radix-ui/react-icons';
 import Joyride from 'react-joyride';
 import { useNavigate } from 'react-router-dom';
 import CodePreview from './code_preview/codePreview';
 import layersToCode from './code_preview/codeExplainTools';
-import {GenerateFloatingButtons, LayerRemoveButton, LayerAddButton} from './floatingButtons';
+import {GenerateFloatingButtons, LayerRemoveButton, LayerAddButton} from './common/floatingButtons';
+import Header from './common/header';
 import { 
   Chart, 
   CategoryScale, 
@@ -27,8 +26,6 @@ import {
   Legend 
 } from 'chart.js';
 import axios from 'axios';
-import { interpolate } from 'chroma-js';
-import { PrismAsync } from 'react-syntax-highlighter';
 
 function BuildingWrapper(props) {
   const navigate = useNavigate();
@@ -353,25 +350,8 @@ class Building extends React.Component {
     return(
     <div className='buildBody'>
       <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
-      <Box py="2" style={{ backgroundColor: "var(--cyan-10)"}}>
-        <Grid columns='3' mt='1'>
-          <Box ml='3' style={{display:"flex"}}>  
-            <Link to="/">
-              <IconButton aria-label="navigate to home" height='21' style={{ marginLeft: 'auto', color: 'inherit', textDecoration: 'none' }}>
-                <HomeIcon color="white" height='18' style={{ marginTop: 2 }} />
-              </IconButton>
-            </Link>
-          </Box>
-          <Link to={window.location.origin} style={{ textDecoration: 'none' }}>
-          <Heading as='h1' align='center' size='6' style={{ color: 'var(--gray-1)', marginTop: 2, marginBottom: 0, textDecoration: 'none', fontFamily:'monospace, Courier New, Courier' }}>brAIn builder</Heading>
-          </Link>
-          <Box align='end' mr='3' >
-            <Link to="https://www.tudelft.nl/en/" target="_blank" style={{ textDecoration: 'none'}}>
-              <img src={tu_delft_pic} alt='Tu Delft Logo' width='auto' height='30'/>
-            </Link>
-          </Box>
-        </Grid>
-      </Box>
+
+      <Header showHomeButton={true} />
 
       <Tabs.Root defaultValue="building" style={{ fontFamily:'monospace' }}>
 

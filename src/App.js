@@ -9,7 +9,7 @@ import { Link, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { HomeIcon } from '@radix-ui/react-icons';
 import axios from 'axios';
 import BuildView from './buildView';
-import BuildViewWithUpload from './customData';
+import BuildViewWithUpload from './unused/customData';
 import chroma from 'chroma-js';
 import Introduction from './introduction';
 import QuizApp from './quiz';
@@ -17,9 +17,9 @@ import CustomBlock from './customBlocks';
 import Tutorial from './tutorial';
 import FeedbackApp from './feedback';
 import LinksPage from './links';
-import NotFound from './notFound';
-import NotebookView from './notebookView';
-import StartPage from './startPage';
+import NotFound from './common/notFound';
+import NotebookView from './unused/notebookView';
+import StartPage from './startpage/startPage';
 
 
 const colorScale = chroma.scale(['#49329b', '#5e5cc2', '#8386d8', '#afb0e1', '#dddddd', '#e3a692', '#d37254', '#b64124', '#8f0500']).domain([-1, -0.75, -0.5, -0.25, 0, 0.25, 0.52, 0.75, 1]);

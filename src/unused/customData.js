@@ -1,10 +1,10 @@
 import React from 'react'
-import './css/App.css';
+import '../css/App.css';
 import { Theme, Flex, Box, Tabs, Heading, Grid, IconButton, Separator, Checkbox, Text, Button } from '@radix-ui/themes';
 import * as Form from '@radix-ui/react-form';
 import '@radix-ui/themes/styles.css';
-import tu_delft_pic from "./images/tud_black_new.png";
-import color_scale_pic from "./images/color_scale_2.png";
+import tu_delft_pic from "../images/tud_black_new.png";
+import color_scale_pic from "../images/color_scale_2.png";
 import { Link } from 'react-router-dom';
 import CytoscapeComponent from 'react-cytoscapejs';
 import { PlayIcon, HomeIcon } from '@radix-ui/react-icons';
@@ -29,7 +29,7 @@ import axios from 'axios';
 import { FilePond, registerPlugin } from 'react-filepond'
 // Import FilePond styles
 import 'filepond/dist/filepond.min.css'
-import { GenerateFloatingButtons, LayerRemoveButton, LayerAddButton } from './floatingButtons';
+import { GenerateFloatingButtons, LayerRemoveButton, LayerAddButton } from '../common/floatingButtons';
 
 // Register the plugin
 registerPlugin(FilePondPluginFileValidateType);
