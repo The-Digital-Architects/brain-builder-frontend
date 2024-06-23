@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
-from .models import Row, TaskDescription, Progress, Quiz, Intro, Feedback
+from .databases.models import Row, TaskDescription, Progress, Quiz, Intro, Feedback
 
 admin.site.register(Row)
 admin.site.register(TaskDescription)
