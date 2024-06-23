@@ -17,7 +17,7 @@ function ChallengeButton({ link, label, Icon}) {
   );
 }
 
-function LevelBox({ level, children, showContent, handleShowContent }) {
+function LevelBox({ level, showContent, handleShowContent, children }) {
   return (
       <Box key={level} style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }} onClick={showContent ? () => handleShowContent(level-1, false) : () => handleShowContent(level-1, true)}>
           {children}
