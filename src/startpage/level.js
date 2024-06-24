@@ -3,7 +3,7 @@ import { RocketIcon, Pencil2Icon } from '@radix-ui/react-icons';
 import { ChallengeButton, LevelBox, LevelHeading, GridBox } from './levelComponents';
 
 
-function Level({ level, levelNames, taskNames, introData, quizData, introsByLevel, quizzesByLevel, challenges, showContent, handleShowContent }) {
+function Level({ level, levelNames, taskNames, introData, quizData, introsByLevel, quizzesByLevel, challenges, showContent, handleShowContent, progressData }) {
 
   return (
     <LevelBox level={level} showContent={showContent} handleShowContent={handleShowContent}>
@@ -13,18 +13,18 @@ function Level({ level, levelNames, taskNames, introData, quizData, introsByLeve
                 {introsByLevel[level] && introsByLevel[level].map((intro, index) => {
                     const entry = introData.find(entry => entry.intro_id === 10*level+intro);
                     return entry && entry.visibility ? (
-                        <ChallengeButton key={`intro${level}${intro}_button`} link={`introduction${level}${intro}`} label="Introduction" Icon={RocketIcon}/>
+                        <ChallengeButton key={`intro${level}${intro}_button`} link={`introduction${level}${intro}`} label="Introduction" Icon={RocketIcon} active={progressData["intros"][level][index]} />
                     ) : null;
                 })}
 
                 {challenges.map((challenge, index) => (
-                    <ChallengeButton key={`challenge${level}${challenge}_button`} link={`challenge${level}${challenge}`} label={taskNames[`${level}${challenge}`]} Icon={RocketIcon} />
+                    <ChallengeButton key={`challenge${level}${challenge}_button`} link={`challenge${level}${challenge}`} label={taskNames[`${level}${challenge}`]} Icon={RocketIcon} active={progressData["challenges"][level][index]} />
                 ))}
 
                 {quizzesByLevel[level] && quizzesByLevel[level].map((quiz, index) => {
                     const entry = quizData.find(entry => entry.quiz_id === 10*level+quiz);
                     return entry && entry.visibility ? (
-                        <ChallengeButton key={`quiz${level}${quiz}_button`} link={`quiz${level}${quiz}`} label="Quiz" Icon={Pencil2Icon} />
+                        <ChallengeButton key={`quiz${level}${quiz}_button`} link={`quiz${level}${quiz}`} label="Quiz" Icon={Pencil2Icon} active={progressData["quizzes"][level][index]} />
                     ) : null;
                 })}
             </GridBox>
