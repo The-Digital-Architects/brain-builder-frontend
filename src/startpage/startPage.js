@@ -147,10 +147,15 @@ class StartPage extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.taskIds !== prevProps.taskIds || this.props.quizIds !== prevProps.quizIds || this.props.introIds !== prevProps.introIds) {
+            const newTasksByLevel = this.groupByIds(this.props.taskIds);
+            const newQuizzesByLevel = this.groupByIds(this.props.quizIds);
+            const newIntrosByLevel = this.groupByIds(this.props.introIds);
+            
             this.setState({
-                tasksByLevel: this.groupByIds(this.props.taskIds),
-                quizzesByLevel: this.groupByIds(this.props.quizIds),
-                introsByLevel: this.groupByIds(this.props.introIds),
+                tasksByLevel: newTasksByLevel,
+                quizzesByLevel: newQuizzesByLevel,
+                introsByLevel: newIntrosByLevel,
+                progressData: this.initializeProgressData(newTasksByLevel, newQuizzesByLevel, newIntrosByLevel)
             });
         }
     }
