@@ -95,7 +95,7 @@ class StartPage extends React.Component {
         ['challenges', 'quizzes'].forEach(type => {
             const byLevel = type === 'challenges' ? tasksByLevel : quizzesByLevel;
             Object.keys(byLevel).forEach(level => {
-                progressData[type][level] = byLevel[level].map(() => false);
+                progressData[type][level] = byLevel[level].map(() => true);
             });
         });
     
