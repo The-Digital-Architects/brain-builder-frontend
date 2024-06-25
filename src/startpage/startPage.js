@@ -112,8 +112,11 @@ class StartPage extends React.Component {
         if (progressData) {
             this.setState({ progressData });
         } else {
-            this.setState({ progressData: this.initializeProgressData(this.state.tasksByLevel, this.state.quizzesByLevel, this.state.introsByLevel) });
-            console.log('Progress data initialized:', this.state.progressData);
+            this.setState({
+                progressData: this.initializeProgressData(this.state.tasksByLevel, this.state.quizzesByLevel, this.state.introsByLevel)
+            }, () => {
+                console.log('Progress data initialized:', this.state.progressData);
+            });
         }
     }
 
