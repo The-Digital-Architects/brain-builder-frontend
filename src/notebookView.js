@@ -49,7 +49,8 @@ class NotebookView extends React.Component {
 
         this.ws.onmessage = (event) => {
             console.log('ws message received');  // TODO: display the code output
-            console.log(JSON.parse(event.data)); 
+            const data = JSON.parse(event.data); 
+            console.log(data); 
             // try {
             //     const data = JSON.parse(event.data);
             //     if (data.header == "output" && data.notebook_id == this.props.notebookPath) {
