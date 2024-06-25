@@ -91,29 +91,54 @@ class StartPage extends React.Component {
             intros: {}
         };
     
-        // Initialize challenges and quizzes with false
+        console.log('Input tasksByLevel:', tasksByLevel);
+        console.log('Input quizzesByLevel:', quizzesByLevel);
+        console.log('Input introsByLevel:', introsByLevel);
+    
+        // Initialize challenges and quizzes with true
         ['challenges', 'quizzes'].forEach(type => {
             const byLevel = type === 'challenges' ? tasksByLevel : quizzesByLevel;
             Object.keys(byLevel).forEach(level => {
+                if (!progressData[type][level]) {
+                    progressData[type][level] = [];
+                }
                 progressData[type][level] = byLevel[level].map(() => true);
             });
         });
     
         // Initialize intros with false, except the first intro set to true
         Object.keys(introsByLevel).forEach(level => {
+            if (!progressData.intros[level]) {
+                progressData.intros[level] = [];
+            }
             progressData.intros[level] = introsByLevel[level].map((intro, index) => index === 0);
         });
+    
+        console.log('Final progressData:', progressData);
     
         return progressData;
     }
 
     componentDidMount() {
+        const tasksByLevel = this.groupByIds(this.props.taskIds);
+        const quizzesByLevel = this.groupByIds(this.props.quizIds);
+        const introsByLevel = this.groupByIds(this.props.introIds);
         const progressData = getProgress();
+    
         if (progressData) {
-            this.setState({ progressData });
-        } else {
             this.setState({
-                progressData: this.initializeProgressData(this.state.tasksByLevel, this.state.quizzesByLevel, this.state.introsByLevel)
+                tasksByLevel,
+                quizzesByLevel,
+                introsByLevel,
+                progressData
+            });
+        } else {
+            const initialProgressData = this.initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel);
+            this.setState({
+                tasksByLevel,
+                quizzesByLevel,
+                introsByLevel,
+                progressData: initialProgressData
             }, () => {
                 console.log('Progress data initialized:', this.state.progressData);
             });
