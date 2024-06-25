@@ -18,8 +18,10 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.5.1",
     "bootstrap": "^5.3.2",
+    "buffer": "^6.0.3",
     "chart.js": "^4.4.1",
     "chroma-js": "^2.4.2",
+    "customize-cra": "^1.0.0",
     "cytoscape": "^3.26.0",
     "filepond": "^4.30.6",
     "filepond-plugin-file-validate-type": "^1.2.9",
@@ -27,6 +29,7 @@
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-animated-slider": "^2.0.0",
+    "react-app-rewired": "^2.2.1",
     "react-aria": "^3.29.0",
     "react-cytoscapejs": "^2.0.0",
     "react-dom": "^18.2.0",
@@ -42,13 +45,14 @@
     "retry": "^0.13.1",
     "stitches": "^1.2.11",
     "styled-components": "^6.1.8",
+    "verbal-id": "^0.0.4",
     "web-vitals": "^2.1.4",
     "ws": "^8.16.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
