@@ -35,6 +35,9 @@ class Transceiver(AsyncWebsocketConsumer):
             processes.cancel_vars[(self.user_id, task_id)] = True
 
         elif task_type == 'code':
+            ping = {'header': 'ping'}
+            self.send(json.dumps(ping))
+
             print(instructions['code'])
             nb_id = instructions['notebook_id']
             processes.cancel_vars[(self.user_id, nb_id)] = False

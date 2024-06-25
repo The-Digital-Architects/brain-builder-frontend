@@ -1,9 +1,9 @@
 import React from 'react';
-import '../css/App.css';
+import './css/App.css';
 import { Theme, Box, Grid, Heading, IconButton, Flex } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
 import { HomeIcon, PlayIcon } from '@radix-ui/react-icons';
-import tu_delft_pic from "../images/tud_black_new.png";
+import tu_delft_pic from "./images/tud_black_new.png";
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -48,14 +48,15 @@ class NotebookView extends React.Component {
         }
 
         this.ws.onmessage = (event) => {
-            console.log('ws message received');
-            try {
-                const data = JSON.parse(event.data);
-                if (data.header == "output" && data.notebook_id == this.props.notebookPath) {
-                    alert(data.output)
-                    // TODO: handle the message
-                }
-            } catch (error) {console.error('Error receiving message:', error);}
+            console.log('ws message received');  // TODO: display the code output
+            console.log(JSON.parse(event.data)); 
+            // try {
+            //     const data = JSON.parse(event.data);
+            //     if (data.header == "output" && data.notebook_id == this.props.notebookPath) {
+            //         alert(data.output)
+            //         // TODO: handle the message
+            //     }
+            // } catch (error) {console.error('Error receiving message:', error);}
         }
     }
 
@@ -70,7 +71,8 @@ class NotebookView extends React.Component {
             const data = {
                 header: 'code',
                 notebook_id: this.props.notebookPath,
-                code: this.state.notebook.cells[index].source.join(''),
+                // code: this.state.notebook.cells[index].source.join(''),
+                code: this.state.cellContents[index],
                 cell: index,
             };
             try {this.ws.send(JSON.stringify(data));}
@@ -85,6 +87,17 @@ class NotebookView extends React.Component {
     }
 
     render() {
+        // this.ws.onmessage = (event) => {
+        //     console.log('ws message received');
+        //     try {
+        //         const data = JSON.parse(event.data);
+        //         if (data.header == "output" && data.notebook_id == this.props.notebookPath) {
+        //             alert(data.output)
+        //             // TODO: handle the message
+        //         }
+        //     } catch (error) {console.error('Error receiving message:', error);}
+        // }
+
         return(
             <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
                 <Box py="2" style={{ backgroundColor: "var(--cyan-10)"}}>

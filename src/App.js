@@ -18,7 +18,7 @@ import Tutorial from './tutorial';
 import FeedbackApp from './feedback';
 import LinksPage from './links';
 import NotFound from './common/notFound';
-import NotebookView from './unused/notebookView';
+import NotebookView from './notebookView';
 import StartPage from './startpage/startPage';
 
 
