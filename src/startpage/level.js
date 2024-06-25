@@ -13,18 +13,18 @@ function Level({ level, levelNames, taskNames, introData, quizData, introsByLeve
                 {introsByLevel[level] && introsByLevel[level].map((intro, index) => {
                     const entry = introData.find(entry => entry.intro_id === 10*level+intro);
                     return entry && entry.visibility ? (
-                        <ChallengeButton key={`intro${level}${intro}_button`} link={`introduction${level}${intro}`} label="Introduction" Icon={RocketIcon} active={progressData["intros"][level][index]} />
+                        <ChallengeButton key={`intro${level}${intro}_button`} link={`introduction${level}${intro}`} label="Introduction" Icon={RocketIcon} active={progressData["intros"]?.[level]?.[index] !== undefined ? progressData["intros"]?.[level]?.[index] : false} />
                     ) : null;
                 })}
 
                 {challenges.map((challenge, index) => (
-                    <ChallengeButton key={`challenge${level}${challenge}_button`} link={`challenge${level}${challenge}`} label={taskNames[`${level}${challenge}`]} Icon={RocketIcon} active={progressData["challenges"][level][index]} />
+                    <ChallengeButton key={`challenge${level}${challenge}_button`} link={`challenge${level}${challenge}`} label={taskNames[`${level}${challenge}`]} Icon={RocketIcon} active={progressData["challenges"]?.[level]?.[index] !== undefined ? progressData["challenges"]?.[level]?.[index] : false} />
                 ))}
 
                 {quizzesByLevel[level] && quizzesByLevel[level].map((quiz, index) => {
                     const entry = quizData.find(entry => entry.quiz_id === 10*level+quiz);
                     return entry && entry.visibility ? (
-                        <ChallengeButton key={`quiz${level}${quiz}_button`} link={`quiz${level}${quiz}`} label="Quiz" Icon={Pencil2Icon} active={progressData["quizzes"][level][index]} />
+                        <ChallengeButton key={`quiz${level}${quiz}_button`} link={`quiz${level}${quiz}`} label="Quiz" Icon={Pencil2Icon} active={progressData["quizzes"]?.[level]?.[index] !== undefined ? progressData["quizzes"]?.[level]?.[index] : false} />
                     ) : null;
                 })}
             </GridBox>
