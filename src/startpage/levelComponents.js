@@ -45,7 +45,7 @@ function OtherButton({ link, label, active }) {
 
   const buttonStyle = {
     flex: 1,
-    fontSize: 'var(--font-size-4)',
+    fontSize: 'var(--font-size-2)',
     fontWeight: '500',
     boxShadow: '0 1px 3px var(--slate-a11)',
   };
@@ -69,7 +69,7 @@ function OtherButton({ link, label, active }) {
 
 function LevelBox({ level, showContent, handleShowContent, children }) {
   return (
-      <Box key={level} style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }} onClick={showContent ? () => handleShowContent(level-1, false) : () => handleShowContent(level-1, true)}>
+      <Box key={level} style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }} onClick={showContent ? () => handleShowContent(level, false) : () => handleShowContent(level, true)}>
           {children}
       </Box>
   );

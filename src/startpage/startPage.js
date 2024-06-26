@@ -10,17 +10,13 @@ import Level from './level';
 import * as Progress from '@radix-ui/react-progress';
 import '../css/App.css';
 
-function GettingStarted() {
+function ProgressBox({showContent, handleShowContent}) {
     const progress = 20; //sample value
 
     return (
-        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
+        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} >
             <Flex direction='column' gap='1' style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <Box style={{ display: 'flex', flexDirection: 'row', gap: '15px', width: '100%' }}>
-                    <OtherButton link="tutorial" label="Tutorial" active={true} />
-                    <OtherButton link="custom11" label="The Perceptron 1" active={true} />
-                </Box>
-                <Progress.Root className="ProgressRoot" value={progress} style={{ marginBottom:5 }}>
+                <Progress.Root className="ProgressRoot" value={progress} style={{ marginBottom:5, width: '100%' }}>
                     <Progress.Indicator
                     className="ProgressIndicator"
                     style={{ transform: `translateX(-${100 - progress}%)` }}
@@ -30,6 +26,30 @@ function GettingStarted() {
         </Box>
     );
 }
+
+function GettingStarted({showContent, handleShowContent}) {
+    const progress = 20; //sample value
+
+    return (
+        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} onClick={showContent ? () => handleShowContent(0, false) : () => handleShowContent(0, true)}>
+            <Flex direction='column' gap='1' style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <LevelHeading level={-1} name="Getting Started" />
+                {showContent && (
+                    <GridBox>
+                        <ChallengeButton link="tutorial" label="Tutorial" Icon={RocketIcon} active={true} />
+                        <ChallengeButton link="custom11" label="The Perceptron 1" Icon={RocketIcon} active={true} />
+                    </GridBox>
+                )}
+            </Flex>
+        </Box>
+    );
+}
+
+/*
+<Box style={{ display: 'flex', flexDirection: 'row', gap: '15px', width: '100%' }}>
+                    <OtherButton link="tutorial" label="Tutorial" active={true} />
+                    <OtherButton link="custom11" label="The Perceptron 1" active={true} />
+                </Box>*/
 
 /*<Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
             <LevelHeading level={-1} name="Getting Started" />
@@ -85,7 +105,7 @@ class StartPage extends React.Component {
             tasksByLevel: this.groupByIds(props.taskIds),
             quizzesByLevel: this.groupByIds(props.quizIds),
             introsByLevel: this.groupByIds(props.introIds),
-            showContent: Array(props.levelNames.length).fill(false),
+            showContent: Array(props.levelNames.length+1).fill(false),
             currentSlide: 0,
             progressData: null,
         };
@@ -195,10 +215,10 @@ class StartPage extends React.Component {
 
             <Flex direction='column' gap='3' style={{ flex:1 }}>
 
-                <GettingStarted />
+                <GettingStarted showContent={this.state.showContent[0]} handleShowContent={this.handleShowContent} />
 
                 {Object.entries(this.state.tasksByLevel).map(([level, challenges]) => (
-                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level-1]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
+                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
                 ))} 
 
                 <WrappingUp />
