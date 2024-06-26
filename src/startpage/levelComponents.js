@@ -42,8 +42,10 @@ function ChallengeButton({ link, label, Icon, active, completed }) {
 
 
 function OtherButton({ link, label, active }) {
+
   const buttonStyle = {
-    fontSize: 'var(--font-size-2)',
+    flex: 1,
+    fontSize: 'var(--font-size-4)',
     fontWeight: '500',
     boxShadow: '0 1px 3px var(--slate-a11)',
   };
