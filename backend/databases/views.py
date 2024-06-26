@@ -4,7 +4,7 @@ from rest_framework import status
 
 from backend.databases.models import Row, TaskDescription, Progress, Quiz, Intro
 from backend.databases.serializers import *
-from middleware_code.process_http_request import process
+from django_react_proj.process_http_request import process
 from django.http import JsonResponse, HttpResponse
 
 from django.shortcuts import render

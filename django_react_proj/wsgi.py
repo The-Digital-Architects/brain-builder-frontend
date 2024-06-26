@@ -1,5 +1,5 @@
 """
-WSGI config for middleware_code project.
+WSGI config for django_react_proj project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -12,7 +12,7 @@ import os
 from whitenoise import WhiteNoise
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'middleware_code.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_react_proj.settings')
 
 application = get_wsgi_application()
 application = WhiteNoise(application)
