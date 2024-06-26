@@ -15,7 +15,7 @@ Messages:
 # Idea: make the normalization an integer value so it's easier to expand
 
 from backend.processing import building 
-from django_react_proj import processes 
+from middleware_code import processes 
 from backend import data_functions as df
 import os
 import pickle
@@ -23,7 +23,7 @@ import requests
 import pandas as pd
 import json
 from base64 import b64encode, b64decode
-from django_react_proj.consumers import Transceiver
+from middleware_code.consumers import Transceiver
 
 from django.core.cache import cache
 import time

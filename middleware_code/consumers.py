@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-from django_react_proj import processes
+from middleware_code import processes
 
 class Transceiver(AsyncWebsocketConsumer):
     connections = {}
