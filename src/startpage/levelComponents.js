@@ -15,7 +15,6 @@ function ChallengeButton({ link, label, Icon, active, completed }) {
 
   if (completed) {
     buttonStyle.outline = '2px solid var(--cyan-8)';
-    buttonStyle.outlineOffset = '2px';
   }
   
   return (
