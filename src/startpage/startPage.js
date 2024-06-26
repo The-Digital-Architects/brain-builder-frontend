@@ -85,33 +85,34 @@ class StartPage extends React.Component {
     }
 
     initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel) {
+    
         const progressData = {
             challenges: {},
             quizzes: {},
             intros: {}
         };
-    
-        console.log('Input tasksByLevel:', tasksByLevel);
-        console.log('Input quizzesByLevel:', quizzesByLevel);
-        console.log('Input introsByLevel:', introsByLevel);
-    
-        // Initialize challenges and quizzes with true
+
+        // Initialize challenges and quizzes
         ['challenges', 'quizzes'].forEach(type => {
             const byLevel = type === 'challenges' ? tasksByLevel : quizzesByLevel;
             Object.keys(byLevel).forEach(level => {
                 if (!progressData[type][level]) {
                     progressData[type][level] = [];
                 }
-                progressData[type][level] = byLevel[level].map(() => true);
+                // First item 'open', rest 'disabled'
+                progressData[type][level] = byLevel[level].map((item, index) => 
+                    index === 0 ? 'completed' : 'disabled');
             });
         });
     
-        // Initialize intros with false, except the first intro set to true
+        // Initialize intros
         Object.keys(introsByLevel).forEach(level => {
             if (!progressData.intros[level]) {
                 progressData.intros[level] = [];
             }
-            progressData.intros[level] = introsByLevel[level].map((intro, index) => index === 0);
+            // First intro 'open', rest 'disabled'
+            progressData.intros[level] = introsByLevel[level].map((intro, index) => 
+                index === 0 ? 'open' : 'disabled');
         });
     
         console.log('Final progressData:', progressData);
