@@ -7,14 +7,26 @@ import { RocketIcon, Pencil2Icon, Link2Icon } from '@radix-ui/react-icons';
 import { ChallengeButton, LevelHeading, GridBox, OtherButton } from './levelComponents';
 import Readme from '../readme';
 import Level from './level';
+import * as Progress from '@radix-ui/react-progress';
+import '../css/App.css';
 
 function GettingStarted() {
+    const progress = 20; //sample value
+
     return (
         <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-            <Box style={{ display: 'flex', flexDirection: 'row', gap: '15px', width: '100%' }}>
-                <OtherButton link="tutorial" label="Tutorial" active={true} />
-                <OtherButton link="custom11" label="The Perceptron 1" active={true} />
-            </Box>
+            <Flex direction='column' gap='1' style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <Box style={{ display: 'flex', flexDirection: 'row', gap: '15px', width: '100%' }}>
+                    <OtherButton link="tutorial" label="Tutorial" active={true} />
+                    <OtherButton link="custom11" label="The Perceptron 1" active={true} />
+                </Box>
+                <Progress.Root className="ProgressRoot" value={progress} style={{ marginBottom:5 }}>
+                    <Progress.Indicator
+                    className="ProgressIndicator"
+                    style={{ transform: `translateX(-${100 - progress}%)` }}
+                    />
+                </Progress.Root>
+            </Flex>
         </Box>
     );
 }
