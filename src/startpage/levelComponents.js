@@ -3,6 +3,7 @@ import { Button } from '@radix-ui/themes';
 import { Flex, Box, Heading } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
 import { styled } from '@stitches/react';
+import { CheckCircledIcon } from '@radix-ui/react-icons';
 
 function ChallengeButton({ link, label, Icon, active, completed }) {
   const buttonStyle = {
@@ -32,9 +33,37 @@ function ChallengeButton({ link, label, Icon, active, completed }) {
             </Flex>
 
           </Button>
+
+          {/*add checkmark icon in bottom right corner if completed*/}
+          {completed && <CheckCircledIcon color='green' style={{ position: 'absolute', bottom: 0, right: 0 }} />}
       </Link>
   );
 }
+
+
+function OtherButton({ link, label, active }) {
+  const buttonStyle = {
+    fontSize: 'var(--font-size-2)',
+    fontWeight: '500',
+    boxShadow: '0 1px 3px var(--slate-a11)',
+  };
+  
+  return (
+      <Link to={link} style={{ color: 'inherit', textDecoration: 'none' }}>
+          <Button
+            size="1"
+            variant="outline"
+            disabled={!active}
+            style={buttonStyle}
+          >
+          
+          <label>{label}</label>
+
+          </Button>
+      </Link>
+  );
+}
+
 
 function LevelBox({ level, showContent, handleShowContent, children }) {
   return (
@@ -59,4 +88,4 @@ const GridBox = styled(Box, {
 });
 
 
-export { ChallengeButton, LevelBox, LevelHeading, GridBox };
+export { ChallengeButton, OtherButton, LevelBox, LevelHeading, GridBox };

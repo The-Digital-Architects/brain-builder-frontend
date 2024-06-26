@@ -4,7 +4,7 @@ import '../css/App.css';
 import { Flex, Box } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import { RocketIcon, Pencil2Icon, Link2Icon } from '@radix-ui/react-icons';
-import { ChallengeButton, LevelHeading, GridBox } from './levelComponents';
+import { ChallengeButton, LevelHeading, GridBox, OtherButton } from './levelComponents';
 import Readme from '../readme';
 import Level from './level';
 
@@ -12,13 +12,22 @@ function GettingStarted() {
     return (
         <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
             <LevelHeading level={-1} name="Getting Started" />
+
+            <Box style={{ display: 'flex', flexDirection: 'row', gap: '15px' }}>
+                <OtherButton link="tutorial" label="Tutorial" active={true} />
+                <OtherButton link="custom11" label="The Perceptron 1" active={true} />
+            </Box>
+        </Box>
+    );
+}
+
+/*<Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
+            <LevelHeading level={-1} name="Getting Started" />
             <GridBox>
                 <ChallengeButton link="tutorial" label="Tutorial" Icon={RocketIcon} active={true} />
                 <ChallengeButton link="custom11" label="The Perceptron 1" Icon={RocketIcon} active={true} />
             </GridBox>
-        </Box>
-    );
-}
+        </Box>*/
 
 function WrappingUp() {
     return (
