@@ -69,7 +69,7 @@ function OtherButton({ link, label, active }) {
 
 function LevelBox({ level, showContent, handleShowContent, children }) {
 
-  const toggleContent = () => handleShowContent(0, !showContent);
+  const toggleContent = () => handleShowContent(level, !showContent);
 
   return (
       <Box key={level} style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }} onClick={toggleContent}>
