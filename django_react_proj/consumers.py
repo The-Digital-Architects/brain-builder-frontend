@@ -36,12 +36,13 @@ class Transceiver(AsyncWebsocketConsumer):
 
         elif task_type == 'code':
             ping = {'header': 'ping'}
-            self.send(json.dumps(ping))
+            #self.send(json.dumps(ping))
+            self.send_data(ping)
 
             print(instructions['code'])
             nb_id = instructions['notebook_id']
             processes.cancel_vars[(self.user_id, nb_id)] = False
-            processes.execute_code(instructions['code'], self.user_id, nb_id, self.send)
+            processes.execute_code(instructions['code'], self.user_id, nb_id, send_fn=self.send)
         
 
     # Send an update to the frontend
