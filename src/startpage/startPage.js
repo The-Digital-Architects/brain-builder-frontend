@@ -1,24 +1,64 @@
 import React from 'react';
 import Header from '../common/header';
 import '../css/App.css';
-import { Flex, Box } from '@radix-ui/themes';
+import { Flex, Box, Heading } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import { RocketIcon, Pencil2Icon, Link2Icon } from '@radix-ui/react-icons';
-import { ChallengeButton, LevelHeading, GridBox } from './levelComponents';
+import { ChallengeButton, LevelHeading, GridBox, OtherButton } from './levelComponents';
 import Readme from '../readme';
 import Level from './level';
+import * as Progress from '@radix-ui/react-progress';
+import '../css/App.css';
 
-function GettingStarted() {
+function ProgressBox() {
+    const progress = 20; //sample value
+
     return (
-        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
+        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} >
+            <Flex direction='column' gap='1' style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>Your Progress</Heading>
+                <Progress.Root className="ProgressRoot" value={progress} style={{ marginBottom:5, width: '100%' }}>
+                    <Progress.Indicator
+                    className="ProgressIndicator"
+                    style={{ transform: `translateX(-${100 - progress}%)` }}
+                    />
+                </Progress.Root>
+            </Flex>
+        </Box>
+    );
+}
+
+function GettingStarted({showContent, handleShowContent}) {
+
+    const toggleContent = () => handleShowContent(0, !showContent);
+
+    return (
+        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}}
+            onClick={toggleContent}>
+                <LevelHeading level={-1} name="Getting Started" />
+                {showContent && (
+                    <GridBox>
+                        <ChallengeButton link="tutorial" label="Tutorial" Icon={RocketIcon} active={true} />
+                        <ChallengeButton link="custom11" label="The Perceptron 1" Icon={RocketIcon} active={true} />
+                    </GridBox>
+                )}
+        </Box>
+    );
+}
+
+/*
+<Box style={{ display: 'flex', flexDirection: 'row', gap: '15px', width: '100%' }}>
+                    <OtherButton link="tutorial" label="Tutorial" active={true} />
+                    <OtherButton link="custom11" label="The Perceptron 1" active={true} />
+                </Box>*/
+
+/*<Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
             <LevelHeading level={-1} name="Getting Started" />
             <GridBox>
                 <ChallengeButton link="tutorial" label="Tutorial" Icon={RocketIcon} active={true} />
                 <ChallengeButton link="custom11" label="The Perceptron 1" Icon={RocketIcon} active={true} />
             </GridBox>
-        </Box>
-    );
-}
+        </Box>*/
 
 function WrappingUp() {
     return (
@@ -66,7 +106,7 @@ class StartPage extends React.Component {
             tasksByLevel: this.groupByIds(props.taskIds),
             quizzesByLevel: this.groupByIds(props.quizIds),
             introsByLevel: this.groupByIds(props.introIds),
-            showContent: Array(props.levelNames.length).fill(false),
+            showContent: Array(props.levelNames.length+1).fill(false),
             currentSlide: 0,
             progressData: null,
         };
@@ -85,43 +125,78 @@ class StartPage extends React.Component {
     }
 
     initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel) {
+    
         const progressData = {
             challenges: {},
             quizzes: {},
             intros: {}
         };
-    
-        // Initialize challenges and quizzes with false
+
+        // Initialize challenges and quizzes
         ['challenges', 'quizzes'].forEach(type => {
             const byLevel = type === 'challenges' ? tasksByLevel : quizzesByLevel;
             Object.keys(byLevel).forEach(level => {
-                progressData[type][level] = byLevel[level].map(() => true);
+                if (!progressData[type][level]) {
+                    progressData[type][level] = [];
+                }
+                // First item 'open', rest 'disabled'
+                progressData[type][level] = byLevel[level].map((item, index) => 
+                    index === 0 ? 'completed' : 'disabled');
             });
         });
     
-        // Initialize intros with false, except the first intro set to true
+        // Initialize intros
         Object.keys(introsByLevel).forEach(level => {
-            progressData.intros[level] = introsByLevel[level].map((intro, index) => index === 0);
+            if (!progressData.intros[level]) {
+                progressData.intros[level] = [];
+            }
+            // First intro 'open', rest 'disabled'
+            progressData.intros[level] = introsByLevel[level].map((intro, index) => 
+                index === 0 ? 'open' : 'disabled');
         });
+    
+        console.log('Final progressData:', progressData);
     
         return progressData;
     }
 
     componentDidMount() {
+        const tasksByLevel = this.groupByIds(this.props.taskIds);
+        const quizzesByLevel = this.groupByIds(this.props.quizIds);
+        const introsByLevel = this.groupByIds(this.props.introIds);
         const progressData = getProgress();
+    
         if (progressData) {
-            this.setState({ progressData });
+            this.setState({
+                tasksByLevel,
+                quizzesByLevel,
+                introsByLevel,
+                progressData
+            });
         } else {
-            this.setState({ progressData: this.initializeProgressData(this.state.tasksByLevel, this.state.quizzesByLevel, this.state.introsByLevel) });
+            const initialProgressData = this.initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel);
+            this.setState({
+                tasksByLevel,
+                quizzesByLevel,
+                introsByLevel,
+                progressData: initialProgressData
+            }, () => {
+                console.log('Progress data initialized:', this.state.progressData);
+            });
         }
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.taskIds !== prevProps.taskIds || this.props.quizIds !== prevProps.quizIds || this.props.introIds !== prevProps.introIds) {
+            const newTasksByLevel = this.groupByIds(this.props.taskIds);
+            const newQuizzesByLevel = this.groupByIds(this.props.quizIds);
+            const newIntrosByLevel = this.groupByIds(this.props.introIds);
+            
             this.setState({
-                tasksByLevel: this.groupByIds(this.props.taskIds),
-                quizzesByLevel: this.groupByIds(this.props.quizIds),
-                introsByLevel: this.groupByIds(this.props.introIds),
+                tasksByLevel: newTasksByLevel,
+                quizzesByLevel: newQuizzesByLevel,
+                introsByLevel: newIntrosByLevel,
+                progressData: this.initializeProgressData(newTasksByLevel, newQuizzesByLevel, newIntrosByLevel)
             });
         }
     }
@@ -141,10 +216,12 @@ class StartPage extends React.Component {
 
             <Flex direction='column' gap='3' style={{ flex:1 }}>
 
-                <GettingStarted />
+                <ProgressBox />
+
+                <GettingStarted showContent={this.state.showContent[0]} handleShowContent={this.handleShowContent} />
 
                 {Object.entries(this.state.tasksByLevel).map(([level, challenges]) => (
-                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level-1]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
+                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
                 ))} 
 
                 <WrappingUp />

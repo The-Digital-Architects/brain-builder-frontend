@@ -8,7 +8,10 @@ import { Box, Heading } from '@radix-ui/themes';
  * @returns {JSX.Element} The JSX element representing the 404 page.
  */
 function NotFound() {
-    const isMontyPythonLover = true; // Replace with your condition
+    const isMontyPythonLover = true;
+    const verbalid = require('verbal-id');
+    const myId = verbalid.create();
+    console.log(myId);
 
     return (
         <Box style={{ 
@@ -23,7 +26,8 @@ function NotFound() {
         }}>
             <Box style={{ textAlign: 'center', color: 'white', backgroundColor: 'transparent' }}>
                 <Heading style={{ fontSize:90 }}>404</Heading>
-                <p style={{ fontSize:48 }}>Page not found : ( </p>
+                {/*<p style={{ fontSize:48 }}>Page not found : ( </p>*/}
+                <p style={{ fontSize:48 }}>{myId}</p>
             </Box>
         </Box>
     );

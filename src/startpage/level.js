@@ -5,6 +5,33 @@ import { ChallengeButton, LevelBox, LevelHeading, GridBox } from './levelCompone
 
 function Level({ level, levelNames, taskNames, introData, quizData, introsByLevel, quizzesByLevel, challenges, showContent, handleShowContent, progressData }) {
 
+  const levelStr = String(level);
+
+  const states_to_active = {
+    'disabled': false,
+    'open': true,
+    'completed': true,
+  } 
+  const states_to_completed = {
+    'disabled': false,
+    'open': false,
+    'completed': true,
+  }
+
+  function isActive(type, level, index) {
+    if (progressData[type] && progressData[type]?.[level] && progressData[type]?.[level]?.[index] !== undefined) {
+      return states_to_active[progressData[type][level][index]];
+    }
+    return false;
+  }
+
+  function isCompleted(type, level, index) {
+    if (progressData[type] && progressData[type]?.[level] && progressData[type]?.[level]?.[index] !== undefined) {
+      return states_to_completed[progressData[type][level][index]];
+    }
+    return false;
+  }
+
   return (
     <LevelBox level={level} showContent={showContent} handleShowContent={handleShowContent}>
         <LevelHeading level={level} name={levelNames[level-1]} />
@@ -13,18 +40,36 @@ function Level({ level, levelNames, taskNames, introData, quizData, introsByLeve
                 {introsByLevel[level] && introsByLevel[level].map((intro, index) => {
                     const entry = introData.find(entry => entry.intro_id === 10*level+intro);
                     return entry && entry.visibility ? (
-                        <ChallengeButton key={`intro${level}${intro}_button`} link={`introduction${level}${intro}`} label="Introduction" Icon={RocketIcon} active={progressData["intros"]?.[level]?.[index] !== undefined ? progressData["intros"]?.[level]?.[index] : false} />
+                        <ChallengeButton key={`intro${level}${intro}_button`}
+                            link={`introduction${level}${intro}`}
+                            label="Introduction"
+                            Icon={RocketIcon}
+                            active={isActive("intros", levelStr, index)}
+                            completed={isCompleted("intros", levelStr, index)}
+                        />
                     ) : null;
                 })}
 
                 {challenges.map((challenge, index) => (
-                    <ChallengeButton key={`challenge${level}${challenge}_button`} link={`challenge${level}${challenge}`} label={taskNames[`${level}${challenge}`]} Icon={RocketIcon} active={progressData["challenges"]?.[level]?.[index] !== undefined ? progressData["challenges"]?.[level]?.[index] : false} />
+                    <ChallengeButton key={`challenge${level}${challenge}_button`}
+                        link={`challenge${level}${challenge}`}
+                        label={taskNames[`${level}${challenge}`]}
+                        Icon={RocketIcon}
+                        active={isActive("challenges", levelStr, index)}
+                        completed={isCompleted("challenges", levelStr, index)}
+                    />
                 ))}
 
                 {quizzesByLevel[level] && quizzesByLevel[level].map((quiz, index) => {
                     const entry = quizData.find(entry => entry.quiz_id === 10*level+quiz);
                     return entry && entry.visibility ? (
-                        <ChallengeButton key={`quiz${level}${quiz}_button`} link={`quiz${level}${quiz}`} label="Quiz" Icon={Pencil2Icon} active={progressData["quizzes"]?.[level]?.[index] !== undefined ? progressData["quizzes"]?.[level]?.[index] : false} />
+                        <ChallengeButton key={`quiz${level}${quiz}_button`}
+                            link={`quiz${level}${quiz}`}
+                            label="Quiz"
+                            Icon={Pencil2Icon}
+                            active={isActive("quizzes", levelStr, index)}
+                            completed={isCompleted("quizzes", levelStr, index)}
+                        />
                     ) : null;
                 })}
             </GridBox>

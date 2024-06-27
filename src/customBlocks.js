@@ -5,6 +5,7 @@ import { Flex, Theme, Box, Grid, Heading, IconButton, Separator } from '@radix-u
 import { Link } from 'react-router-dom';
 import { HomeIcon } from '@radix-ui/react-icons';
 import tu_delft_pic from "./images/tud_black_new.png";
+import Header from './common/header';
 
 
 class CustomBlock extends Component {
@@ -101,25 +102,7 @@ class CustomBlock extends Component {
         <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
             <div className='App'>
             <Flex direction='column' gap='0'>
-            <Box py="2" style={{ backgroundColor: "var(--cyan-10)"}}>
-            <Grid columns='3' mt='1'>
-            <Box ml='3' style={{display:"flex"}}>  
-                <Link to="/">
-                    <IconButton aria-label="navigate to home" width='auto' height='21' style={{ marginLeft: 'auto', color: 'inherit', textDecoration: 'none' }}>
-                    <HomeIcon color="white" width='auto' height='18' style={{ marginTop: 2 }} />
-                    </IconButton>
-                </Link>
-                </Box>
-                <Link to={window.location.origin} style={{ textDecoration: 'none' }}>
-                <Heading as='h1' align='center' size='6' style={{ color: 'var(--gray-1)', marginTop: 2, marginBottom: 0, textDecoration: 'none', fontFamily:'monospace, Courier New, Courier' }}>brAIn builder</Heading>
-                </Link>
-                <Box align='end' mr='3' >
-                <Link to="https://www.tudelft.nl/en/" target="_blank" style={{ textDecoration: 'none'}}>
-                    <img src={tu_delft_pic} alt='Tu Delft Logo' width='auto' height='30'/>
-                </Link>
-            </Box>
-            </Grid>
-            </Box>
+            <Header showHomeButton={true} />
 
             <Box style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', fontFamily: 'monospace', height: window.innerHeight-52, width:'100vw' }}>
                 <Flex direction='row' gap="0" style={{ height: window.innerHeight-52, width:'100vw', alignItems: 'center', justifyContent: 'center' }}>
