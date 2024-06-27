@@ -19,6 +19,7 @@ if __name__ == '__main__':
 import pandas as pd
 import subprocess
 import select
+import inspect
 #from functools import partial
 import json
 from django.forms.models import model_to_dict
@@ -28,7 +29,7 @@ cancel_vars = {}  # these will be used to cancel the process from consumers.py
 
 
 # function to start subprocesses
-def start_process(user_id, task_id, process_code:str, args=None, send_fn=None):  
+async def start_process(user_id, task_id, process_code:str, args=None, send_fn=None):  
     if type(args) == dict:
         block_info = find_module(args['task_id'])
         args += block_info
@@ -57,11 +58,17 @@ def start_process(user_id, task_id, process_code:str, args=None, send_fn=None):
                 if output:
                     try:  # check if the output is in json format
                         update = json.loads(output)
-                        send_fn(output)  # send the encoded output to the frontend
+                        if inspect.iscoroutinefunction(send_fn):
+                            await send_fn(update)  # send the encoded output to the frontend
+                        else:
+                            send_fn(output)  # send the encoded output to the frontend
                     except json.JSONDecodeError:
                         output = dict(header='output', output=output)
                         output = json.dumps(output)
-                        send_fn(output)
+                        if inspect.iscoroutinefunction(send_fn):
+                            await send_fn(output)
+                        else: 
+                            send_fn(output)
                         # # or alternatively
                         # print(output)
                 else: 
@@ -103,7 +110,7 @@ def find_module(block_id:int):  # TODO: test this
 # Generated with GH Copilot
 # Warning: this is vulnerable to Code Injection Attacks!
 # Cannot handle plots yet
-def execute_code(code:str, user_id, notebook_id, send_fn):
+async def execute_code(code:str, user_id, notebook_id, send_fn):
     if is_suspicious(code):
         output = {'header': 'error', 'output': 'Code execution was blocked due to suspicious code'}
         send_fn(json.dumps(output))
@@ -135,12 +142,18 @@ def execute_code(code:str, user_id, notebook_id, send_fn):
                     try:  # check if the output is in json format
                         _ = json.loads(output)
                         print("Sending json output")
-                        send_fn(output)  # send the encoded output to the frontend
+                        if inspect.iscoroutinefunction(send_fn):
+                            await send_fn(output)  # send the encoded output to the frontend
+                        else: 
+                            send_fn(output)  # send the encoded output to the frontend
                     except json.JSONDecodeError:
                         output = dict(header='output', notebook_id=notebook_id, output=output)
                         output = json.dumps(output)
                         print("Sending print: ", output)
-                        send_fn(output)
+                        if inspect.iscoroutinefunction(send_fn):
+                            await send_fn(output)
+                        else: 
+                            send_fn(output)
                         # # or alternatively
                         # print(output)
                 else: 

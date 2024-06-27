@@ -11,6 +11,7 @@ class Transceiver(AsyncWebsocketConsumer):
         #self.task_id = self.scope['url_route']['kwargs']['taskId']
         Transceiver.connections[self.user_id] = self
         print("switchboard connected")
+        #await self.send(json.dumps({'header': 'connected'}))
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -35,11 +36,11 @@ class Transceiver(AsyncWebsocketConsumer):
             processes.cancel_vars[(self.user_id, task_id)] = True
 
         elif task_type == 'code':
-            ping = {'header': 'ping'}
+            #ping = {'header': 'ping'}
             #self.send(json.dumps(ping))
-            self.send_data(ping)
+            #await self.send_data(ping)
 
-            print(instructions['code'])
+            #print('Instructions: ', instructions['code'])
             nb_id = instructions['notebook_id']
             processes.cancel_vars[(self.user_id, nb_id)] = False
             processes.execute_code(instructions['code'], self.user_id, nb_id, send_fn=self.send)
