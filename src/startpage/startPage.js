@@ -35,11 +35,11 @@ function ProgressBox({progress}) {
 
 function GettingStarted({showContent, handleShowContent}) {
 
-    const toggleContent = () => handleShowContent(0, !showContent);
+    const toggleContent = () => handleShowContent(showContent.length - 1, !showContent);
 
     return (
-        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} >
-            {/*onClick={toggleContent}>*/}
+        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}}
+            onClick={toggleContent}>
                 <LevelHeading level={-1} name="Getting Started" />
                 {showContent && (
                     <GridBox>
@@ -236,7 +236,7 @@ class StartPage extends React.Component {
                 <GettingStarted showContent={this.state.showContent[0]} handleShowContent={this.handleShowContent} />
 
                 {Object.entries(this.state.tasksByLevel).map(([level, challenges]) => (
-                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
+                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level-1]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
                 ))} 
 
                 <WrappingUp />
