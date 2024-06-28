@@ -35,7 +35,7 @@ function ProgressBox({progress}) {
 
 function GettingStarted({showContent, handleShowContent}) {
 
-    const toggleContent = () => handleShowContent(showContent.length - 1, !showContent);
+    const toggleContent = () => handleShowContent(-1, !showContent);
 
     return (
         <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}}
@@ -217,6 +217,10 @@ class StartPage extends React.Component {
     }
 
     handleShowContent = (index, expand) => {
+        if (index < 0) {
+            index = this.state.showContent.length + index;
+        }
+
         this.setState({
             showContent: this.state.showContent.map((value, i) => 
                 i === index ? expand : (expand ? false : value)
