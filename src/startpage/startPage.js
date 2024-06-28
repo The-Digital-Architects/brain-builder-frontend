@@ -32,8 +32,8 @@ function GettingStarted({showContent, handleShowContent}) {
     const toggleContent = () => handleShowContent(0, !showContent);
 
     return (
-        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}}
-            onClick={toggleContent}>
+        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} >
+            {/*onClick={toggleContent}>*/}
                 <LevelHeading level={-1} name="Getting Started" />
                 {showContent && (
                     <GridBox>
@@ -105,7 +105,7 @@ class StartPage extends React.Component {
             tasksByLevel: this.groupByIds(props.taskIds),
             quizzesByLevel: this.groupByIds(props.quizIds),
             introsByLevel: this.groupByIds(props.introIds),
-            showContent: Array(props.levelNames.length+1).fill(false),
+            showContent: Array(props.levelNames.length).fill(false),
             progressData: null,
             percentCompleted: 0,
         };
@@ -230,7 +230,7 @@ class StartPage extends React.Component {
                 <GettingStarted showContent={this.state.showContent[0]} handleShowContent={this.handleShowContent} />
 
                 {Object.entries(this.state.tasksByLevel).map(([level, challenges]) => (
-                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
+                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level-1]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
                 ))} 
 
                 <WrappingUp />
