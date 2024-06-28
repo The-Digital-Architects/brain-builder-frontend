@@ -12,6 +12,10 @@ import '../css/App.css';
 
 function ProgressBox({progress}) {
 
+    const verbalid = require('verbal-id');
+    const myId = verbalid.create();
+    myId = myId.replace(/\s/g, '-');
+
     return (
         <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} >
             <Flex direction='column' gap='1' style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -22,6 +26,8 @@ function ProgressBox({progress}) {
                     style={{ transform: `translateX(-${100 - progress}%)` }}
                     />
                 </Progress.Root>
+                <label style={{paddingTop: 5}}>Copy this code to continue in a different browser!</label>
+                <label>{myId}</label>
             </Flex>
         </Box>
     );
