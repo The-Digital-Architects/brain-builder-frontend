@@ -26,8 +26,8 @@ function ProgressBox({progress}) {
                     style={{ transform: `translateX(-${100 - progress}%)` }}
                     />
                 </Progress.Root>
-                <label style={{paddingTop: 5}}>Copy this code to continue in a different browser!</label>
-                <label>{myId}</label>
+                <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Copy this code to continue in a different browser</label>
+                <label style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}}>{myId}</label>
             </Flex>
         </Box>
     );
@@ -111,7 +111,7 @@ class StartPage extends React.Component {
             tasksByLevel: this.groupByIds(props.taskIds),
             quizzesByLevel: this.groupByIds(props.quizIds),
             introsByLevel: this.groupByIds(props.introIds),
-            showContent: Array(props.levelNames.length).fill(false),
+            showContent: Array(props.levelNames.length+1).fill(false),
             progressData: null,
             percentCompleted: 0,
         };
@@ -236,7 +236,7 @@ class StartPage extends React.Component {
                 <GettingStarted showContent={this.state.showContent[0]} handleShowContent={this.handleShowContent} />
 
                 {Object.entries(this.state.tasksByLevel).map(([level, challenges]) => (
-                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level-1]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
+                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
                 ))} 
 
                 <WrappingUp />
