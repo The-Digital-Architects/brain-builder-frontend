@@ -10,8 +10,7 @@ import Level from './level';
 import * as Progress from '@radix-ui/react-progress';
 import '../css/App.css';
 
-function ProgressBox() {
-    const progress = 20; //sample value
+function ProgressBox({progress}) {
 
     return (
         <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} >
@@ -107,8 +106,8 @@ class StartPage extends React.Component {
             quizzesByLevel: this.groupByIds(props.quizIds),
             introsByLevel: this.groupByIds(props.introIds),
             showContent: Array(props.levelNames.length+1).fill(false),
-            currentSlide: 0,
             progressData: null,
+            percentCompleted: 0,
         };
     }
 
@@ -160,45 +159,56 @@ class StartPage extends React.Component {
         return progressData;
     }
 
-    componentDidMount() {
-        const tasksByLevel = this.groupByIds(this.props.taskIds);
-        const quizzesByLevel = this.groupByIds(this.props.quizIds);
-        const introsByLevel = this.groupByIds(this.props.introIds);
-        const progressData = getProgress();
-    
-        if (progressData) {
-            this.setState({
-                tasksByLevel,
-                quizzesByLevel,
-                introsByLevel,
-                progressData
-            });
-        } else {
-            const initialProgressData = this.initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel);
-            this.setState({
-                tasksByLevel,
-                quizzesByLevel,
-                introsByLevel,
-                progressData: initialProgressData
-            }, () => {
-                console.log('Progress data initialized:', this.state.progressData);
-            });
+    // method to count how many % out of progressData entries are 'completed'
+    countPercentCompleted(progressData) {
+        let countCompleted = 0;
+        let countTotal = 0;
+        for (const type in progressData) {
+            for (const level in progressData[type]) {
+                countCompleted += progressData[type][level].filter(item => item === 'completed').length;
+                countTotal += progressData[type][level].length;
+            }
         }
+        return countTotal > 0 ? Math.round(countCompleted / countTotal * 100) : 0;
+    }
+
+    componentDidMount() {
+        let tasksByLevel = this.groupByIds(this.props.taskIds);
+        let quizzesByLevel = this.groupByIds(this.props.quizIds);
+        let introsByLevel = this.groupByIds(this.props.introIds);
+        let progressData = getProgress();
+    
+        if (!progressData) {
+            progressData = this.initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel);
+        }
+
+        this.setState({
+            tasksByLevel,
+            quizzesByLevel,
+            introsByLevel,
+            progressData,
+            percentCompleted: this.countPercentCompleted(progressData)
+        }, () => {
+            console.log('Progress data initialized:', this.state.progressData);
+        });
+
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.taskIds !== prevProps.taskIds || this.props.quizIds !== prevProps.quizIds || this.props.introIds !== prevProps.introIds) {
-            const newTasksByLevel = this.groupByIds(this.props.taskIds);
-            const newQuizzesByLevel = this.groupByIds(this.props.quizIds);
-            const newIntrosByLevel = this.groupByIds(this.props.introIds);
+            const tasksByLevel = this.groupByIds(this.props.taskIds);
+            const quizzesByLevel = this.groupByIds(this.props.quizIds);
+            const introsByLevel = this.groupByIds(this.props.introIds);
             
             this.setState({
-                tasksByLevel: newTasksByLevel,
-                quizzesByLevel: newQuizzesByLevel,
-                introsByLevel: newIntrosByLevel,
-                progressData: this.initializeProgressData(newTasksByLevel, newQuizzesByLevel, newIntrosByLevel)
+                tasksByLevel,
+                quizzesByLevel,
+                introsByLevel,
+                progressData: this.initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel)
             });
         }
+
+        this.setState({ percentCompleted: this.countPercentCompleted(this.state.progressData) });
     }
 
     handleShowContent = (index, expand) => {
@@ -216,7 +226,7 @@ class StartPage extends React.Component {
 
             <Flex direction='column' gap='3' style={{ flex:1 }}>
 
-                <ProgressBox />
+                <ProgressBox progress={this.state.percentCompleted} />
 
                 <GettingStarted showContent={this.state.showContent[0]} handleShowContent={this.handleShowContent} />
 

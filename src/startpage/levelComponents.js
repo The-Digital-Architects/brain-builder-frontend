@@ -71,8 +71,20 @@ function LevelBox({ level, showContent, handleShowContent, children }) {
 
   const toggleContent = () => handleShowContent(level, !showContent);
 
+  const boxStyle = {
+    border: "2px solid",
+    borderColor: "var(--slate-8)",
+    borderRadius: "var(--radius-3)",
+    padding: '10px 24px',
+    cursor: 'pointer', // Change cursor to pointer
+    transition: 'background-color 0.3s', // Smooth transition for background color
+    ':hover': {
+      backgroundColor: "var(--slate-2)", // Change background color on hover
+    }
+  };
+
   return (
-      <Box key={level} style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }} onClick={toggleContent}>
+      <Box style={boxStyle} onClick={toggleContent} aria-expanded={showContent}>
           {children}
       </Box>
   );
