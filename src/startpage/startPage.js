@@ -204,11 +204,10 @@ class StartPage extends React.Component {
                 tasksByLevel,
                 quizzesByLevel,
                 introsByLevel,
-                progressData: this.initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel)
+                progressData: this.initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel),
+                percentCompleted: this.countPercentCompleted(this.state.progressData),
             });
         }
-
-        this.setState({ percentCompleted: this.countPercentCompleted(this.state.progressData) });
     }
 
     handleShowContent = (index, expand) => {
