@@ -13,7 +13,7 @@ import '../css/App.css';
 function ProgressBox({progress}) {
 
     const verbalid = require('verbal-id');
-    const myId = verbalid.create();
+    let myId = verbalid.create();
     myId = myId.replace(/\s/g, '-');
 
     return (
