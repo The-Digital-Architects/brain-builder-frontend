@@ -1,93 +1,10 @@
 import React from 'react';
 import Header from '../common/header';
 import '../css/App.css';
-import { Flex, Box, Heading } from '@radix-ui/themes';
+import { Flex } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
-import { RocketIcon, Pencil2Icon, Link2Icon } from '@radix-ui/react-icons';
-import { ChallengeButton, LevelHeading, GridBox, OtherButton } from './levelComponents';
-import Readme from '../readme';
 import Level from './level';
-import * as Progress from '@radix-ui/react-progress';
-import '../css/App.css';
-
-function ProgressBox({progress}) {
-
-    const verbalid = require('verbal-id');
-    let myId = verbalid.create();
-    myId = myId.replace(/\s/g, '-');
-
-    return (
-        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} >
-            <Flex direction='column' gap='1' style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>Your Progress</Heading>
-                <Progress.Root className="ProgressRoot" value={progress} style={{ marginBottom:5, width: '100%' }}>
-                    <Progress.Indicator
-                    className="ProgressIndicator"
-                    style={{ transform: `translateX(-${100 - progress}%)` }}
-                    />
-                </Progress.Root>
-                <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Copy this code to continue in a different browser</label>
-                <label style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}}>{myId}</label>
-            </Flex>
-        </Box>
-    );
-}
-
-function GettingStarted({showContent, handleShowContent}) {
-
-    const toggleContent = () => handleShowContent(-1, !showContent);
-
-    return (
-        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}}
-            onClick={toggleContent}>
-                <LevelHeading level={-1} name="Getting Started" />
-                {showContent && (
-                    <GridBox>
-                        <ChallengeButton link="tutorial" label="Tutorial" Icon={RocketIcon} active={true} />
-                        <ChallengeButton link="custom11" label="The Perceptron 1" Icon={RocketIcon} active={true} />
-                    </GridBox>
-                )}
-        </Box>
-    );
-}
-
-/*
-<Box style={{ display: 'flex', flexDirection: 'row', gap: '15px', width: '100%' }}>
-                    <OtherButton link="tutorial" label="Tutorial" active={true} />
-                    <OtherButton link="custom11" label="The Perceptron 1" active={true} />
-                </Box>*/
-
-/*<Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-            <LevelHeading level={-1} name="Getting Started" />
-            <GridBox>
-                <ChallengeButton link="tutorial" label="Tutorial" Icon={RocketIcon} active={true} />
-                <ChallengeButton link="custom11" label="The Perceptron 1" Icon={RocketIcon} active={true} />
-            </GridBox>
-        </Box>*/
-
-function WrappingUp() {
-    return (
-        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-            <LevelHeading level={-1} name="Wrapping Up" />
-            <GridBox>
-                <ChallengeButton link="notebookTest" label="Notebook Test" Icon={RocketIcon} active={true} />
-                <ChallengeButton link="feedback" label="Give Feedback" Icon={Pencil2Icon} active={true} />
-                <ChallengeButton link="links" label="Useful Links" Icon={Link2Icon} active={true} />
-            </GridBox>
-        </Box>
-    );
-}
-
-function ReadmeBox() {
-    return (
-        <Box style={{ flex: 1, border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 30px' }}>
-            <LevelHeading level={-1} name="Readme" />
-            <Box>
-                <Readme file="readme"/>
-            </Box>
-        </Box>
-    );
-}
+import { ProgressBox, GettingStarted, WrappingUp, ReadmeBox } from './levelComponents';
 
 // Function to store progressData in a cookie
 function storeProgress(progressData) {
