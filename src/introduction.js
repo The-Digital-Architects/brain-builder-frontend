@@ -26,9 +26,11 @@ class Introduction extends React.Component {
       if (expand) {
         //set showContent[index] to true hence expand the content
         this.setState({ showContent: this.state.showContent.map((value, i) => i === index ? true : false) });
+        console.log("Expanding content " + index)
       } else {
         //set showContent[index] to false hence collapse the content
         this.setState({ showContent: this.state.showContent.map((value, i) => i === index ? false : value) });
+        console.log("Collapsing content " + index)
       }
     };
 
