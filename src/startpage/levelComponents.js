@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@radix-ui/themes';
-import { Flex, Box, Heading } from '@radix-ui/themes';
+import { Flex, Box, Heading, IconButton } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
 import { styled } from '@stitches/react';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
-import { RocketIcon, Pencil2Icon, Link2Icon } from '@radix-ui/react-icons';
+import { RocketIcon, Pencil2Icon, Link2Icon, CopyIcon } from '@radix-ui/react-icons';
 import Readme from '../readme';
 import * as Progress from '@radix-ui/react-progress';
 import '@radix-ui/themes/styles.css';
 import '../css/App.css';
+const verbalid = require('verbal-id');
 
 function ChallengeButton({ link, label, Icon, active, completed }) {
   const buttonStyle = {
@@ -111,9 +112,26 @@ const GridBox = styled(Box, {
 
 function ProgressBox({progress}) {
 
-  const verbalid = require('verbal-id');
-  let myId = verbalid.create();
-  myId = myId.replace(/\s/g, '-');
+  let myId = verbalid.create().replace(/\s/g, '-');
+  const [copyFeedback, setCopyFeedback] = useState(myId);
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(myId)
+      .then(() => {
+        setCopyFeedback('Copied!'); // Update feedback message
+        setCopySuccess(true); // Indicate copy success
+        setTimeout(() => {
+          setCopyFeedback({myId}); // Revert after 2 seconds
+          setCopySuccess(false); // Reset copy success
+        }, 2000);
+      })
+      .catch(err => {
+        console.error('Could not copy text: ', err);
+        setCopyFeedback('Error copying text'); // Provide feedback for error
+        setTimeout(() => setCopyFeedback({myId}), 2000); // Revert after 2 seconds
+      });
+  };
 
   return (
       <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} >
@@ -126,7 +144,9 @@ function ProgressBox({progress}) {
                   />
               </Progress.Root>
               <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Copy this code to continue in a different browser</label>
-              <label style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}}>{myId}</label>
+              {/*when you click the text, it should copy the code to the clipboard*/}
+              <IconButton variant='outline' size={1} style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}} onClick={handleCopy}>{copyFeedback}<CopyIcon/></IconButton>
+              {copySuccess && <span style={{fontSize: 'var(--font-size-1)'}} aria-live="polite">Code copied to clipboard</span>}
           </Flex>
       </Box>
   );
