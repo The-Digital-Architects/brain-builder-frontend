@@ -112,7 +112,7 @@ const GridBox = styled(Box, {
 
 function ProgressBox({progress}) {
 
-  let myId = verbalid.create().replace(/\s/g, '-');
+  const [myId, setMyId] = useState(verbalid.create().replace(/\s/g, '-'));
   const [copyFeedback, setCopyFeedback] = useState(myId);
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -136,7 +136,8 @@ function ProgressBox({progress}) {
   return (
       <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} >
           <Flex direction='column' gap='1' style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>Your Progress</Heading>
+              {/*<Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>Your Progress</Heading>*/}
+              <label style={{marginBottom: 10, fontSize: 'var(--font-size-2)', fontWeight: 'bold'}}>Your Progress</label>
               <Progress.Root className="ProgressRoot" value={progress} style={{ marginBottom:5, width: '100%' }}>
                   <Progress.Indicator
                   className="ProgressIndicator"
@@ -144,8 +145,10 @@ function ProgressBox({progress}) {
                   />
               </Progress.Root>
               <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Copy this code to continue in a different browser</label>
-              {/*when you click the text, it should copy the code to the clipboard*/}
-              <IconButton variant='soft' radius='full' size={2} style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}} onClick={handleCopy} >{copyFeedback}{copyFeedback === myId && <> <CopyIcon/></>}</IconButton>
+              {/*when you click the text, it will copy the code to the clipboard*/}
+              <IconButton variant='soft' radius='full' size={2} style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}} onClick={handleCopy}>
+                {copyFeedback}{copyFeedback === myId && <><span> </span><CopyIcon/></>}
+              </IconButton>
           </Flex>
       </Box>
   );
