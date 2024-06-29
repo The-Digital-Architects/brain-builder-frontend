@@ -122,14 +122,14 @@ function ProgressBox({progress}) {
         setCopyFeedback('Copied!'); // Update feedback message
         setCopySuccess(true); // Indicate copy success
         setTimeout(() => {
-          setCopyFeedback({myId}); // Revert after 2 seconds
+          setCopyFeedback(myId); // Revert
           setCopySuccess(false); // Reset copy success
-        }, 2000);
+        }, 1000);
       })
       .catch(err => {
         console.error('Could not copy text: ', err);
         setCopyFeedback('Error copying text'); // Provide feedback for error
-        setTimeout(() => setCopyFeedback({myId}), 2000); // Revert after 2 seconds
+        setTimeout(() => setCopyFeedback(myId), 1000); // Revert
       });
   };
 
@@ -145,8 +145,7 @@ function ProgressBox({progress}) {
               </Progress.Root>
               <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Copy this code to continue in a different browser</label>
               {/*when you click the text, it should copy the code to the clipboard*/}
-              <IconButton variant='outline' size={1} style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}} onClick={handleCopy}>{copyFeedback}<CopyIcon/></IconButton>
-              {copySuccess && <span style={{fontSize: 'var(--font-size-1)'}} aria-live="polite">Code copied to clipboard</span>}
+              <IconButton variant='soft' radius='full' size={2} style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}} onClick={handleCopy}>{copyFeedback}<CopyIcon/></IconButton>
           </Flex>
       </Box>
   );
