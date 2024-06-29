@@ -145,7 +145,7 @@ function ProgressBox({progress}) {
               </Progress.Root>
               <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Copy this code to continue in a different browser</label>
               {/*when you click the text, it should copy the code to the clipboard*/}
-              <IconButton variant='soft' radius='full' size={2} style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}} onClick={handleCopy}>{copyFeedback}<CopyIcon/></IconButton>
+              <IconButton variant='soft' radius='full' size={2} style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}} onClick={handleCopy} >{copyFeedback}{copyFeedback === myId && <> <CopyIcon/></>}</IconButton>
           </Flex>
       </Box>
   );

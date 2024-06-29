@@ -7,7 +7,7 @@ import tu_delft_pic from "./images/tud_black_new.png";
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import a11yDark from './code_preview/a11y-dark';
 
 class NotebookView extends React.Component {
     constructor(props) {
@@ -221,7 +221,7 @@ class CodeCell extends React.Component {
                 {this.state.isEditing ? (
                 <textarea value={this.state.newContent} onChange={this.handleChange} onBlur={this.handleBlur} onKeyDown={this.handleKeyDown} />
                 ) : (
-                <SyntaxHighlighter language="python" style={solarizedlight} >
+                <SyntaxHighlighter language="python" style={a11yDark} >
                     {this.props.content}
                 </SyntaxHighlighter>
                 )}
@@ -238,7 +238,7 @@ class PlayButton extends React.Component {
 
     render() {
         return (
-            <button onClick={this.props.onClick}><PlayIcon width="10" height="10" /></button>
+            <IconButton onClick={this.props.onClick} style={{ flex: 1, backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)' }}><PlayIcon /></IconButton>
         );
     }
 }
