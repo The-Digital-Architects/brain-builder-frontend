@@ -183,7 +183,7 @@ def convert_input(nodes, n_inputs, n_outputs, typ, af=True):
     return structure
 
 
-def main(args):  # TODO
+def not_main(args):  # TODO
     """
     Args must be a json-encoded dictionary containing the following keys: 
     'user_id', 'type', 'dataset', 'n_inputs', 'n_outputs', 'nodes', 'epochs', 'learning_rate', 'normalization', 'activations_on'
@@ -223,8 +223,5 @@ def send_update(progress, error_list=None, weights=None, biases=None, plot=None,
     print(json.dumps(d))  # print to the console, this will be captured by the parent process and sent to the frontend
 
 
-if __name__ == '__main__':
-    if len(sys.argv) == 2:
-        main(sys.argv[1])
-    else: 
-        raise ValueError("building.py needs json input to work")
+def main(send_fn=None):
+    print("Main works!")

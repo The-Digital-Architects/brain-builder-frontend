@@ -29,53 +29,37 @@ cancel_vars = {}  # these will be used to cancel the process from consumers.py
 
 
 # function to start subprocesses
-async def start_process(user_id, task_id, process_code:str, args=None, send_fn=None):  
-    if type(args) == dict:
-        block_info = find_module(args['task_id'])
-        args += block_info
-        args = json.dumps(args)  # convert the dictionary to a json string
-    read_pipe, write_pipe = os.pipe()  # create a pipe to the subprocess
+def run(file_name, function_name, send_fn, args=None):  
+    magic_box = {'required_parameters': None, 'inspect': inspect, 'fn': None, 'send_fn': send_fn}
+    #fl, fn = find_file(process_code)  # find the file and function corresponding to the process code
+    
+    # import the function from the file
+    file_name = 'backend.processing.' + file_name
+    try:
+        exec(f'from {file_name} import {function_name}', magic_box)
+    except Exception as e:
+        print(e)  # TODO: add error handling
 
-    # create a subprocess and log its output and errors to a custom pipe
-    fname = 'backend/processing/' + find_file(process_code)
-    fname = fname.split() + [args]
-    #process = subprocess.Popen(['python'] + fname, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    process = subprocess.Popen(['python'] + fname, stdout=write_pipe, stderr=write_pipe)
-    # IMPORTANT: by convention, assume fname can also contain two arguments: the first a specific function to be executed in the file and the second a dictionary containing the arguments for that function
-    os.close(write_pipe)
+    # get the required parameters of the function
+    exec(f'required_parameters = list(inspect.signature({function_name}).parameters.keys())', magic_box)
+    required_parameters = magic_box['required_parameters']
 
-    if send_fn is not None:
-        # While the process is running, read updates from the pipe and send them over the WebSocket
-        while process.poll() is None:
-            # Check if the process was cancelled
-            if cancel_vars.get((str(user_id), str(task_id))):
-                process.terminate()
-                print("Process cancelled")
-                break
+    # unpack the inputs
+    execution_string = function_name + '('
+    for p in required_parameters:
+        if p != 'send_fn':
+            execution_string += p + '='
+            try:
+                execution_string += f'{args[p]}'
+            except Exception as e:
+                print(e)  # TODO: add error handling
+            execution_string += ','
+    execution_string += f'send_fn=send_fn'
+    execution_string += ')'
 
-            while select.select([read_pipe], [], [], 0.1)[0]:
-                output = os.read(read_pipe, 1024).decode()
-                if output:
-                    try:  # check if the output is in json format
-                        update = json.loads(output)
-                        if inspect.iscoroutinefunction(send_fn):
-                            await send_fn(update)  # send the encoded output to the frontend
-                        else:
-                            send_fn(output)  # send the encoded output to the frontend
-                    except json.JSONDecodeError:
-                        output = dict(header='output', output=output)
-                        output = json.dumps(output)
-                        if inspect.iscoroutinefunction(send_fn):
-                            await send_fn(output)
-                        else: 
-                            send_fn(output)
-                        # # or alternatively
-                        # print(output)
-                else: 
-                    break 
-        
-    os.close(read_pipe)
-
+    # execute the function
+    exec(execution_string, magic_box)
+    
 
 
 # when the file is imported, read out the csv containing the process codes and store in a dataframe
@@ -86,14 +70,15 @@ codes = pd.read_csv(f, sep=';')
 # function to process process codes
 def find_file(process_code:str):
     if process_code in codes['code'].values:
-        return codes.loc[codes['code'] == process_code, 'file'].values[0]
+        return (codes.loc[codes['code'] == process_code, 'file'].values[0], 
+                codes.loc[codes['code'] == process_code, 'function'].values[0])
 
     else: 
         raise ValueError("Invalid process code")
         # TODO: check error handling
 
 
-
+'''
 def find_module(block_id:int):  # TODO: test this
     from backend.databases.models import TaskDescription
     try:
@@ -106,6 +91,8 @@ def find_module(block_id:int):  # TODO: test this
     # if block_id in blocks['task_id'].values:
     #     # convert the block's row into a dictionary
     #     return blocks.loc[blocks['task_id'] == block_id].to_dict(orient='records')[0]
+'''
+
 
 # Generated with GH Copilot
 # Warning: this is vulnerable to Code Injection Attacks!

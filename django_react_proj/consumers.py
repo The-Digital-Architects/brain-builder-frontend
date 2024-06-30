@@ -28,19 +28,13 @@ class Transceiver(AsyncWebsocketConsumer):
             # start the process
             task_id = instructions['task_id']
             processes.cancel_vars[(self.user_id, task_id)] = False
-            pc = instructions['process_code']
-            await processes.start_process(self.user_id, task_id, pc, instructions, self.send)
+            processes.run(file_name=instructions['file_name'], function_name=instructions['function_name'], args=instructions, send_fn=self.send)
         
         elif task_type == 'cancel':
             task_id = instructions['task_id']  # watch out: this should be the notebook_id for notebooks!
             processes.cancel_vars[(self.user_id, task_id)] = True
 
         elif task_type == 'code':
-            #ping = {'header': 'ping'}
-            #self.send(json.dumps(ping))
-            #await self.send_data(ping)
-
-            #print('Instructions: ', instructions['code'])
             nb_id = instructions['notebook_id']
             processes.cancel_vars[(self.user_id, nb_id)] = False
             await processes.execute_code(instructions['code'], self.user_id, nb_id, send_fn=self.send)
@@ -51,6 +45,10 @@ class Transceiver(AsyncWebsocketConsumer):
         task_type = data['header']
         print("sending data for task ", task_type)
         await self.send(json.dumps(data))
+
+        #ping = {'header': 'ping'}
+        #self.send(json.dumps(ping))
+        #await self.send_data(ping)
 
 
     # # function to handle subprocess output
@@ -65,19 +63,7 @@ class Transceiver(AsyncWebsocketConsumer):
 
 
 # class Plotter(AsyncWebsocketConsumer):
-    # async def connect(self):
-    #     self.user_id = self.scope['url_route']['kwargs']['userId']
-    #     self.custom_id = self.scope['url_route']['kwargs']['customId']
-    #     if self.custom_id == '11':
-    #         self.x, self.y = df.create_plot11()
-    #     await self.accept()
-    #     print("plotter connected")
-
-    # async def disconnect(self, close_code):
-    #     print("plotter disconnected")
-    
-    # async def receive(self, text_data):
-    #     data = json.loads(text_data)
+    #     ...
     #     if self.custom_id == '11':
     #         print(data['title'], " received")
     #         plot, error = df.create_plot11(self.x, self.y, data['a'], data['b'])
