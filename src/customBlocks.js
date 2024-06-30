@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import * as Slider from '@radix-ui/react-slider';
 import './css/App.css';
-import { Flex, Theme, Box, Grid, Heading, IconButton, Separator } from '@radix-ui/themes';
-import { Link } from 'react-router-dom';
-import { HomeIcon } from '@radix-ui/react-icons';
-import tu_delft_pic from "./images/tud_black_new.png";
+import { Flex, Theme, Box, Heading, Separator } from '@radix-ui/themes';
 import Header from './common/header';
 
 
@@ -113,19 +110,6 @@ class CustomBlock extends Component {
                             <p>{text}</p>
                             </div>
                         ))}
-                        {/*
-                        <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7 }}>&gt;_Background </Heading>
-                        <p>The nodes of a neural network are based on the perceptron: a simple model which takes a number of inputs x1, x2, etc., multiplies them with a weight w1, w2, etc. and then adds a bias w0. 
-                            The result of this function is then put into an activation function: don’t worry too much about that for now, just know that it scales the result to a value between 0 and 1. 
-                            This scaling helps the network learn more quickly, as we will show in Level 4. 
-                            You might notice that a neuron is just a mathematical function then, and that is indeed correct: in fact, a whole neural network is just a big, complex function with many weights and biases. </p>
-                        <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7 }}>&gt;_Your Task </Heading>
-                        <p>Your task here is quite simple: try to set the parameters of a neuron in such a way that the function maps best matches the data. 
-                            This is actually just a linear regression, since the output of a single neuron will always be linear. 
-                            Therefore, we are simply fitting a line to the data. We will ignore the activation function for now, so you better understand how it works. </p>
-                        <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7 }}>&gt;_The Data </Heading>
-                        <p>The data is generated along a line, with some random noise added.</p>
-                        */}
                     </Box>
                     <Separator orientation='vertical' style = {{ height: window.innerHeight-110 }}/>
                     {this.props.customId === 11 && (this.animation11())}

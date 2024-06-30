@@ -25,7 +25,8 @@ function ChallengeButton({ link, label, Icon, active, completed }) {
   }
   
   return (
-      <Link to={link} style={{ color: 'inherit', textDecoration: 'none' }}>
+    <Link to={link} style={{ color: 'inherit', textDecoration: 'none' }}>
+      <div style={{ position: 'relative', width: '136px', height: '84px' }}>
           <Button
             size="1"
             variant="outline"
@@ -40,9 +41,10 @@ function ChallengeButton({ link, label, Icon, active, completed }) {
 
           </Button>
 
-          {/*add checkmark icon in bottom right corner if completed*/}
-          {completed && <CheckCircledIcon color='green' style={{ position: 'absolute', bottom: 0, right: 0 }} />}
-      </Link>
+          {/* Checkmark icon in bottom right corner of the button */}
+          {completed && <CheckCircledIcon color='green' style={{ position: 'absolute', bottom: 2, right: 2 }} />}
+      </div>
+  </Link>
   );
 }
 

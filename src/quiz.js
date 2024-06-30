@@ -201,38 +201,9 @@ function QuizApp({ quizId=11 }) {
       ],
       question_type: "multiple choice",
     },
-    {
-      question: 'Who is CEO of Tesla?',
-      options: [
-        { optionText: 'Jeff Bezos', isCorrect: false },
-        { optionText: 'Elon Musk', isCorrect: true },
-        { optionText: 'Bill Gates', isCorrect: false },
-        { optionText: 'Tony Stark', isCorrect: false },
-      ],
-      question_type: "multiple choice",
-    },
-    {
-      question: 'The iPhone was created by which company?',
-      options: [
-        { optionText: 'Apple', isCorrect: true },
-        { optionText: 'Intel', isCorrect: false },
-        { optionText: 'Amazon', isCorrect: false },
-        { optionText: 'Microsoft', isCorrect: false },
-      ],
-      question_type: "multiple choice",
-    },
-    {
-      question: 'How many Harry Potter books are there?',
-      options: [ {optionText: '7', isCorrect: true }, ],
-      question_type: "text",
-    },
-    {
-      question: 'Fill in the missing code:',
-      code: 'print(_____)',
-      options: [ {optionText: 'Hello, world!', isCorrect: true }, ],
-      question_type: "coding",
-    },
   ]);
+
+  //TODO: replace the sample question with some kind of a loading/error screen
 
   useEffect(() => {
     axios.get(window.location.origin + '/api/quizzes/?quiz_id=' + quizId.toString())

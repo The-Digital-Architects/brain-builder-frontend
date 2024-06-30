@@ -1,10 +1,8 @@
 import React from 'react';
 import './css/App.css';
-import { Theme, Box, Grid, Heading, IconButton, Flex, Button, Separator } from '@radix-ui/themes';
-import { Link } from 'react-router-dom';
-import { HomeIcon } from '@radix-ui/react-icons';
-import tu_delft_pic from "./images/tud_black_new.png";
+import { Theme, Box, Heading, Flex } from '@radix-ui/themes';
 import axios from 'axios';
+import Header from './common/header';
 
 class Introduction extends React.Component {
     constructor(props) {
@@ -99,25 +97,8 @@ class Introduction extends React.Component {
 
     render () { return(
     <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
-        <Box py="2" style={{ backgroundColor: "var(--cyan-10)"}}>
-          <Grid columns='3' mt='1'>
-          <Box ml='3' style={{display:"flex"}}>  
-              <Link to="/">
-                  <IconButton aria-label="navigate to home" height='21' style={{ marginLeft: 'auto', color: 'inherit', textDecoration: 'none' }}>
-                  <HomeIcon color="white" height='18' style={{ marginTop: 2 }} />
-                  </IconButton>
-              </Link>
-              </Box>
-              <Link to={window.location.origin} style={{ textDecoration: 'none' }}>
-              <Heading as='h1' align='center' size='6' style={{ color: 'var(--gray-1)', marginTop: 2, marginBottom: 0, textDecoration: 'none', fontFamily:'monospace, Courier New, Courier' }}>brAIn builder</Heading>
-              </Link>
-              <Box align='end' mr='3' >
-              <Link to="https://www.tudelft.nl/en/" target="_blank" style={{ textDecoration: 'none'}}>
-                  <img src={tu_delft_pic} alt='Tu Delft Logo' width='auto' height='30'/>
-              </Link>
-              </Box>
-          </Grid>
-        </Box>
+        <Header showHomeButton={true} />
+
         {this.props.taskId !== 0 && (
           <Box style={{ overflow: 'auto', fontFamily:'monospace', width: '100%', height: window.innerHeight-52, padding: '30px 300px', backgroundImage: 'linear-gradient(330deg, rgba(7,62,185, 0.15) 0%, rgba(7,185,130, 0.15) 100%)' }}>
             {this.state.content.length > 0 ? (
@@ -148,82 +129,3 @@ class Introduction extends React.Component {
 }
 
 export default Introduction;
-
-
-/*
-<Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
-        <Box py="2" style={{ backgroundColor: "var(--cyan-10)"}}>
-        <Grid columns='3' mt='1'>
-        <Box ml='3' style={{display:"flex"}}>  
-            <Link to="/">
-                <IconButton aria-label="navigate to home" width='auto' height='21' style={{ marginLeft: 'auto', color: 'inherit', textDecoration: 'none' }}>
-                <HomeIcon color="white" width='auto' height='18' style={{ marginTop: 2 }} />
-                </IconButton>
-            </Link>
-            </Box>
-            <Link to={window.location.origin} style={{ textDecoration: 'none' }}>
-            <Heading as='h1' align='center' size='6' style={{ color: 'var(--gray-1)', marginTop: 2, marginBottom: 0, textDecoration: 'none', fontFamily:'monospace, Courier New, Courier' }}>brAIn builder</Heading>
-            </Link>
-            <Box align='end' mr='3' >
-            <Link to="https://www.tudelft.nl/en/" target="_blank" style={{ textDecoration: 'none'}}>
-                <img src={tu_delft_pic} alt='Tu Delft Logo' width='auto' height='30'/>
-            </Link>
-            </Box>
-        </Grid>
-        </Box>
-        {this.props.taskId !== 0 && (
-          <Box style={{ overflow: 'auto', fontFamily:'monospace', width: '100%', height: window.innerHeight-52, padding: '30px 0px' }}>
-            {this.state.content.length > 0 ? (
-              <>
-              <Flex direction="row" gap="2" style={{ height: '100%'}}>
-              <Box style={{ flexBasis: '67%', display: 'flex', justifyContent:"center", alignItems:"center" }}>
-              <Slider key={this.state.currentSlide} classNames={horizontalCss} infinite={false} slideIndex={this.state.currentSlide}
-              previousButton={
-                <ChevronLeftIcon
-                  style={{ color: 'var(--slate-9)', width:64, height:64 }}
-                  onClick={() => {
-                    const prevSlide = this.state.currentSlide - 1;
-                    if (prevSlide >= 0) {
-                      this.setState({ currentSlide: prevSlide });
-                    }
-                }}/>}
-                nextButton={
-                  <ChevronRightIcon
-                    style={{ color: 'var(--slate-9)', width:64, height:64 }}
-                    onClick={() => {
-                      const nextSlide = this.state.currentSlide + 1;
-                      if (nextSlide < this.state.content.length) {
-                        this.setState({ currentSlide: nextSlide });
-                      }
-                  }}/>}
-              >
-                {this.state.content.map(([subtitle, text], index) => (
-                  <div key={index} className="slide-container">
-                    <div className="slide-content">
-                      <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7, textAlign:"center" }}>&gt;_{subtitle} </Heading>
-                      <p>{text}</p>
-                    </div>
-                  </div>
-                ))}
-              </Slider>
-              </Box>
-              <Box style={{ flexBasis: '33%', padding: '0px 90px', display: 'flex', justifyContent:"center", alignItems:"center" }}>
-                <Flex direction="column" gap="2" style={{ justifyContent:"center", alignItems:"center", width:"100%" }}>
-                  {this.state.content.map(([subtitle, text], index) => (
-                    <Button variant="outline" style={{ width:"100%"}} pressed={this.state.currentSlide === index} onClick={() => this.goToSlide(index)}>{subtitle}</Button>
-                  ))}
-                </Flex>
-              </Box>
-              </Flex>
-              <Separator orientation='vertical' style = {{ height: window.innerHeight-110, position: 'absolute', left: window.innerWidth * 0.67, bottom: (window.innerHeight-52) * 0.5, transform: `translateY(${(window.innerHeight - 110) / 2}px)` }}/>
-              </>
-            ) : (
-              <div style={{ textAlign:'justify', marginBottom: '20px', padding: '0px 300px' }}>
-                <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7 }}>&gt;_Key Concepts </Heading>
-                {this.state.printedContent}
-              </div>
-            )}
-          </Box>
-        )}
-    </Theme>
-*/
