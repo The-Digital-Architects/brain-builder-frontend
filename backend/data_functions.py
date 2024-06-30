@@ -21,7 +21,7 @@ from sklearn.model_selection import train_test_split
 
 
 def get_data(dataset, typ:int=None, normalization=False, test_size=None, val_size=None, data=None):  # TODO: test this
-    magic_box = {'datasets': datasets, 'normalization': normalization}
+    magic_box = {'datasets': datasets, 'normalization': normalization, 'DataFromSklearn1': DataFromSklearn1, 'DataFromSklearn2': DataFromSklearn2}
     
     # if the dataset has been passed on, just use that
     if data is not None:
