@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@radix-ui/themes';
-import { Flex, Box, Heading } from '@radix-ui/themes';
+import { Flex, Box, Heading, IconButton } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
 import { styled } from '@stitches/react';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
+import { RocketIcon, Pencil2Icon, Link2Icon, CopyIcon } from '@radix-ui/react-icons';
+import Readme from '../readme';
+import * as Progress from '@radix-ui/react-progress';
+import '@radix-ui/themes/styles.css';
+import '../css/App.css';
+const verbalid = require('verbal-id');
 
 function ChallengeButton({ link, label, Icon, active, completed }) {
   const buttonStyle = {
@@ -69,10 +75,22 @@ function OtherButton({ link, label, active }) {
 
 function LevelBox({ level, showContent, handleShowContent, children }) {
 
-  const toggleContent = () => handleShowContent(level, !showContent);
+  const toggleContent = () => handleShowContent(level-1, !showContent);
+
+  const boxStyle = {
+    border: "2px solid",
+    borderColor: "var(--slate-8)",
+    borderRadius: "var(--radius-3)",
+    padding: '10px 24px',
+    cursor: 'pointer', // Change cursor to pointer
+    transition: 'background-color 0.3s', // Smooth transition for background color
+    ':hover': {
+      backgroundColor: "var(--slate-2)", // Change background color on hover
+    }
+  };
 
   return (
-      <Box key={level} style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }} onClick={toggleContent}>
+      <Box style={boxStyle} onClick={toggleContent} aria-expanded={showContent}>
           {children}
       </Box>
   );
@@ -92,5 +110,98 @@ const GridBox = styled(Box, {
   justifyContent: 'start'
 });
 
+function ProgressBox({progress}) {
 
-export { ChallengeButton, OtherButton, LevelBox, LevelHeading, GridBox };
+  const [myId, setMyId] = useState(verbalid.create().replace(/\s/g, '-'));
+  const [copyFeedback, setCopyFeedback] = useState(myId);
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(myId)
+      .then(() => {
+        setCopyFeedback('Copied!'); // Update feedback message
+        setCopySuccess(true); // Indicate copy success
+        setTimeout(() => {
+          setCopyFeedback(myId); // Revert
+          setCopySuccess(false); // Reset copy success
+        }, 1000);
+      })
+      .catch(err => {
+        console.error('Could not copy text: ', err);
+        setCopyFeedback('Error copying text'); // Provide feedback for error
+        setTimeout(() => setCopyFeedback(myId), 1000); // Revert
+      });
+  };
+
+  return (
+      <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} >
+          <Flex direction='column' gap='1' style={{ justifyContent: 'center', alignItems: 'center' }}>
+              {/*<Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>Your Progress</Heading>*/}
+              <label style={{marginBottom: 10, fontSize: 'var(--font-size-2)', fontWeight: 'bold'}}>Your Progress</label>
+              <Progress.Root className="ProgressRoot" value={progress} style={{ marginBottom:5, width: '100%' }}>
+                  <Progress.Indicator
+                  className="ProgressIndicator"
+                  style={{ transform: `translateX(-${100 - progress}%)` }}
+                  />
+              </Progress.Root>
+              <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Copy this code to continue in a different browser</label>
+              {/*when you click the text, it will copy the code to the clipboard*/}
+              <IconButton variant='soft' radius='full' size={2} style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}} onClick={handleCopy}>
+                {copyFeedback}{copyFeedback === myId && <><span> </span><CopyIcon/></>}
+              </IconButton>
+          </Flex>
+      </Box>
+  );
+}
+
+function GettingStarted({showContent, handleShowContent}) {
+
+  const toggleContent = () => handleShowContent(-1, !showContent);
+
+  return (
+      <Box style={{ border: "2px solid",
+          borderColor: "var(--slate-8)",
+          borderRadius: "var(--radius-3)",
+          padding: '10px 24px',
+          cursor: 'pointer', // Change cursor to pointer
+          transition: 'background-color 0.3s', // Smooth transition for background color
+          ':hover': {
+            backgroundColor: "var(--slate-2)", // Change background color on hover
+          }}}   onClick={toggleContent} >
+
+              <LevelHeading level={-1} name="Getting Started" />
+              {showContent && (
+                  <GridBox>
+                      <ChallengeButton link="tutorial" label="Tutorial" Icon={RocketIcon} active={true} />
+                      <ChallengeButton link="custom11" label="The Perceptron 1" Icon={RocketIcon} active={true} />
+                  </GridBox>
+              )}
+      </Box>
+  );
+}
+
+function WrappingUp() {
+  return (
+      <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
+          <LevelHeading level={-1} name="Wrapping Up" />
+          <GridBox>
+              <ChallengeButton link="notebookTest" label="Notebook Test" Icon={RocketIcon} active={true} />
+              <ChallengeButton link="feedback" label="Give Feedback" Icon={Pencil2Icon} active={true} />
+              <ChallengeButton link="links" label="Useful Links" Icon={Link2Icon} active={true} />
+          </GridBox>
+      </Box>
+  );
+}
+
+function ReadmeBox() {
+  return (
+      <Box style={{ flex: 1, border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 30px' }}>
+          <LevelHeading level={-1} name="Readme" />
+          <Box>
+              <Readme file="readme"/>
+          </Box>
+      </Box>
+  );
+}
+
+export { ChallengeButton, OtherButton, LevelBox, LevelHeading, GridBox, ProgressBox, GettingStarted, WrappingUp, ReadmeBox };

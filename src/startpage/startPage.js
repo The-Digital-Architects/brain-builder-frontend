@@ -1,88 +1,10 @@
 import React from 'react';
 import Header from '../common/header';
 import '../css/App.css';
-import { Flex, Box, Heading } from '@radix-ui/themes';
+import { Flex } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
-import { RocketIcon, Pencil2Icon, Link2Icon } from '@radix-ui/react-icons';
-import { ChallengeButton, LevelHeading, GridBox, OtherButton } from './levelComponents';
-import Readme from '../readme';
 import Level from './level';
-import * as Progress from '@radix-ui/react-progress';
-import '../css/App.css';
-
-function ProgressBox() {
-    const progress = 20; //sample value
-
-    return (
-        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} >
-            <Flex direction='column' gap='1' style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>Your Progress</Heading>
-                <Progress.Root className="ProgressRoot" value={progress} style={{ marginBottom:5, width: '100%' }}>
-                    <Progress.Indicator
-                    className="ProgressIndicator"
-                    style={{ transform: `translateX(-${100 - progress}%)` }}
-                    />
-                </Progress.Root>
-            </Flex>
-        </Box>
-    );
-}
-
-function GettingStarted({showContent, handleShowContent}) {
-
-    const toggleContent = () => handleShowContent(0, !showContent);
-
-    return (
-        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}}
-            onClick={toggleContent}>
-                <LevelHeading level={-1} name="Getting Started" />
-                {showContent && (
-                    <GridBox>
-                        <ChallengeButton link="tutorial" label="Tutorial" Icon={RocketIcon} active={true} />
-                        <ChallengeButton link="custom11" label="The Perceptron 1" Icon={RocketIcon} active={true} />
-                    </GridBox>
-                )}
-        </Box>
-    );
-}
-
-/*
-<Box style={{ display: 'flex', flexDirection: 'row', gap: '15px', width: '100%' }}>
-                    <OtherButton link="tutorial" label="Tutorial" active={true} />
-                    <OtherButton link="custom11" label="The Perceptron 1" active={true} />
-                </Box>*/
-
-/*<Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-            <LevelHeading level={-1} name="Getting Started" />
-            <GridBox>
-                <ChallengeButton link="tutorial" label="Tutorial" Icon={RocketIcon} active={true} />
-                <ChallengeButton link="custom11" label="The Perceptron 1" Icon={RocketIcon} active={true} />
-            </GridBox>
-        </Box>*/
-
-function WrappingUp() {
-    return (
-        <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-            <LevelHeading level={-1} name="Wrapping Up" />
-            <GridBox>
-                <ChallengeButton link="notebookTest" label="Notebook Test" Icon={RocketIcon} active={true} />
-                <ChallengeButton link="feedback" label="Give Feedback" Icon={Pencil2Icon} active={true} />
-                <ChallengeButton link="links" label="Useful Links" Icon={Link2Icon} active={true} />
-            </GridBox>
-        </Box>
-    );
-}
-
-function ReadmeBox() {
-    return (
-        <Box style={{ flex: 1, border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 30px' }}>
-            <LevelHeading level={-1} name="Readme" />
-            <Box>
-                <Readme file="readme"/>
-            </Box>
-        </Box>
-    );
-}
+import { ProgressBox, GettingStarted, WrappingUp, ReadmeBox } from './levelComponents';
 
 // Function to store progressData in a cookie
 function storeProgress(progressData) {
@@ -107,8 +29,8 @@ class StartPage extends React.Component {
             quizzesByLevel: this.groupByIds(props.quizIds),
             introsByLevel: this.groupByIds(props.introIds),
             showContent: Array(props.levelNames.length+1).fill(false),
-            currentSlide: 0,
             progressData: null,
+            percentCompleted: 0,
         };
     }
 
@@ -160,52 +82,70 @@ class StartPage extends React.Component {
         return progressData;
     }
 
-    componentDidMount() {
-        const tasksByLevel = this.groupByIds(this.props.taskIds);
-        const quizzesByLevel = this.groupByIds(this.props.quizIds);
-        const introsByLevel = this.groupByIds(this.props.introIds);
-        const progressData = getProgress();
-    
-        if (progressData) {
-            this.setState({
-                tasksByLevel,
-                quizzesByLevel,
-                introsByLevel,
-                progressData
-            });
-        } else {
-            const initialProgressData = this.initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel);
-            this.setState({
-                tasksByLevel,
-                quizzesByLevel,
-                introsByLevel,
-                progressData: initialProgressData
-            }, () => {
-                console.log('Progress data initialized:', this.state.progressData);
-            });
+    // method to count how many % out of progressData entries are 'completed'
+    countPercentCompleted(progressData) {
+        let countCompleted = 0;
+        let countTotal = 0;
+        for (const type in progressData) {
+            for (const level in progressData[type]) {
+                countCompleted += progressData[type][level].filter(item => item === 'completed').length;
+                countTotal += progressData[type][level].length;
+            }
         }
+        return countTotal > 0 ? Math.round(countCompleted / countTotal * 100) : 0;
+    }
+
+    componentDidMount() {
+        let tasksByLevel = this.groupByIds(this.props.taskIds);
+        let quizzesByLevel = this.groupByIds(this.props.quizIds);
+        let introsByLevel = this.groupByIds(this.props.introIds);
+        let progressData = getProgress();
+    
+        if (!progressData) {
+            progressData = this.initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel);
+        }
+
+        this.setState({
+            tasksByLevel,
+            quizzesByLevel,
+            introsByLevel,
+            progressData,
+            percentCompleted: this.countPercentCompleted(progressData)
+        }, () => {
+            console.log('Progress data initialized:', this.state.progressData);
+        });
+
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.taskIds !== prevProps.taskIds || this.props.quizIds !== prevProps.quizIds || this.props.introIds !== prevProps.introIds) {
-            const newTasksByLevel = this.groupByIds(this.props.taskIds);
-            const newQuizzesByLevel = this.groupByIds(this.props.quizIds);
-            const newIntrosByLevel = this.groupByIds(this.props.introIds);
+            const tasksByLevel = this.groupByIds(this.props.taskIds);
+            const quizzesByLevel = this.groupByIds(this.props.quizIds);
+            const introsByLevel = this.groupByIds(this.props.introIds);
             
             this.setState({
-                tasksByLevel: newTasksByLevel,
-                quizzesByLevel: newQuizzesByLevel,
-                introsByLevel: newIntrosByLevel,
-                progressData: this.initializeProgressData(newTasksByLevel, newQuizzesByLevel, newIntrosByLevel)
+                tasksByLevel,
+                quizzesByLevel,
+                introsByLevel,
+                progressData: this.initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel),
+                percentCompleted: this.countPercentCompleted(this.state.progressData),
             });
         }
     }
 
     handleShowContent = (index, expand) => {
+        if (index < 0) {
+            index = this.state.showContent.length + index;
+        }
+
+        console.log('Expanding:', index, expand);
+
         this.setState({
             showContent: this.state.showContent.map((value, i) => 
                 i === index ? expand : (expand ? false : value)
             )
+        }, () => {
+            console.log('Show content:', this.state.showContent);
         });
     };
 
@@ -216,12 +156,12 @@ class StartPage extends React.Component {
 
             <Flex direction='column' gap='3' style={{ flex:1 }}>
 
-                <ProgressBox />
+                <ProgressBox progress={this.state.percentCompleted} />
 
                 <GettingStarted showContent={this.state.showContent[0]} handleShowContent={this.handleShowContent} />
 
                 {Object.entries(this.state.tasksByLevel).map(([level, challenges]) => (
-                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
+                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level-1]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
                 ))} 
 
                 <WrappingUp />

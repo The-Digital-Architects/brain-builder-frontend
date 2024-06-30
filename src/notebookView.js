@@ -1,13 +1,12 @@
 import React from 'react';
 import './css/App.css';
 import { Theme, Box, Grid, Heading, IconButton, Flex } from '@radix-ui/themes';
-import { Link } from 'react-router-dom';
 import { HomeIcon, PlayIcon } from '@radix-ui/react-icons';
-import tu_delft_pic from "./images/tud_black_new.png";
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import a11yDark from './code_preview/a11y-dark';
+import Header from './common/header';
 
 class NotebookView extends React.Component {
     constructor(props) {
@@ -101,37 +100,30 @@ class NotebookView extends React.Component {
 
         return(
             <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
-                <Box py="2" style={{ backgroundColor: "var(--cyan-10)"}}>
-                <Grid columns='3' mt='1'>
-                <Box ml='3' style={{display:"flex"}}>  
-                    <Link to="/">
-                        <IconButton aria-label="navigate to home" width='auto' height='21' style={{ marginLeft: 'auto', color: 'inherit', textDecoration: 'none' }}>
-                        <HomeIcon color="white" width='auto' height='18' style={{ marginTop: 2 }} />
-                        </IconButton>
-                    </Link>
-                    </Box>
-                    <Link to={window.location.origin} style={{ textDecoration: 'none' }}>
-                    <Heading as='h1' align='center' size='6' style={{ color: 'var(--gray-1)', marginTop: 2, marginBottom: 0, textDecoration: 'none', fontFamily:'monospace, Courier New, Courier' }}>brAIn builder</Heading>
-                    </Link>
-                    <Box align='end' mr='3' >
-                    <Link to="https://www.tudelft.nl/en/" target="_blank" style={{ textDecoration: 'none'}}>
-                        <img src={tu_delft_pic} alt='Tu Delft Logo' width='auto' height='30'/>
-                    </Link>
-                    </Box>
-                </Grid>
-                </Box>
-                <div className="notebook-view">
-                    {this.state.notebook === null && <div>Loading...</div>}
-                    {this.state.notebook !== null && console.log(this.ws.readyState)}
-                    {this.state.notebook !== null && this.state.notebook.cells.map((cell, index) => {
-                    if (cell.cell_type === 'markdown') {
-                        return <MarkdownCell key={index} cell={cell} content={this.state.cellContents[index]} onContentChange={(newContent) => this.handleContentChange(index, newContent)} style={{ margin: '10px' }} />;
-                    } else if (cell.cell_type === 'code') {
-                        return <CodeCell key={index} cell={cell} content={this.state.cellContents[index]} onContentChange={(newContent) => this.handleContentChange(index, newContent)} handleClick={() => this.handleClick(index)} style={{ margin: '10px' }} />;
-                    }
-                    // Handle other cell types...
-                    })}
-                </div>
+                <Flex direction='column' style={{ alignItems: 'flex-start' }}>
+                    <Header showHomeButton={true} />
+                    <Flex direction='column' gap='3' style={{padding:'10px 10px', alignItems: 'flex-start' }}>
+
+                        <div className="notebook-view">
+                            {this.state.notebook === null && <div>Loading...</div>}
+                            {this.state.notebook !== null && this.state.notebook.cells.map((cell, index) => (
+                                <Box style={{
+                                    border: "2px solid",
+                                    borderColor: "var(--slate-8)",
+                                    borderRadius: "var(--radius-3)",
+                                    padding: '10px 24px',
+                                    cursor: 'pointer',
+                                }} key={index}>
+                                    {cell.cell_type === 'markdown' ? (
+                                    <MarkdownCell cell={cell} content={this.state.cellContents[index]} onContentChange={(newContent) => this.handleContentChange(index, newContent)} style={{ margin: '10px' }} />
+                                    ) : (cell.cell_type === 'code' && (
+                                    <CodeCell cell={cell} content={this.state.cellContents[index]} onContentChange={(newContent) => this.handleContentChange(index, newContent)} handleClick={() => this.handleClick(index)} style={{ margin: '10px' }} />
+                                    ))}
+                                </Box>
+                                ))}
+                            </div>
+                    </Flex>
+                </Flex>
             </Theme>
         )
     }
@@ -221,7 +213,7 @@ class CodeCell extends React.Component {
                 {this.state.isEditing ? (
                 <textarea value={this.state.newContent} onChange={this.handleChange} onBlur={this.handleBlur} onKeyDown={this.handleKeyDown} />
                 ) : (
-                <SyntaxHighlighter language="python" style={solarizedlight} >
+                <SyntaxHighlighter language="python" style={a11yDark} >
                     {this.props.content}
                 </SyntaxHighlighter>
                 )}
@@ -238,7 +230,7 @@ class PlayButton extends React.Component {
 
     render() {
         return (
-            <button onClick={this.props.onClick}><PlayIcon width="10" height="10" /></button>
+            <IconButton onClick={this.props.onClick} style={{ flex: 1, backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)' }}><PlayIcon /></IconButton>
         );
     }
 }
