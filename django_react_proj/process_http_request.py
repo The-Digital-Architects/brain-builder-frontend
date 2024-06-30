@@ -40,7 +40,8 @@ async def process(req):
         d = {}
         tag = int(req['task_id'])
         gd = json.loads(req['games_data'])
-        dataset = gd[tag, 'dataset']
+        gd = pd.DataFrame(gd).set_index('task_id')
+        dataset = gd.loc[tag, 'dataset']
         normalization = bool(req['normalization'])
 
         data, (training_set, test_set) = df.get_data(dataset=dataset, normalization=normalization)
