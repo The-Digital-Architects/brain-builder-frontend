@@ -20,7 +20,7 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
 
-def get_data(dataset, type:int=None, normalization=False, test_size=None, val_size=None, data=None):  # TODO: test this
+def get_data(dataset, typ:int=None, normalization=False, test_size=None, val_size=None, data=None):  # TODO: test this
     magic_box = {'datasets': datasets, 'normalization': normalization}
     
     # if the dataset has been passed on, just use that
@@ -35,7 +35,7 @@ def get_data(dataset, type:int=None, normalization=False, test_size=None, val_si
 
     elif type(dataset) is str and dataset.startswith('make_'):
         # import a dataset from sklearn
-        exec('data = DataFromSklearn2(datasets.' + dataset + ', normalize=normalization, data_type=' + str(type) + ')', magic_box)
+        exec('data = DataFromSklearn2(datasets.' + dataset + ', normalize=normalization, data_type=' + str(typ) + ')', magic_box)
         data = magic_box['data']
         # Note: exec may cause security problems if games is defined elsewhere, but should be fine for now
 
@@ -48,7 +48,7 @@ def get_data(dataset, type:int=None, normalization=False, test_size=None, val_si
 
     elif type(dataset) is str:
         # load the dataset from Excel -> use custom dataset class
-        data = DataFromExcel(os.path.join(os.path.dirname(__file__), dataset), data_type=type, normalize=normalization)
+        data = DataFromExcel(os.path.join(os.path.dirname(__file__), dataset), data_type=typ, normalize=normalization)
 
 
     if test_size is not None or val_size is not None:
