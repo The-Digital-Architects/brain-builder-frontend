@@ -102,18 +102,11 @@ class NotebookView extends React.Component {
             <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
                 <Flex direction='column' style={{ width: '100%' }}>
                     <Header showHomeButton={true} />
-                    <Flex direction='column' gap='3' style={{padding:'10px 10px', width: '100%' }}>
-
-                        <div className="notebook-view">
+                    <Box style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: window.innerHeight-52, fontFamily: 'monospace', backgroundImage: 'linear-gradient(330deg, rgba(7,62,185, 0.15) 0%, rgba(7,185,130, 0.15) 100%)'}}>
+                        <Flex direction='column' gap='3' style={{padding:'10px 10px', width: '100%' }}>
                             {this.state.notebook === null && <div>Loading...</div>}
                             {this.state.notebook !== null && this.state.notebook.cells.map((cell, index) => (
-                                <Box style={{
-                                    border: "2px solid",
-                                    borderColor: "var(--slate-8)",
-                                    borderRadius: "var(--radius-3)",
-                                    padding: '10px 24px',
-                                    cursor: 'pointer',
-                                }} key={index}>
+                                <Box style={{ boxShadow: '0 2px 8px var(--slate-a11)', borderRadius: "var(--radius-3)", width:window.innerWidth/3, padding: '30px 50px', background:"solid", backgroundColor:"white", cursor: 'pointer'}} key={index}>
                                     {cell.cell_type === 'markdown' ? (
                                     <MarkdownCell cell={cell} content={this.state.cellContents[index]} onContentChange={(newContent) => this.handleContentChange(index, newContent)} style={{ margin: '10px' }} />
                                     ) : (cell.cell_type === 'code' && (
@@ -121,8 +114,8 @@ class NotebookView extends React.Component {
                                     ))}
                                 </Box>
                                 ))}
-                            </div>
-                    </Flex>
+                        </Flex>
+                    </Box>
                 </Flex>
             </Theme>
         )
