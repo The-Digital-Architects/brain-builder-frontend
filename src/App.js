@@ -701,7 +701,9 @@ function App() {
     const trainingData = {
       //action: 1,
       header: 'start',
-      process_code: 'B01',
+      //process_code: 'B01',
+      file_name: 'building',
+      function_name: 'main',
       user_id: userId,
       task_id: taskId,
       learning_rate: parseFloat(learningRate),
