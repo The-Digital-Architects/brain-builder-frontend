@@ -42,7 +42,7 @@ function ChallengeButton({ link, label, Icon, active, completed }) {
           </Button>
 
           {/* Checkmark icon in bottom right corner of the button */}
-          {completed && <CheckCircledIcon style={{ position: 'absolute', bottom: 3, right: 3 }} />}
+          {completed && <CheckCircledIcon color='cyan' style={{ position: 'absolute', bottom: 3, right: 3 }} />}
       </div>
   </Link>
   );

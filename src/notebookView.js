@@ -129,10 +129,24 @@ class MarkdownCell extends React.Component {
             isEditing: false,
             newContent: '',
         };
+        this.textareaRef = React.createRef();
     }
 
     componentDidMount() {
         this.setState({ newContent: this.props.cell.source.join('') });
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.isEditing && !prevState.isEditing) {
+            this.textareaRef.current.focus(); // Automatically focus the textarea when entering edit mode
+            this.adjustTextareaHeight(); // Adjust the height of the textarea
+        }
+    }
+
+    adjustTextareaHeight = () => {
+        const textarea = this.textareaRef.current;
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px'; // Dynamically adjust the height based on content
     }
 
     handleClick = () => {
@@ -140,29 +154,49 @@ class MarkdownCell extends React.Component {
     }
 
     handleChange = (event) => {
-        this.setState({ newContent: event.target.value });
+        this.setState({ newContent: event.target.value }, this.adjustTextareaHeight); // Adjust height on content change
     }
 
     handleBlur = () => {
-        this.setState({ isEditing: false, newContent: this.state.content });
+        this.setState({ isEditing: false });
+        this.props.onContentChange(this.state.newContent); // Ensure content is updated on blur
     }
 
     handleKeyDown = (event) => {
         if (this.state.isEditing && event.key === "Enter") {
             event.preventDefault();
-            this.setState({ isEditing: false});
+            this.setState({ isEditing: false });
             this.props.onContentChange(this.state.newContent);
         } 
     }
 
     render() {
+        const textareaStyle = {
+            width: '100%',
+            padding: '10px',
+            border: '1px solid #ddd',
+            borderRadius: '4px',
+            resize: 'none',
+            fontFamily: '"Fira Code", monospace',
+            lineHeight: '1.5',
+            height: 'auto', // Initial height auto, will be adjusted dynamically
+            overflow: 'hidden' // Hide the scrollbar
+        };
+
         return (
             <div className="markdown-cell" onClick={this.handleClick} >
-            {this.state.isEditing ? (
-                <textarea value={this.state.newContent} onChange={this.handleChange} onBlur={this.handleBlur} onKeyDown={this.handleKeyDown} />
-            ) : (
-                <ReactMarkdown>{this.props.content}</ReactMarkdown>
-            )}
+                {this.state.isEditing ? (
+                        <textarea 
+                            ref={this.textareaRef}
+                            value={this.state.newContent} 
+                            onChange={this.handleChange} 
+                            onBlur={this.handleBlur} 
+                            onKeyDown={this.handleKeyDown} 
+                            style={textareaStyle}
+                        />
+                    ) : (
+                        <ReactMarkdown>{this.state.newContent}</ReactMarkdown> // Use newContent to reflect the latest changes
+                    )}
             </div>
         );
     }
@@ -204,7 +238,7 @@ class CodeCell extends React.Component {
     }
 
     handleKeyDown = (event) => {
-        if (event.key === "Enter" && event.shiftKey) {
+        if (this.state.isEditing && event.key === "Enter") {
             event.preventDefault();
             this.setState({ isEditing: false });
             this.props.onContentChange(this.state.newContent);
@@ -253,7 +287,7 @@ class PlayButton extends React.Component {
 
     render() {
         return (
-            <IconButton onClick={this.props.onClick} style={{ flex: 1, backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)', width: '2vw', marginBottom: 7, marginTop: 7 }}><PlayIcon /></IconButton>
+            <IconButton onClick={this.props.onClick} style={{ flex: 1, backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)', width: window.innerWidth/30, marginBottom: 7, marginTop: 7 }}><PlayIcon /></IconButton>
         );
     }
 }
