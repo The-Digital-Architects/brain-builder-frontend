@@ -18,6 +18,7 @@ if __name__ == '__main__':
     import os
     sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
 from backend.processing.modular_network import * 
+from backend.processing.communication import send_update, is_cancelled
 import backend.data_functions as df
 import json
 import pickle
@@ -78,15 +79,15 @@ def train_nn_epoch(nn, training_set, test_set, current_epoch, epochs, learning_r
     return errors, accuracy, weights, biases
 
 
-def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ, send_fn):
+def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ, user_id, task_id, send_fn):
     # first, reset all variables
     progress = 0
     errors = []
 
-    send_update(send_fn, progress)
+    send_update(send_fn=send_fn, var_names=['progress'], vars=(progress))
     
     for epoch in range(1, epochs+1):
-        if cache.get(f'{user_id}_cancel'):
+        if is_cancelled(user_id, task_id):
             print("Training cancelled")
             break
         
@@ -103,19 +104,18 @@ def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ, send_fn)
             progress = round(epoch / epochs, 2)  # update the progress
 
             if epoch % (epochs // 50 if epochs >= 50 else 1) == 0:  # every 10% of the total epochs:
-                print("Updating all the stuff")
+                print("Updating decision boundary")
                 data.plot_decision_boundary(nn)  # plot the current decision boundary (will be ignored if the dataset has too many dimensions)
                 plot = b64encode(data.images[-1]).decode()  
-                print("First bias: ", b[0])
 
                 print("Epoch: ", epoch, ", Error: ", errors[-1])
 
-            send_update(send_fn, progress, e, w, b, plot)  # TODO: now sending only one update, w, b and plot just aren't always updated -> adjust frontend
+            send_update(send_fn=send_fn, var_names=['progress', 'error_list', 'network_weights', 'network_biases', 'plot'], vars=(progress, e, w, b, plot))  # TODO: now sending only one update, plot just isn't always updated
     
     data.plot_decision_boundary(nn)  # plot the current decision boundary (will be ignored if the dataset has too many dimensions)
     plot = b64encode(data.images[-1]).decode()  
     progress = 1
-    send_update(send_fn, progress, e, w, b, plot)
+    send_update(send_fn=send_fn, var_names=['progress', 'error_list', 'network_weights', 'network_biases', 'plot'], vars=(progress, e, w, b, plot))
 
 
 def save_nn(user_id, nn, data):  # TODO check if this works from inside a subprocess
@@ -186,7 +186,7 @@ def convert_input(nodes, n_inputs, n_outputs, typ, af=True):
     return structure
 
 
-def main(nodes, n_inputs, n_outputs, activations_on, learning_rate, epochs, normalization, dataset, typ, user_id, send_fn):  # TODO
+def main(nodes, n_inputs, n_outputs, activations_on, learning_rate, epochs, normalization, dataset, typ, user_id, task_id, send_fn):  # TODO
     print(type(nodes))  # for debugging
     architecture = convert_input(nodes, n_inputs, n_outputs, typ, activations_on)
     
@@ -195,12 +195,13 @@ def main(nodes, n_inputs, n_outputs, activations_on, learning_rate, epochs, norm
     print("Network initiated, starting training")
 
     # now train the nn
-    train_nn(data, training_set, testing_set, nn, epochs, learning_rate, typ, send_fn)
+    train_nn(data, training_set, testing_set, nn, epochs, learning_rate, typ, user_id, task_id, send_fn)
 
     # finally, save the nn
     save_nn(user_id, nn, data)
 
 
+'''
 def send_update(send_fn, progress, error_list=None, weights=None, biases=None, plot=None, block_id=None):  # TODO: replace this with cool way-too-advanced function
     d = {}
     d['header'] = 'update'
@@ -219,3 +220,5 @@ def send_update(send_fn, progress, error_list=None, weights=None, biases=None, p
     print('sending update')
     send_fn(json.dumps(d))
     #print(json.dumps(d))  # print to the console, this will be captured by the parent process and sent to the frontend
+'''
+    
