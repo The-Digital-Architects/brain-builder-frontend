@@ -52,7 +52,7 @@ function initializeWebSocket(trainingData, index, intervalTimeout, progress, err
     }, intervalTimeout); // stop after n milliseconds
 
     const data = JSON.parse(event.data);
-    if (data.header === 'progress') {  // every 1%; includes progress, error_list, and network_weights
+    if (data.header === 'update') {  // every 1%; includes progress, error_list, network_weights and network_biases, sometimes also plots
 
       if (JSON.stringify(data.progress) !== JSON.stringify(progress[index])) {
         setProgress(prevProgress => {
@@ -82,41 +82,40 @@ function initializeWebSocket(trainingData, index, intervalTimeout, progress, err
           });
         }
         
-      }
-    } else if (data.header === 'update') {  // every 2%; includes network_biases and plots
-      // update the weights if they changed 
-      if (weights[index].length === 0 || data.network_weights[0][0] !== weights[index][0][0]) {
-        setWeights(prevWeights => {
-          const newWeights = [...prevWeights];
-          newWeights[index] = data.network_weights;
-          return newWeights;
-        });
-      }
+        // update the weights if they changed 
+        if (weights[index].length === 0 || data.network_weights[0][0] !== weights[index][0][0]) {
+          setWeights(prevWeights => {
+            const newWeights = [...prevWeights];
+            newWeights[index] = data.network_weights;
+            return newWeights;
+          });
+        }
 
-      // update the biases if they changed
-      if (biases[index].length !== 0 || data.network_biases[0] !== biases[index][0]) {
-        setBiases(prevBiases => {
-          const newBiases = [...prevBiases];
-          newBiases[index] = data.network_biases;
-          return newBiases;
-        });
-      }
+        // update the biases if they changed
+        if (biases[index].length !== 0 || data.network_biases[0] !== biases[index][0]) {
+          setBiases(prevBiases => {
+            const newBiases = [...prevBiases];
+            newBiases[index] = data.network_biases;
+            return newBiases;
+          });
+        }
 
-      // decompress and parse the images in 'plots', but only if it's not empty or the same as the current imgs
-      if (data.plot.length > 0 && data.plot.length !== imgs[index].length) {
-        setImgs(prevImgs => {
-          const newImgs = [...prevImgs];
-          const binaryString = atob(data.plot);  // decode from base64 to binary string
-          const bytes = new Uint8Array(binaryString.length);  // convert from binary string to byte array
-          for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);  // now bytes contains the binary image data
-          }
-          const blob = new Blob([bytes.buffer], { type: 'image/jpeg' });
-          const url = URL.createObjectURL(blob);
-          // now images can be accessed with <img src={url} />
-          newImgs[index] = url
-          return newImgs;
-        });
+        // decompress and parse the images in 'plots', but only if it's not empty or the same as the current imgs
+        if (data.plot.length > 0 && data.plot.length !== imgs[index].length) {
+          setImgs(prevImgs => {
+            const newImgs = [...prevImgs];
+            const binaryString = atob(data.plot);  // decode from base64 to binary string
+            const bytes = new Uint8Array(binaryString.length);  // convert from binary string to byte array
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i);  // now bytes contains the binary image data
+            }
+            const blob = new Blob([bytes.buffer], { type: 'image/jpeg' });
+            const url = URL.createObjectURL(blob);
+            // now images can be accessed with <img src={url} />
+            newImgs[index] = url
+            return newImgs;
+          });
+        }
       }
     }
   };
