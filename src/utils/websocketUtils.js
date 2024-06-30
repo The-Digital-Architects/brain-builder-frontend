@@ -127,10 +127,10 @@ function initializeWebSocket(trainingData, index, intervalTimeout, progress, err
 
 
 
-export const putRequest = (e, cytoLayers, learningRate, iterations, taskId, nOfInputs, nOfOutputs, index, setProgress, setErrorList, setWeights, setBiases, setImgs, setApiData, setAccuracy, setIsTraining, userId, intervalTimeout, progress, errorList, weights, biases, imgs, isTraining, af, cancelRequestRef) => {
+export const putRequest = (e, cytoLayers, learningRate, iterations, taskId, nOfInputs, nOfOutputs, index, setProgress, setErrorList, setWeights, setBiases, setImgs, setApiData, setAccuracy, setIsTraining, userId, intervalTimeout, progress, errorList, weights, biases, imgs, isTraining, af, cancelRequestRef, typ, dataset) => {
     e.preventDefault();
 
-    let trainingData = prepareTrainingData(cytoLayers, learningRate, iterations, taskId, nOfInputs, nOfOutputs, index, setProgress, setErrorList, setWeights, setBiases, setImgs, setApiData, setAccuracy, setIsTraining, af);
+    let trainingData = prepareTrainingData(cytoLayers, learningRate, iterations, taskId, nOfInputs, nOfOutputs, index, setProgress, setErrorList, setWeights, setBiases, setImgs, setApiData, setAccuracy, setIsTraining, af, typ, dataset);
     
     let [ws, timeoutId] = initializeWebSocket(trainingData, index, intervalTimeout, progress, errorList, weights, biases, imgs, isTraining, setProgress, setErrorList, setWeights, setBiases, setImgs, setIsTraining, userId, iterations, cancelRequest);
 
