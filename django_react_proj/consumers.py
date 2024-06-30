@@ -29,7 +29,7 @@ class Transceiver(AsyncWebsocketConsumer):
             task_id = instructions['task_id']
             processes.cancel_vars[(self.user_id, task_id)] = False
             pc = instructions['process_code']
-            processes.start_process(self.user_id, task_id, pc, instructions, self.send)
+            await processes.start_process(self.user_id, task_id, pc, instructions, self.send)
         
         elif task_type == 'cancel':
             task_id = instructions['task_id']  # watch out: this should be the notebook_id for notebooks!
@@ -43,7 +43,7 @@ class Transceiver(AsyncWebsocketConsumer):
             #print('Instructions: ', instructions['code'])
             nb_id = instructions['notebook_id']
             processes.cancel_vars[(self.user_id, nb_id)] = False
-            processes.execute_code(instructions['code'], self.user_id, nb_id, send_fn=self.send)
+            await processes.execute_code(instructions['code'], self.user_id, nb_id, send_fn=self.send)
         
 
     # Send an update to the frontend
