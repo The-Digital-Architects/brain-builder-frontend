@@ -39,9 +39,11 @@ async def process(req):
     if req['action'] == 0:  # load the data and send the feature names and images to the frontend
         d = {}
         tag = int(req['task_id'])
+        gd = json.loads(req['games_data'])
+        dataset = gd[tag, 'dataset']
         normalization = bool(req['normalization'])
 
-        data, (training_set, test_set) = df.get_data(tag, normalization)
+        data, (training_set, test_set) = df.get_data(dataset=dataset, normalization=normalization)
         cache.set(f'{user_id}_data', pickle.dumps(data), 10*60)  # cache the data for 10 minutes
         print("Data loaded and stored in cache")
 
