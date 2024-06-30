@@ -16,7 +16,6 @@ class Transceiver(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        del communication.cancel_vars[(self.user_id, self.task_id)]
         del Transceiver.connections[self.user_id]
         print("switchboard disconnected")
         

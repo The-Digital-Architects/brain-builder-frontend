@@ -48,7 +48,10 @@ def run(file_name, function_name, send_fn, args=None):
         if p != 'send_fn':
             execution_string += p + '='
             try:
-                execution_string += f'{args[p]}'
+                if type(args[p]) == str:
+                    execution_string += f"'{args[p]}'"
+                else:
+                    execution_string += f'{args[p]}'
             except Exception as e:
                 print(e)  # TODO: add error handling
             execution_string += ','
@@ -56,6 +59,7 @@ def run(file_name, function_name, send_fn, args=None):
     execution_string += ')'
 
     # execute the function
+    print('Executing: ', execution_string)
     exec(execution_string, magic_box)
     
 
