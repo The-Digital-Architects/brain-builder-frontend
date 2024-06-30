@@ -78,14 +78,17 @@ def train_nn_epoch(nn, training_set, test_set, current_epoch, epochs, learning_r
     return errors, accuracy, weights, biases
 
 
-def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ):
+def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ, send_fn):
     # first, reset all variables
     progress = 0
     errors = []
 
-    send_update(progress)
+    send_update(send_fn, progress)
     
     for epoch in range(1, epochs+1):
+        if cache.get(f'{user_id}_cancel'):
+            print("Training cancelled")
+            break
         
         print("Epoch: ", epoch)
         errors, accuracy, we, bi = train_nn_epoch(nn, train_set, test_set, epoch, epochs, learning_rate, typ, errors)
@@ -107,12 +110,12 @@ def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ):
 
                 print("Epoch: ", epoch, ", Error: ", errors[-1])
 
-            send_update(progress, e, w, b, plot)  # TODO: now sending only one update, w, b and plot just aren't always updated -> adjust frontend
+            send_update(send_fn, progress, e, w, b, plot)  # TODO: now sending only one update, w, b and plot just aren't always updated -> adjust frontend
     
     data.plot_decision_boundary(nn)  # plot the current decision boundary (will be ignored if the dataset has too many dimensions)
     plot = b64encode(data.images[-1]).decode()  
     progress = 1
-    send_update(progress, e, w, b, plot)
+    send_update(send_fn, progress, e, w, b, plot)
 
 
 def save_nn(user_id, nn, data):  # TODO check if this works from inside a subprocess
@@ -183,28 +186,22 @@ def convert_input(nodes, n_inputs, n_outputs, typ, af=True):
     return structure
 
 
-def not_main(args):  # TODO
-    """
-    Args must be a json-encoded dictionary containing the following keys: 
-    'user_id', 'type', 'dataset', 'n_inputs', 'n_outputs', 'nodes', 'epochs', 'learning_rate', 'normalization', 'activations_on'
-    """
+def main(nodes, n_inputs, n_outputs, activations_on, learning_rate, epochs, normalization, dataset, typ, user_id, send_fn):  # TODO
 
-    # decode the json args
-    args = json.loads(args)
-    architecture = convert_input(args['nodes'], args['n_inputs'], args['n_outputs'], args['type'], args['activations_on'])
+    architecture = convert_input(nodes, n_inputs, n_outputs, typ, activations_on)
     
     # build the neural network
-    nn, data, training_set, testing_set = build_nn(architecture, args['learning_rate'], args['epochs'], args['normalization'], args['dataset'], args['type'])
+    nn, data, training_set, testing_set = build_nn(architecture, learning_rate, epochs, normalization, dataset, typ)
     print("Network initiated, starting training")
 
     # now train the nn
-    train_nn(data, training_set, testing_set, nn, args['epochs'], args['learning_rate'], args['type'])
+    train_nn(data, training_set, testing_set, nn, epochs, learning_rate, typ, send_fn)
 
     # finally, save the nn
-    save_nn(args['user_id'], nn, data)
+    save_nn(user_id, nn, data)
 
 
-def send_update(progress, error_list=None, weights=None, biases=None, plot=None, block_id=None):
+def send_update(send_fn, progress, error_list=None, weights=None, biases=None, plot=None, block_id=None):  # TODO: replace this with cool way-too-advanced function
     d = {}
     d['header'] = 'update'
     d['progress'] = progress
@@ -220,8 +217,5 @@ def send_update(progress, error_list=None, weights=None, biases=None, plot=None,
         d['plot'] = plot  # base64 encoded image, showing pyplot of the data (potentially with decision boundary)
 
     print('sending update')
-    print(json.dumps(d))  # print to the console, this will be captured by the parent process and sent to the frontend
-
-
-def main(send_fn=None):
-    print("Main works!")
+    send_fn(json.dumps(d))
+    #print(json.dumps(d))  # print to the console, this will be captured by the parent process and sent to the frontend

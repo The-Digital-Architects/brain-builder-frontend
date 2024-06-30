@@ -23,9 +23,7 @@ import inspect
 #from functools import partial
 import json
 from django.forms.models import model_to_dict
-
-
-cancel_vars = {}  # these will be used to cancel the process from consumers.py
+from backend.processing import communication
 
 
 # function to start subprocesses
@@ -118,7 +116,7 @@ async def execute_code(code:str, user_id, notebook_id, send_fn):
         # While the process is running, read updates from the pipe and send them over the WebSocket
         while process.poll() is None:
             # Check if the process was cancelled
-            if cancel_vars.get((str(user_id), str(notebook_id))):
+            if communication.cancel_vars.get((str(user_id), str(notebook_id))):
                 process.terminate()
                 print("Process cancelled")
                 break

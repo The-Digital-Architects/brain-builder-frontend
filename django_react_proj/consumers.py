@@ -1,6 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from django_react_proj import processes
+from backend.processing import communication
 
 class Transceiver(AsyncWebsocketConsumer):
     connections = {}
@@ -15,6 +16,7 @@ class Transceiver(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
+        del communication.cancel_vars[(self.user_id, self.task_id)]
         del Transceiver.connections[self.user_id]
         print("switchboard disconnected")
         
@@ -27,16 +29,16 @@ class Transceiver(AsyncWebsocketConsumer):
         if task_type == 'start':
             # start the process
             task_id = instructions['task_id']
-            processes.cancel_vars[(self.user_id, task_id)] = False
+            communication.cancel_vars[(self.user_id, task_id)] = False
             processes.run(file_name=instructions['file_name'], function_name=instructions['function_name'], args=instructions, send_fn=self.send)
         
         elif task_type == 'cancel':
             task_id = instructions['task_id']  # watch out: this should be the notebook_id for notebooks!
-            processes.cancel_vars[(self.user_id, task_id)] = True
+            communication.cancel_vars[(self.user_id, task_id)] = True
 
         elif task_type == 'code':
             nb_id = instructions['notebook_id']
-            processes.cancel_vars[(self.user_id, nb_id)] = False
+            communication.cancel_vars[(self.user_id, nb_id)] = False
             await processes.execute_code(instructions['code'], self.user_id, nb_id, send_fn=self.send)
         
 
