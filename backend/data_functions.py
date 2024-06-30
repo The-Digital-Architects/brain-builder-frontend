@@ -51,12 +51,15 @@ def get_data(dataset, typ:int=None, normalization=False, test_size=None, val_siz
         data = DataFromExcel(os.path.join(os.path.dirname(__file__), dataset), data_type=typ, normalize=normalization)
 
 
-    if test_size is not None or val_size is not None:
-        train, test_val = train_test_split(data, test_size=(test_size+val_size))
-        test, val = train_test_split(test_val, test_size=val_size/(test_size+val_size))
-        return train, test, val
-    else: 
-        return data
+    # if test_size is not None or val_size is not None:
+    #     train, test_val = train_test_split(data, test_size=(test_size+val_size))
+    #     test, val = train_test_split(test_val, test_size=val_size/(test_size+val_size))
+    #     return train, test, val
+    # else: 
+    #     return data
+    
+    train, test = train_test_split(data, test_size=0.1)
+    return data, (train, test)
 
 
 
