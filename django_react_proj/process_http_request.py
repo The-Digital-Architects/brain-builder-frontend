@@ -27,7 +27,7 @@ from django_react_proj.consumers import Transceiver
 
 from django.core.cache import cache
 import time
-from asgiref.sync import sync_to_async
+#from asgiref.sync import sync_to_async
 import asyncio
 
 async def process(req):
@@ -35,17 +35,13 @@ async def process(req):
     req = dict(req)
     task_id, user_id = req['task_id'], req['user_id']
 
-    # load the games dataframe 
-    processes.games = json.loads(req['games_data'])  # use without pako
-    processes.games = pd.DataFrame(processes.games).set_index('task_id')
-
 
     if req['action'] == 0:  # load the data and send the feature names and images to the frontend
         d = {}
         tag = int(req['task_id'])
         normalization = bool(req['normalization'])
 
-        data, (training_set, test_set) = processes.get_data(tag, normalization)
+        data, (training_set, test_set) = df.get_data(tag, normalization)
         cache.set(f'{user_id}_data', pickle.dumps(data), 10*60)  # cache the data for 10 minutes
         print("Data loaded and stored in cache")
 

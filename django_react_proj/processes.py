@@ -61,7 +61,7 @@ def run(file_name, function_name, send_fn, args=None):
     exec(execution_string, magic_box)
     
 
-
+'''
 # when the file is imported, read out the csv containing the process codes and store in a dataframe
 f = 'process_codes.csv'
 f = os.path.join(os.path.dirname(__file__), f)
@@ -78,7 +78,7 @@ def find_file(process_code:str):
         # TODO: check error handling
 
 
-'''
+
 def find_module(block_id:int):  # TODO: test this
     from backend.databases.models import TaskDescription
     try:
@@ -201,7 +201,7 @@ if __name__ == '__main__':
 
 
 # ______________________________________________________________________________________________________________________
-# ORIGINAL CODE
+# ORIGINAL FILE
 
 # This module contains the information on the different levels and challenges used in the backend.
 # It is called by the process_data module,
