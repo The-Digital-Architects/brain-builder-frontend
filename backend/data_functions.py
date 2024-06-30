@@ -48,7 +48,7 @@ def get_data(dataset, typ:int=None, normalization=False, test_size=None, val_siz
 
     elif type(dataset) is str:
         # load the dataset from Excel -> use custom dataset class
-        data = DataFromExcel(os.path.join(os.path.dirname(__file__), dataset), data_type=typ, normalize=normalization)
+        data = DataFromExcel(os.path.join(os.path.dirname(__file__), 'databases/' + dataset), data_type=typ, normalize=normalization)
 
 
     # if test_size is not None or val_size is not None:

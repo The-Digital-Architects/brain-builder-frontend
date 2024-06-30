@@ -729,10 +729,10 @@ function App() {
       return newIsTraining;
     });
 
-    // first, set up the websocket
-    if (ws && ws.readyState !== WebSocket.CLOSED) {
-      ws.close();
-    }    
+    // // first, set up the websocket
+    // if (ws && ws.readyState !== WebSocket.CLOSED) {
+    //   ws.close();
+    // }    
     const ws = new WebSocket(`wss://${window.location.host}/ws/${userId}/`);
 
     let timeoutId = null;
