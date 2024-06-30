@@ -1,6 +1,6 @@
 import getCookie from './cookieUtils';
 
-export const prepareTrainingData = (cytoLayers, learningRate, iterations, taskId, nOfInputs, nOfOutputs, index, setProgress, setErrorList, setWeights, setBiases, setImgs, setApiData, setAccuracy, setIsTraining, af) => {
+export const prepareTrainingData = (cytoLayers, learningRate, iterations, taskId, nOfInputs, nOfOutputs, index, setProgress, setErrorList, setWeights, setBiases, setImgs, setApiData, setAccuracy, setIsTraining, af, typ, dataset) => {
     if (!learningRate) {learningRate = 0.01};  // set learning rate to default if it's undefined
     if (!iterations) {iterations = 50};  // set learning rate to default if it's undefined
     let normalization = false;  // TODO: replace this with the actual normalization value
@@ -58,6 +58,10 @@ export const prepareTrainingData = (cytoLayers, learningRate, iterations, taskId
       normalization: normalization,
       activations_on: af,
       nodes: JSON.stringify(cytoLayers),
+      n_inputs: nOfInputs,
+      n_outputs: nOfOutputs,
+      typ: typ,
+      dataset: dataset,
       //network_input: JSON.stringify(cytoLayers),
       //games_data: gamesData,  
     };

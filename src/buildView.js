@@ -335,7 +335,7 @@ class Building extends React.Component {
         if (this.props.isTraining === 1) {
           this.props.cancelRequest(this.props.taskId, this.props.index)
         } else { 
-          this.props.putRequest(event, this.props.cytoLayers, this.props.learningRate, this.props.iterations, this.props.taskId, this.props.nOfInputs, this.props.nOfOutputs, this.props.index, this.props.setProgress, this.props.setErrorList, this.props.setWeights, this.props.setBiases, this.props.setImgs, this.props.setApiData, this.props.setAccuracy, this.props.setIsTraining, this.props.userId, this.props.intervalTimeout, this.props.progress, this.props.errorList, this.props.weights, this.props.biases, this.props.imgs, this.props.isTraining, this.props.af, this.props.cancelRequest)
+          this.props.putRequest(event, this.props.cytoLayers, this.props.learningRate, this.props.iterations, this.props.taskId, this.props.nOfInputs, this.props.nOfOutputs, this.props.index, this.props.setProgress, this.props.setErrorList, this.props.setWeights, this.props.setBiases, this.props.setImgs, this.props.setApiData, this.props.setAccuracy, this.props.setIsTraining, this.props.userId, this.props.intervalTimeout, this.props.progress, this.props.errorList, this.props.weights, this.props.biases, this.props.imgs, this.props.isTraining, this.props.af, this.props.cancelRequest, this.props.typ, this.props.dataset);
         }
         console.log("Click executed")
         inThrottle=true

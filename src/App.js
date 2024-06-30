@@ -212,6 +212,8 @@ function App() {
   const [taskNames, setTaskNames] = useState({})
   const [taskIds, setTaskIds] = useState([]);
   const [gamesData, setGamesData] = useState([[]]);
+  const [typ, setTyp] = useState([[]]);
+  const [dataset, setDataset] = useState([[]]);
   const [initPlots, setInitPlots] = useState([[]]);
   const [nInputs, setNInputs] = useState([]);
   const [nOutputs, setNOutputs] = useState([]);
@@ -273,6 +275,8 @@ function App() {
         const currentTaskIds = [];
         const currentWeights = [];
         const currentTaskNames = {};
+        const currentTyp = [];
+        const currentDataset = [];
 
         currentTaskData.forEach(entry => {
           currentNInputs.push(entry.n_inputs);
@@ -283,6 +287,8 @@ function App() {
           currentTaskIds.push(entry.task_id);
           currentWeights.push([]);
           currentTaskNames[entry.task_id] = entry.name;
+          currentTyp.push(entry.type);
+          currentDataset.push(entry.dataset);
         });
 
         setTaskIds(currentTaskIds);
@@ -313,6 +319,8 @@ function App() {
         setImgs(currentTaskIds.map(() => []));
         setInitPlots(currentTaskIds.map(() => []));
         setLoadedTasks(true)
+        setTyp(currentTyp);
+        setDataset(currentDataset);
       })
       .catch(error => {
         console.error('Error fetching tasks:', error);
@@ -336,6 +344,8 @@ function App() {
         setWeights(defaultTaskIds.map(() => []));
         setBiases(defaultTaskIds.map(() => []));
         setImgs(defaultTaskIds.map(() => []));
+        setTyp(defaultTaskIds.map(() => 1));
+        setDataset(defaultTaskIds.map(() => 'Clas2.csv'));
         console.log("Setting default states instead.")
       });
 
@@ -814,6 +824,8 @@ function App() {
                   setImgs={setImgs}
                   userId={getCookie('user_id')}
                   intervalTimeout={intervalTimeout}
+                  typ={typ[index]}
+                  dataset={dataset[index]}
                 />
                 </>
               }
