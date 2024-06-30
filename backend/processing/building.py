@@ -169,8 +169,8 @@ def convert_input(nodes, n_inputs, n_outputs, typ, af=True):
     for x in nodes[1:]:
         structure += [[x, 'Linear', 'Sigmoid', True]]  # all nodes are linear and include a sigmoid activation and bias
 
-    assert structure[0][0] == n_inputs
-    assert structure[-1][0] == n_outputs
+    assert structure[0][0] == n_inputs, structure
+    assert structure[-1][0] == n_outputs, structure
 
     # modifications depending on tag
     if typ == 1:
@@ -187,7 +187,7 @@ def convert_input(nodes, n_inputs, n_outputs, typ, af=True):
 
 
 def main(nodes, n_inputs, n_outputs, activations_on, learning_rate, epochs, normalization, dataset, typ, user_id, send_fn):  # TODO
-
+    print(type(nodes))  # for debugging
     architecture = convert_input(nodes, n_inputs, n_outputs, typ, activations_on)
     
     # build the neural network

@@ -57,7 +57,7 @@ export const prepareTrainingData = (cytoLayers, learningRate, iterations, taskId
       epochs: iterations,
       normalization: normalization,
       activations_on: af,
-      nodes: JSON.stringify(cytoLayers),
+      nodes: cytoLayers,
       n_inputs: nOfInputs,
       n_outputs: nOfOutputs,
       typ: typ,
