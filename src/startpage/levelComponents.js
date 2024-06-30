@@ -147,7 +147,7 @@ function ProgressBox({progress}) {
               <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Copy this code to continue in a different browser</label>
               {/*when you click the text, it will copy the code to the clipboard*/}
               <IconButton variant='soft' radius='full' size={2} style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}} onClick={handleCopy}>
-                {copyFeedback}{copyFeedback === myId && <><span> </span><CopyIcon/></>}
+                {copyFeedback}{copyFeedback === myId && <><span>&nbsp;</span><CopyIcon/></>}
               </IconButton>
           </Flex>
       </Box>

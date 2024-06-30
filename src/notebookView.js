@@ -100,9 +100,9 @@ class NotebookView extends React.Component {
 
         return(
             <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
-                <Flex direction='column' style={{ alignItems: 'flex-start' }}>
+                <Flex direction='column' style={{ width: '100%' }}>
                     <Header showHomeButton={true} />
-                    <Flex direction='column' gap='3' style={{padding:'10px 10px', alignItems: 'flex-start' }}>
+                    <Flex direction='column' gap='3' style={{padding:'10px 10px', width: '100%' }}>
 
                         <div className="notebook-view">
                             {this.state.notebook === null && <div>Loading...</div>}
@@ -230,7 +230,7 @@ class PlayButton extends React.Component {
 
     render() {
         return (
-            <IconButton onClick={this.props.onClick} style={{ flex: 1, backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)' }}><PlayIcon /></IconButton>
+            <IconButton onClick={this.props.onClick} style={{ flex: 1, backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)', width: '5vw' }}><PlayIcon /></IconButton>
         );
     }
 }
