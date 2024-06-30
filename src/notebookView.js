@@ -100,34 +100,29 @@ class NotebookView extends React.Component {
 
         return(
             <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
-                <Flex direction='row' gap='3' style={{padding:'10px 10px', alignItems: 'flex-start' }}>
-
+                <Flex direction='column' style={{ alignItems: 'flex-start' }}>
                     <Header showHomeButton={true} />
+                    <Flex direction='column' gap='3' style={{padding:'10px 10px', alignItems: 'flex-start' }}>
 
-                    <div className="notebook-view">
-                        {this.state.notebook === null && <div>Loading...</div>}
-                        {this.state.notebook !== null && console.log(this.ws.readyState)}
-                        {this.state.notebook !== null && this.state.notebook.cells.map((cell, index) => {
-                            <Box style={{
-                                border: "2px solid",
-                                borderColor: "var(--slate-8)",
-                                borderRadius: "var(--radius-3)",
-                                padding: '10px 24px',
-                                cursor: 'pointer', // Change cursor to pointer
-                                transition: 'background-color 0.3s', // Smooth transition for background color
-                                ':hover': {
-                                  backgroundColor: "var(--slate-2)", // Change background color on hover
-                                }
-                              }}>
-                                    {cell.cell_type === 'markdown'? (
-                                        <MarkdownCell key={index} cell={cell} content={this.state.cellContents[index]} onContentChange={(newContent) => this.handleContentChange(index, newContent)} style={{ margin: '10px' }} />
+                        <div className="notebook-view">
+                            {this.state.notebook === null && <div>Loading...</div>}
+                            {this.state.notebook !== null && this.state.notebook.cells.map((cell, index) => (
+                                <Box style={{
+                                    border: "2px solid",
+                                    borderColor: "var(--slate-8)",
+                                    borderRadius: "var(--radius-3)",
+                                    padding: '10px 24px',
+                                    cursor: 'pointer',
+                                }} key={index}>
+                                    {cell.cell_type === 'markdown' ? (
+                                    <MarkdownCell cell={cell} content={this.state.cellContents[index]} onContentChange={(newContent) => this.handleContentChange(index, newContent)} style={{ margin: '10px' }} />
                                     ) : (cell.cell_type === 'code' && (
-                                        <CodeCell key={index} cell={cell} content={this.state.cellContents[index]} onContentChange={(newContent) => this.handleContentChange(index, newContent)} handleClick={() => this.handleClick(index)} style={{ margin: '10px' }} />
-                                    ))
-                                    // Handle other cell types...
-                                    }
-                            </Box>})}
-                    </div>
+                                    <CodeCell cell={cell} content={this.state.cellContents[index]} onContentChange={(newContent) => this.handleContentChange(index, newContent)} handleClick={() => this.handleClick(index)} style={{ margin: '10px' }} />
+                                    ))}
+                                </Box>
+                                ))}
+                            </div>
+                    </Flex>
                 </Flex>
             </Theme>
         )
