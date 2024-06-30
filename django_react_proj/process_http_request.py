@@ -54,7 +54,7 @@ async def process(req):
         d['plot'] = b64encode(data.images[-1]).decode()  # base64 encoded image, showing pyplot of the data
         d['n_objects'] = data.n_objects
 
-        tc = Transceiver.connections.get((str(user_id), str(task_id)))
+        tc = Transceiver.connections.get((str(user_id)))
         t = 0
         while tc is None and t < 10:
             time.sleep(0.1)
@@ -85,14 +85,14 @@ async def process(req):
         print("Network initiated, starting training")
         d['header'] = 'progress'
         d['progress'] = 0  # just update the progress
-        tc = Transceiver.connections.get((str(user_id), str(task_id)))
+        tc = Transceiver.connections.get((str(user_id)))
         if tc is not None:
             await tc.send_data(d)
         
         u['header'] = 'update'
         
         for epoch in range(1, epochs+1):
-            if Transceiver.cancelVars.get((str(user_id), str(task_id))):
+            if Transceiver.cancelVars.get((str(user_id))):
                 print("Training cancelled")
                 break
             print("Epoch: ", epoch)
@@ -118,12 +118,12 @@ async def process(req):
 
                     print("Epoch: ", epoch, ", Error: ", errors[-1])
 
-                    tc = Transceiver.connections.get((str(user_id), str(task_id)))
+                    tc = Transceiver.connections.get((str(user_id)))
                     if tc is not None:
                         print('Sending data to switchboard')
                         await tc.send_data(u)
 
-                tc = Transceiver.connections.get((str(user_id), str(task_id)))
+                tc = Transceiver.connections.get((str(user_id)))
                 if tc is not None:
                     print('Sending data to switchboard')
                     await tc.send_data(d)
@@ -145,7 +145,7 @@ async def process(req):
         cache.set(f'{user_id}_data', data, 10*60)  # cache the data for 10 minutes
         print("Network and data successfully saved to cache!")
         
-        tc = Transceiver.connections.get((str(user_id), str(task_id)))
+        tc = Transceiver.connections.get((str(user_id)))
         if tc is not None:
             print('Sending double data to switchboard')
             await tc.send_data(d)
