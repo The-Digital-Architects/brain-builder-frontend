@@ -2,7 +2,7 @@ import React from 'react';
 import BuildView from './buildView';
 import './css/App.css';
 import { useState, useEffect } from 'react';
-import { generateCytoElements, generateCytoStyle } from './App';
+import { generateCytoElements, generateCytoStyle } from './utils/cytoUtils';
 import * as Slider from '@radix-ui/react-slider';
 
 
