@@ -103,10 +103,10 @@ class NotebookView extends React.Component {
                 <Flex direction='column' style={{ width: '100%' }}>
                     <Header showHomeButton={true} />
                     <Box style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: window.innerHeight-52, fontFamily: 'monospace', backgroundImage: 'linear-gradient(330deg, rgba(7,62,185, 0.15) 0%, rgba(7,185,130, 0.15) 100%)'}}>
-                        <Flex direction='column' gap='3' style={{padding:'10px 10px', width: '100%' }}>
+                        <Flex direction='column' gap='3' style={{padding:'10px 10px', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                             {this.state.notebook === null && <div>Loading...</div>}
                             {this.state.notebook !== null && this.state.notebook.cells.map((cell, index) => (
-                                <Box style={{ boxShadow: '0 2px 8px var(--slate-a11)', borderRadius: "var(--radius-3)", width:window.innerWidth/3, padding: '30px 50px', background:"solid", backgroundColor:"white", cursor: 'pointer'}} key={index}>
+                                <Box style={{ boxShadow: '0 2px 8px var(--slate-a11)', borderRadius: "var(--radius-3)", width:window.innerWidth/2, padding: '30px 50px', background:"solid", backgroundColor:"white", cursor: 'pointer'}} key={index}>
                                     {cell.cell_type === 'markdown' ? (
                                     <MarkdownCell cell={cell} content={this.state.cellContents[index]} onContentChange={(newContent) => this.handleContentChange(index, newContent)} style={{ margin: '10px' }} />
                                     ) : (cell.cell_type === 'code' && (
@@ -175,22 +175,36 @@ class CodeCell extends React.Component {
             isEditing: false,
             newContent: '',
         };
+        this.textareaRef = React.createRef();
     }
 
     componentDidMount() {
         this.setState({ newContent: this.props.cell.source.join('') });
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.isEditing && !prevState.isEditing) {
+            this.textareaRef.current.focus();
+            this.adjustTextareaHeight();
+        }
+    }
+
+    adjustTextareaHeight = () => {
+        const textarea = this.textareaRef.current;
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
     handleChange = (event) => {
-        this.setState({ newContent: event.target.value });
+        this.setState({ newContent: event.target.value }, this.adjustTextareaHeight);
     }
 
     handleBlur = () => {
-        this.setState({ isEditing: false, newContent: this.state.content });
+        this.setState({ isEditing: false, newContent: this.state.newContent });
     }
 
     handleKeyDown = (event) => {
-        if (this.state.isEditing && event.key === "Enter") {
+        if (event.key === "Enter" && event.shiftKey) {
             event.preventDefault();
             this.setState({ isEditing: false });
             this.props.onContentChange(this.state.newContent);
@@ -198,13 +212,29 @@ class CodeCell extends React.Component {
     }
 
     render() {
+        const textareaStyle = {
+            width: '100%',
+            padding: '10px',
+            border: '1px solid #ddd',
+            borderRadius: '4px',
+            resize: 'none',
+            fontFamily: '"Fira Code", monospace',
+            lineHeight: '1.5',
+        };
 
         return (
             <Flex direction="row" gap="2" className="code-cell" >
                 <PlayButton onClick={this.props.handleClick} />
                 <div style={{ flex: 2, overflow: 'auto' }} onClick={() => this.setState({ isEditing: true })} >
                 {this.state.isEditing ? (
-                <textarea value={this.state.newContent} onChange={this.handleChange} onBlur={this.handleBlur} onKeyDown={this.handleKeyDown} />
+                <textarea 
+                    ref={this.textareaRef}
+                    value={this.state.newContent} 
+                    onChange={this.handleChange} 
+                    onBlur={this.handleBlur} 
+                    onKeyDown={this.handleKeyDown} 
+                    style={textareaStyle}
+                />
                 ) : (
                 <SyntaxHighlighter language="python" style={a11yDark} >
                     {this.props.content}
@@ -223,7 +253,7 @@ class PlayButton extends React.Component {
 
     render() {
         return (
-            <IconButton onClick={this.props.onClick} style={{ flex: 1, backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)', width: '5vw' }}><PlayIcon /></IconButton>
+            <IconButton onClick={this.props.onClick} style={{ flex: 1, backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)', width: '2vw', marginBottom: 7, marginTop: 7 }}><PlayIcon /></IconButton>
         );
     }
 }
