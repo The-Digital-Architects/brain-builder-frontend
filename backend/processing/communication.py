@@ -30,8 +30,15 @@ def send_update(var_names, vars, send_fn, header=None):
     Optionally, a custom header can be added.
     """
     message = {'header': header if header else 'update'}
-    for i, var in enumerate(var_names):
-        message[var] = vars[var]
+    if type(vars) == list:
+        for i, var in enumerate(var_names):
+            message[var] = vars[i]
+    elif type(vars) == dict: 
+        for var in var_names:
+            message[var] = vars[var]
+    else: 
+        send_error("TypeError in communication.py: variables should be a list or a dictionary", send_fn)
+        return
     send_fn(json.dumps(message))
 
 
