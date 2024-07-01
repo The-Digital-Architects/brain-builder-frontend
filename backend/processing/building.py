@@ -111,12 +111,12 @@ def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ, user_id,
 
                 print("Epoch: ", epoch, ", Error: ", errors[-1])
 
-            send_update(send_fn=send_fn, var_names=['progress', 'error_list', 'network_weights', 'network_biases', 'plot'], vars=(progress, e, w, b, plot))  # TODO: now sending only one update, plot just isn't always updated
+            send_update(send_fn=send_fn, user_id=user_id, task_id=task_id, var_names=['progress', 'error_list', 'network_weights', 'network_biases', 'plot'], vars=(progress, e, w, b, plot))  # TODO: now sending only one update, plot just isn't always updated
     
     data.plot_decision_boundary(nn)  # plot the current decision boundary (will be ignored if the dataset has too many dimensions)
     plot = b64encode(data.images[-1]).decode()  
     progress = 1
-    send_update(send_fn=send_fn, var_names=['progress', 'error_list', 'network_weights', 'network_biases', 'plot'], vars=(progress, e, w, b, plot))
+    send_update(send_fn=send_fn, user_id=user_id, task_id=task_id, var_names=['progress', 'error_list', 'network_weights', 'network_biases', 'plot'], vars=(progress, e, w, b, plot))
 
 
 def save_nn(user_id, nn, data):  # TODO check if this works from inside a subprocess
