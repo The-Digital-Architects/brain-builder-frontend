@@ -335,7 +335,36 @@ class Building extends React.Component {
         if (this.props.isTraining === 1) {
           this.props.cancelRequest(this.props.taskId, this.props.index)
         } else { 
-          this.props.putRequest(event, this.props.cytoLayers, this.props.learningRate, this.props.iterations, this.props.taskId, this.props.nOfInputs, this.props.nOfOutputs, this.props.index, this.props.setProgress, this.props.setErrorList, this.props.setWeights, this.props.setBiases, this.props.setImgs, this.props.setApiData, this.props.setAccuracy, this.props.setIsTraining, this.props.userId, this.props.intervalTimeout, this.props.progress, this.props.errorList, this.props.weights, this.props.biases, this.props.imgs, this.props.isTraining, this.props.af, this.props.cancelRequest, this.props.typ, this.props.dataset);
+          let putRequestParams = {
+            cytoLayers: this.props.cytoLayers,
+            learningRate: this.props.learningRate,
+            iterations: this.props.iterations,
+            taskId: this.props.taskId,
+            nOfInputs: this.props.nOfInputs,
+            nOfOutputs: this.props.nOfOutputs,
+            index: this.props.index,
+            setProgress: this.props.setProgress,
+            setErrorList: this.props.setErrorList,
+            setWeights: this.props.setWeights,
+            setBiases: this.props.setBiases,
+            setImgs: this.props.setImgs,
+            setApiData: this.props.setApiData,
+            setAccuracy: this.props.setAccuracy,
+            setIsTraining: this.props.setIsTraining,
+            userId: this.props.userId,
+            intervalTimeout: this.props.intervalTimeout,
+            progress: this.props.progress,
+            errorList: this.props.errorList,
+            weights: this.props.weights,
+            biases: this.props.biases,
+            imgs: this.props.imgs,
+            isTraining: this.props.isTraining,
+            af: this.props.af,
+            cancelRequestRef: this.props.cancelRequest,
+            typ: this.props.typ,
+            dataset: this.props.dataset,
+          }
+          this.props.putRequest(event, putRequestParams);
         }
         console.log("Click executed")
         inThrottle=true
