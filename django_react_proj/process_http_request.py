@@ -28,7 +28,6 @@ from django_react_proj.consumers import Transceiver
 from django.core.cache import cache
 import time
 #from asgiref.sync import sync_to_async
-import asyncio
 
 async def process(req):
 

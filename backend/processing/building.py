@@ -85,7 +85,7 @@ def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ, user_id,
     errors = []
     plot = None
 
-    send_update(send_fn=send_fn, var_names=['progress'], vars=(progress,))
+    send_update(send_fn=send_fn, user_id=user_id, task_id=task_id, var_names=['progress'], vars=(progress,))
     
     for epoch in range(1, epochs+1):
         if is_cancelled(user_id, task_id):

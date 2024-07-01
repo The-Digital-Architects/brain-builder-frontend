@@ -1,10 +1,14 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
+import asyncio
 import json
 from django_react_proj import processes
 from backend.processing import communication
 
 class Transceiver(AsyncWebsocketConsumer):
     connections = {}
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.trigger = asyncio.Event()
 
     async def connect(self):
         print(f'Connection scope: {self.scope}')
@@ -29,6 +33,9 @@ class Transceiver(AsyncWebsocketConsumer):
             # start the process
             task_id = instructions['task_id']
             communication.cancel_vars[(self.user_id, task_id)] = False
+
+            asyncio.create_task(self.check_for_updates(self))
+
             processes.run(file_name=instructions['file_name'], function_name=instructions['function_name'], args=instructions, send_fn=self.send)
         
         elif task_type == 'cancel':
@@ -38,7 +45,7 @@ class Transceiver(AsyncWebsocketConsumer):
         elif task_type == 'code':
             nb_id = instructions['notebook_id']
             communication.cancel_vars[(self.user_id, nb_id)] = False
-            await processes.execute_code(instructions['code'], self.user_id, nb_id, send_fn=self.send)
+            await processes.execute_code(instructions['code'], self.user_id, nb_id, send_fn=self.notify)
         
 
     # Send an update to the frontend
@@ -50,6 +57,20 @@ class Transceiver(AsyncWebsocketConsumer):
         #ping = {'header': 'ping'}
         #self.send(json.dumps(ping))
         #await self.send_data(ping)
+    
+
+    async def trigger_send(self, task_id):
+        while Transceiver.connections.get(self.user_id) is not None:
+            await self.trigger.wait()
+            if communication.message.get(self.user_id, task_id) is not None:
+                # Assuming 'message' is structured as a dictionary that needs to be sent as JSON:
+                await self.send_data(communication.message)
+                
+                communication.message[self.user_id, task_id] = None  # clear the message
+            await asyncio.sleep(0.1)  # adjust the interval as needed
+
+    def notify(self):
+        self.trigger.set()
 
 
     # # function to handle subprocess output

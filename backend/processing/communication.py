@@ -10,12 +10,12 @@ There is also is_cancelled, which checks whether the process has been cancelled 
 
 
 # imports: 
-import json
 from base64 import b64encode
-import asyncio
 
 
+message_vars = {}  # these will be used to send messages to the frontend
 cancel_vars = {}  # these will be used to cancel the process from consumers.py
+
 def is_cancelled(user_id, task_id):
     """
     Function that checks if the process has been cancelled by the frontend. 
@@ -24,22 +24,7 @@ def is_cancelled(user_id, task_id):
     return cancel_vars.get((str(user_id), str(task_id)), False)
 
 
-def async_send(message, async_send_fn):
-    """
-    This function sends a specified message (dictionary containing a.o. a 'header' key) to the frontend. 
-    It avoids running an asynchronous loop inside the overarching asynchronous application loop. 
-    This allows other collaborators to add synchronous code to backend/processes.
-    """
-
-    loop = asyncio.get_event_loop()
-    if loop.is_running():
-        future = asyncio.run_coroutine_threadsafe(async_send_fn(message), loop)
-        future.result()
-    else: 
-        loop.run_until_complete(async_send_fn(json.dumps(message)))
-
-
-def send_update(var_names, vars, send_fn, header=None):
+def send_update(var_names, vars, send_fn, task_id, user_id, header=None):
     """
     Function that sends an update to the frontend. 
     Needs a list of variables to send, the variables inside the function scope (add ) and the send_fn corresponding to the websocket connection. 
@@ -56,20 +41,22 @@ def send_update(var_names, vars, send_fn, header=None):
         send_error("TypeError in communication.py: variables should be a list or a dictionary", send_fn)
         return
     
-    async_send(message, send_fn)
+    message_vars[(user_id, task_id)] = message
+    send_fn()
 
 
-def send_print(message, send_fn):
+def send_print(message, send_fn, task_id, user_id):
     """
     Function that sends a print statement to the frontend. 
     Needs a message to send and the send_fn corresponding to the websocket connection. 
     """
     message = {'header': 'print', 'message': message}
 
-    async_send(message, send_fn)
+    message_vars[(user_id, task_id)] = message
+    send_fn()
 
 
-def send_error(error, send_fn, code=None):
+def send_error(error, send_fn, task_id, user_id, code=None):
     """
     Function that sends an error message to the frontend.
     Needs an error message to send and the send_fn corresponding to the websocket connection. 
@@ -77,10 +64,11 @@ def send_error(error, send_fn, code=None):
     message = {'header': 'error', 'error': error}
     if code: message['error_code'] = code
 
-    async_send(message, send_fn)
+    message_vars[(user_id, task_id)] = message
+    send_fn()
 
 
-def send_plot(img, send_fn, description=None):
+def send_plot(img, send_fn, task_id, user_id, description=None):
     """
     Function that sends a plot to the frontend.
     ...
@@ -88,4 +76,5 @@ def send_plot(img, send_fn, description=None):
     b64encode(img).decode()  # base64 encoded image
     message = {'header': 'image', 'img': img, 'description': description}
 
-    async_send(message, send_fn)
+    message_vars[(user_id, task_id)] = message
+    send_fn()
