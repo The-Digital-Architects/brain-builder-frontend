@@ -12,6 +12,7 @@ There is also is_cancelled, which checks whether the process has been cancelled 
 # imports: 
 import json
 from base64 import b64encode
+import asyncio
 
 
 cancel_vars = {}  # these will be used to cancel the process from consumers.py
@@ -48,7 +49,10 @@ def send_print(message, send_fn):
     Needs a message to send and the send_fn corresponding to the websocket connection. 
     """
     message = {'header': 'print', 'message': message}
-    send_fn(json.dumps(message))
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(send_fn(json.dumps(message)))
 
 
 def send_error(error, send_fn, code=None):
@@ -58,7 +62,10 @@ def send_error(error, send_fn, code=None):
     """
     message = {'header': 'error', 'error': error}
     if code: message['error_code'] = code
-    send_fn(json.dumps(message))
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(send_fn(json.dumps(message)))
 
 
 def send_plot(img, send_fn, description=None):
@@ -66,4 +73,9 @@ def send_plot(img, send_fn, description=None):
     Function that sends a plot to the frontend.
     ...
     """
-    b64encode(img).decode()  # base64 encoded image, showing pyplot of the data
+    b64encode(img).decode()  # base64 encoded image
+    message = {'header': 'image', 'img': img, 'description': description}
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(send_fn(json.dumps(message)))
