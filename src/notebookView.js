@@ -252,27 +252,29 @@ class CodeCell extends React.Component {
             resize: 'none',
             fontFamily: '"Fira Code", monospace',
             lineHeight: '1.5',
+            marginTop: '7px',
+            marginBottom: '7px',
         };
 
         return (
             <Flex direction="column" gap="2" className="code-cell" >
                 <Flex direction="row" gap="2">
-                    <PlayButton onClick={this.props.handleClick} />
+                    <PlayButton onClick={this.props.handleClick} style={{ marginLeft: -10 }}/>
                     <div style={{ flex: 2, overflow: 'auto' }} onClick={() => this.setState({ isEditing: true })} >
-                    {this.state.isEditing ? (
-                    <textarea 
-                        ref={this.textareaRef}
-                        value={this.state.newContent} 
-                        onChange={this.handleChange} 
-                        onBlur={this.handleBlur} 
-                        onKeyDown={this.handleKeyDown} 
-                        style={textareaStyle}
-                    />
-                    ) : (
-                    <SyntaxHighlighter language="python" style={a11yDark} >
-                        {this.props.content}
-                    </SyntaxHighlighter>
-                    )}
+                        {this.state.isEditing ? (
+                            <textarea 
+                                ref={this.textareaRef}
+                                value={this.state.newContent} 
+                                onChange={this.handleChange} 
+                                onBlur={this.handleBlur} 
+                                onKeyDown={this.handleKeyDown} 
+                                style={textareaStyle}
+                            />
+                        ) : (
+                            <SyntaxHighlighter language="python" style={a11yDark} >
+                                {this.props.content}
+                            </SyntaxHighlighter>
+                        )}
                     </div>
                 </Flex>
                 <Box style={{ marginTop: '10px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: '#f5f5f5' }}>
@@ -291,7 +293,7 @@ class PlayButton extends React.Component {
 
     render() {
         return (
-            <IconButton onClick={this.props.onClick} style={{ backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)', width: window.innerWidth/50, marginBottom: 7, marginTop: 7 }}><PlayIcon /></IconButton>
+            <IconButton onClick={this.props.onClick} style={{ backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)', width: window.innerWidth/50, height: window.innerWidth/50, marginBottom: 7, marginTop: 7 }}><PlayIcon /></IconButton>
         );
     }
 }
