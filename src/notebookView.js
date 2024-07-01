@@ -1,7 +1,7 @@
 import React from 'react';
 import './css/App.css';
-import { Theme, Box, Grid, Heading, IconButton, Flex } from '@radix-ui/themes';
-import { HomeIcon, PlayIcon } from '@radix-ui/react-icons';
+import { Theme, Box, IconButton, Flex } from '@radix-ui/themes';
+import { PlayIcon } from '@radix-ui/react-icons';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -47,16 +47,15 @@ class NotebookView extends React.Component {
         }
 
         this.ws.onmessage = (event) => {
-            console.log('ws message received');  // TODO: display the code output
-            const data = JSON.parse(event.data); 
-            console.log(data); 
-            // try {
-            //     const data = JSON.parse(event.data);
-            //     if (data.header == "output" && data.notebook_id == this.props.notebookPath) {
-            //         alert(data.output)
-            //         // TODO: handle the message
-            //     }
-            // } catch (error) {console.error('Error receiving message:', error);}
+            try {
+                const data = JSON.parse(event.data);
+                if (data.header === "output" && data.notebook_id === this.props.notebookPath) {
+                    alert(data.output);
+                    // TODO: handle the message more appropriately if needed
+                }
+            } catch (error) {
+                console.error('Error receiving message:', error);
+            }
         }
     }
 
@@ -287,7 +286,7 @@ class PlayButton extends React.Component {
 
     render() {
         return (
-            <IconButton onClick={this.props.onClick} style={{ flex: 1, backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)', width: window.innerWidth/30, marginBottom: 7, marginTop: 7 }}><PlayIcon /></IconButton>
+            <IconButton onClick={this.props.onClick} style={{ backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)', width: window.innerWidth/30, marginBottom: 7, marginTop: 7 }}><PlayIcon /></IconButton>
         );
     }
 }
