@@ -24,6 +24,21 @@ def is_cancelled(user_id, task_id):
     return cancel_vars.get((str(user_id), str(task_id)), False)
 
 
+def async_send(message, async_send_fn):
+    """
+    This function sends a specified message (dictionary containing a.o. a 'header' key) to the frontend. 
+    It avoids running an asynchronous loop inside the overarching asynchronous application loop. 
+    This allows other collaborators to add synchronous code to backend/processes.
+    """
+
+    loop = asyncio.get_event_loop()
+    if loop.is_running():
+        future = asyncio.run_coroutine_threadsafe(async_send_fn(message), loop)
+        future.result()
+    else: 
+        loop.run_until_complete(async_send_fn(json.dumps(message)))
+
+
 def send_update(var_names, vars, send_fn, header=None):
     """
     Function that sends an update to the frontend. 
@@ -41,9 +56,7 @@ def send_update(var_names, vars, send_fn, header=None):
         send_error("TypeError in communication.py: variables should be a list or a dictionary", send_fn)
         return
     
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(send_fn(json.dumps(message)))
+    async_send(message, send_fn)
 
 
 def send_print(message, send_fn):
@@ -53,9 +66,7 @@ def send_print(message, send_fn):
     """
     message = {'header': 'print', 'message': message}
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(send_fn(json.dumps(message)))
+    async_send(message, send_fn)
 
 
 def send_error(error, send_fn, code=None):
@@ -66,9 +77,7 @@ def send_error(error, send_fn, code=None):
     message = {'header': 'error', 'error': error}
     if code: message['error_code'] = code
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(send_fn(json.dumps(message)))
+    async_send(message, send_fn)
 
 
 def send_plot(img, send_fn, description=None):
@@ -79,6 +88,4 @@ def send_plot(img, send_fn, description=None):
     b64encode(img).decode()  # base64 encoded image
     message = {'header': 'image', 'img': img, 'description': description}
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(send_fn(json.dumps(message)))
+    async_send(message, send_fn)
