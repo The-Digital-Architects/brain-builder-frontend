@@ -48,8 +48,8 @@ class NotebookView extends React.Component {
             try {
                 const data = JSON.parse(event.data);
                 if (data.header === "output" && data.notebook_id === this.props.notebookPath) {
-                    // Assuming data.cellIndex is the index of the cell the output belongs to
-                    const newCellOutputs = { ...this.state.cellOutputs, [data.cellIndex]: data.output };
+                    let cellIndex = 1; // TODO: Replace this with the actual cell index
+                    const newCellOutputs = { ...this.state.cellOutputs, [cellIndex]: data.output };
                     this.setState({ cellOutputs: newCellOutputs });
                     // Now, cellOutputs state will hold the output for each cell by its index
                 }
@@ -275,10 +275,10 @@ class CodeCell extends React.Component {
                     )}
                     </div>
                 </Flex>
-                {this.props.output && <Box style={{ marginTop: '10px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: '#f5f5f5' }}>
+                <Box style={{ marginTop: '10px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: '#f5f5f5' }}>
                     <strong>Output:</strong>
                     <pre>{this.props.output}</pre>
-                </Box>}
+                </Box>
             </Flex>
         );
     }
