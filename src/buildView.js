@@ -360,7 +360,7 @@ class Building extends React.Component {
             imgs: this.props.imgs,
             isTraining: this.props.isTraining,
             af: this.props.af,
-            cancelRequestRef: this.props.cancelRequest,
+            cancelRequestRef: this.props.cancelRequestRef,
             typ: this.props.typ,
             dataset: this.props.dataset,
           }

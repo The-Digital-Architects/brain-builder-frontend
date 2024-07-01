@@ -819,7 +819,7 @@ function App() {
                   setWeights={setWeights}
                   setBiases={setBiases}
                   pendingTime={pendingTime}
-                  cancelRequest={cancelRequestRef.current}
+                  cancelRequestRef={cancelRequestRef}
                   maxNodes={maxNodes}
                   setImgs={setImgs}
                   userId={getCookie('user_id')}
