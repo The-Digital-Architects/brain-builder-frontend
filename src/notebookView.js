@@ -15,15 +15,13 @@ class NotebookView extends React.Component {
             notebook: null,
             currentCell: 0,
             cellContents: [],
+            cellOutputs: {}, // Added a new state to track outputs for each cell
         };
         this.ws = new WebSocket(`wss://${this.props.host}/code/${this.props.userId}/`);
     }
 
     componentDidMount() {
-        let notebookUrl 
-
-        // notebookUrl = 'https://raw.githubusercontent.com/Pawel024/brain-builder/laurens/notebooks/' + this.props.notebookId + '.ipynb'  // TODO: change the repo
-        notebookUrl = `/api/notebooks/${this.props.notebookPath}/`;
+        let notebookUrl = `/api/notebooks/${this.props.notebookPath}/`;
 
         axios.get(notebookUrl)
             .then(response => {
@@ -50,8 +48,10 @@ class NotebookView extends React.Component {
             try {
                 const data = JSON.parse(event.data);
                 if (data.header === "output" && data.notebook_id === this.props.notebookPath) {
-                    alert(data.output);
-                    // TODO: handle the message more appropriately if needed
+                    // Assuming data.cellIndex is the index of the cell the output belongs to
+                    const newCellOutputs = { ...this.state.cellOutputs, [data.cellIndex]: data.output };
+                    this.setState({ cellOutputs: newCellOutputs });
+                    // Now, cellOutputs state will hold the output for each cell by its index
                 }
             } catch (error) {
                 console.error('Error receiving message:', error);
@@ -109,7 +109,7 @@ class NotebookView extends React.Component {
                                     {cell.cell_type === 'markdown' ? (
                                     <MarkdownCell cell={cell} content={this.state.cellContents[index]} onContentChange={(newContent) => this.handleContentChange(index, newContent)} style={{ margin: '10px' }} />
                                     ) : (cell.cell_type === 'code' && (
-                                    <CodeCell cell={cell} content={this.state.cellContents[index]} onContentChange={(newContent) => this.handleContentChange(index, newContent)} handleClick={() => this.handleClick(index)} style={{ margin: '10px' }} />
+                                    <CodeCell cell={cell} content={this.state.cellContents[index]} output={this.state.cellOutputs[index] || ''} onContentChange={(newContent) => this.handleContentChange(index, newContent)} handleClick={() => this.handleClick(index)} style={{ margin: '10px' }} />
                                     ))}
                                 </Box>
                                 ))}
@@ -240,7 +240,6 @@ class CodeCell extends React.Component {
         if (this.state.isEditing && event.key === "Enter") {
             event.preventDefault();
             this.setState({ isEditing: false });
-            this.props.onContentChange(this.state.newContent);
         } 
     }
 
@@ -256,24 +255,30 @@ class CodeCell extends React.Component {
         };
 
         return (
-            <Flex direction="row" gap="2" className="code-cell" >
-                <PlayButton onClick={this.props.handleClick} />
-                <div style={{ flex: 2, overflow: 'auto' }} onClick={() => this.setState({ isEditing: true })} >
-                {this.state.isEditing ? (
-                <textarea 
-                    ref={this.textareaRef}
-                    value={this.state.newContent} 
-                    onChange={this.handleChange} 
-                    onBlur={this.handleBlur} 
-                    onKeyDown={this.handleKeyDown} 
-                    style={textareaStyle}
-                />
-                ) : (
-                <SyntaxHighlighter language="python" style={a11yDark} >
-                    {this.props.content}
-                </SyntaxHighlighter>
-                )}
-                </div>
+            <Flex direction="column" gap="2" className="code-cell" >
+                <Flex direction="row" gap="2">
+                    <PlayButton onClick={this.props.handleClick} />
+                    <div style={{ flex: 2, overflow: 'auto' }} onClick={() => this.setState({ isEditing: true })} >
+                    {this.state.isEditing ? (
+                    <textarea 
+                        ref={this.textareaRef}
+                        value={this.state.newContent} 
+                        onChange={this.handleChange} 
+                        onBlur={this.handleBlur} 
+                        onKeyDown={this.handleKeyDown} 
+                        style={textareaStyle}
+                    />
+                    ) : (
+                    <SyntaxHighlighter language="python" style={a11yDark} >
+                        {this.props.content}
+                    </SyntaxHighlighter>
+                    )}
+                    </div>
+                </Flex>
+                {this.props.output && <Box style={{ marginTop: '10px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: '#f5f5f5' }}>
+                    <strong>Output:</strong>
+                    <pre>{this.props.output}</pre>
+                </Box>}
             </Flex>
         );
     }
@@ -286,7 +291,7 @@ class PlayButton extends React.Component {
 
     render() {
         return (
-            <IconButton onClick={this.props.onClick} style={{ backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)', width: window.innerWidth/30, marginBottom: 7, marginTop: 7 }}><PlayIcon /></IconButton>
+            <IconButton onClick={this.props.onClick} style={{ backgroundColor: 'var(--cyan-10)', color: 'var(--cyan-1)', width: window.innerWidth/50, marginBottom: 7, marginTop: 7 }}><PlayIcon /></IconButton>
         );
     }
 }
