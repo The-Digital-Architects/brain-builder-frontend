@@ -36,7 +36,7 @@ class Transceiver(AsyncWebsocketConsumer):
 
             asyncio.create_task(self.trigger_send(self))
 
-            processes.run(file_name=instructions['file_name'], function_name=instructions['function_name'], args=instructions, send_fn=self.send)
+            processes.run(file_name=instructions['file_name'], function_name=instructions['function_name'], args=instructions, send_fn=self.notify)
         
         elif task_type == 'cancel':
             task_id = instructions['task_id']  # watch out: this should be the notebook_id for notebooks!
@@ -45,7 +45,7 @@ class Transceiver(AsyncWebsocketConsumer):
         elif task_type == 'code':
             nb_id = instructions['notebook_id']
             communication.cancel_vars[(self.user_id, nb_id)] = False
-            await processes.execute_code(instructions['code'], self.user_id, nb_id, send_fn=self.notify)
+            await processes.execute_code(instructions['code'], self.user_id, nb_id, send_fn=self.send)
         
 
     # Send an update to the frontend
