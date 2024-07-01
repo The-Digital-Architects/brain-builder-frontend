@@ -52,6 +52,7 @@ function initializeWebSocket(trainingData, index, intervalTimeout, progress, err
     }, intervalTimeout); // stop after n milliseconds
 
     const data = JSON.parse(event.data);
+    console.log("Message received with header: ", data.header)  // for debugging
     if (data.header === 'update') {  // every 1%; includes progress, error_list, network_weights and network_biases, sometimes also plots
 
       if (JSON.stringify(data.progress) !== JSON.stringify(progress[index])) {
