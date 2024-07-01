@@ -40,7 +40,10 @@ def send_update(var_names, vars, send_fn, header=None):
     else: 
         send_error("TypeError in communication.py: variables should be a list or a dictionary", send_fn)
         return
-    send_fn(json.dumps(message))
+    
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(send_fn(json.dumps(message)))
 
 
 def send_print(message, send_fn):
