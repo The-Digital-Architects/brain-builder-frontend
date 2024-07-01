@@ -20,7 +20,7 @@ import NotebookView from './notebookView';
 import StartPage from './startpage/startPage';
 import { generateCytoElements, generateCytoStyle } from './utils/cytoUtils';
 import getCookie from './utils/cookieUtils';
-import { putRequest } from './utils/websocketUtils';
+import putRequest from './utils/websocketUtils';
 
 // ------- APP FUNCTION -------
 
