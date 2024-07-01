@@ -31,7 +31,7 @@ def send_update(var_names, vars, send_fn, header=None):
     Optionally, a custom header can be added.
     """
     message = {'header': header if header else 'update'}
-    if type(vars) == list:
+    if type(vars) == list or tuple:
         for i, var in enumerate(var_names):
             message[var] = vars[i]
     elif type(vars) == dict: 
