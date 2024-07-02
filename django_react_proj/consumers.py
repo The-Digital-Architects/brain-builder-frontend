@@ -38,7 +38,7 @@ class Transceiver(AsyncWebsocketConsumer):
 
             communication.send_fn_vars[(self.user_id, task_id)] = self.async_send
 
-            processes.run(file_name=instructions['file_name'], function_name=instructions['function_name'], args=instructions, send_fn=self.notify)
+            processes.run(file_name=instructions['file_name'], function_name=instructions['function_name'], args=instructions)
         
         elif task_type == 'cancel':
             task_id = instructions['task_id']  # watch out: this should be the notebook_id for notebooks!

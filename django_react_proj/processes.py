@@ -27,8 +27,8 @@ from backend.processing import communication
 
 
 # function to start subprocesses
-def run(file_name, function_name, send_fn, args=None):  
-    magic_box = {'required_parameters': None, 'inspect': inspect, 'fn': None, 'send_fn': send_fn}
+def run(file_name, function_name, args=None):  
+    magic_box = {'required_parameters': None, 'inspect': inspect, 'fn': None}
     #fl, fn = find_file(process_code)  # find the file and function corresponding to the process code
     
     # import the function from the file
@@ -45,7 +45,7 @@ def run(file_name, function_name, send_fn, args=None):
     # unpack the inputs
     execution_string = function_name + '('
     for p in required_parameters:
-        if p != 'send_fn':
+        #if p != 'send_fn':
             execution_string += p + '='
             try:
                 if type(args[p]) == str:
@@ -55,7 +55,7 @@ def run(file_name, function_name, send_fn, args=None):
             except Exception as e:
                 print(e)  # TODO: add error handling
             execution_string += ','
-    execution_string += f'send_fn=send_fn'
+    #execution_string += f'send_fn=send_fn'
     execution_string += ')'
 
     # execute the function

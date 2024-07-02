@@ -79,13 +79,13 @@ def train_nn_epoch(nn, training_set, test_set, current_epoch, epochs, learning_r
     return errors, accuracy, weights, biases
 
 
-def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ, user_id, task_id, send_fn):
+def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ, user_id, task_id):
     # first, reset all variables
     progress = 0
     errors = []
     plot = None
 
-    send_update(send_fn=send_fn, user_id=user_id, task_id=task_id, var_names=['progress'], vars=(progress,))
+    send_update(user_id=user_id, task_id=task_id, var_names=['progress'], vars=(progress,))
     
     for epoch in range(1, epochs+1):
         if is_cancelled(user_id, task_id):
@@ -111,12 +111,12 @@ def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ, user_id,
 
                 print("Epoch: ", epoch, ", Error: ", errors[-1])
 
-            send_update(send_fn=send_fn, user_id=user_id, task_id=task_id, var_names=['progress', 'error_list', 'network_weights', 'network_biases', 'plot'], vars=(progress, e, w, b, plot))  # TODO: now sending only one update, plot just isn't always updated
+            send_update(user_id=user_id, task_id=task_id, var_names=['progress', 'error_list', 'network_weights', 'network_biases', 'plot'], vars=(progress, e, w, b, plot))  # TODO: now sending only one update, plot just isn't always updated
     
     data.plot_decision_boundary(nn)  # plot the current decision boundary (will be ignored if the dataset has too many dimensions)
     plot = b64encode(data.images[-1]).decode()  
     progress = 1
-    send_update(send_fn=send_fn, user_id=user_id, task_id=task_id, var_names=['progress', 'error_list', 'network_weights', 'network_biases', 'plot'], vars=(progress, e, w, b, plot))
+    send_update(user_id=user_id, task_id=task_id, var_names=['progress', 'error_list', 'network_weights', 'network_biases', 'plot'], vars=(progress, e, w, b, plot))
 
 
 def save_nn(user_id, nn, data):  # TODO check if this works from inside a subprocess
@@ -187,8 +187,7 @@ def convert_input(nodes, n_inputs, n_outputs, typ, af=True):
     return structure
 
 
-def main(nodes, n_inputs, n_outputs, activations_on, learning_rate, epochs, normalization, dataset, typ, user_id, task_id, send_fn):  # TODO
-    print(type(nodes))  # for debugging
+def main(nodes, n_inputs, n_outputs, activations_on, learning_rate, epochs, normalization, dataset, typ, user_id, task_id):  
     architecture = convert_input(nodes, n_inputs, n_outputs, typ, activations_on)
     
     # build the neural network
@@ -196,7 +195,7 @@ def main(nodes, n_inputs, n_outputs, activations_on, learning_rate, epochs, norm
     print("Network initiated, starting training")
 
     # now train the nn
-    train_nn(data, training_set, testing_set, nn, epochs, learning_rate, typ, user_id, task_id, send_fn)
+    train_nn(data, training_set, testing_set, nn, epochs, learning_rate, typ, user_id, task_id)
 
     # finally, save the nn
     save_nn(user_id, nn, data)
