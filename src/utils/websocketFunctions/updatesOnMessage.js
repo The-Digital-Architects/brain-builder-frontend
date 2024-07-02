@@ -4,7 +4,7 @@ function updateProgress(data, params) {
 
     params.setProgress(prevProgress => {
         const newProgress = [...prevProgress];
-        newProgress[params.index] = data.params.progress;
+        newProgress[params.index] = data.progress;
         return newProgress;
     });
 }
@@ -13,16 +13,16 @@ function checkTrainingComplete(data, params, ws) {
 
     /*check if training is complete and close the websocket if it is*/
 
-    if (data.params.progress >= 0.98 || (params.iterations <=30 && data.params.progress >= 0.95) || (params.iterations <=20 && data.params.progress*params.iterations >= (params.iterations - 1))) {
-        ws.close();
-        clearTimeout(params.timeoutId);
-        params.setIsTraining(prevIsTraining => {
-          const newIsTraining = [...prevIsTraining];
-          newIsTraining[params.index] = 2;
-          return newIsTraining;
-        });
-        console.log("Training finished")
-      }
+    if (data.progress >= 0.98 || (params.iterations <=30 && data.progress >= 0.95) || (params.iterations <=20 && data.progress*params.iterations >= (params.iterations - 1))) {
+      ws.close();
+      clearTimeout(params.timeoutId);
+      params.setIsTraining(prevIsTraining => {
+        const newIsTraining = [...prevIsTraining];
+        newIsTraining[params.index] = 2;
+        return newIsTraining;
+      });
+      console.log("Training finished")
+    }
 }
 
 function updateErrorListIfNeeded(data, params) {
