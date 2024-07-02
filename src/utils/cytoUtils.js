@@ -61,7 +61,7 @@ export function generateCytoElements(list, apiData, isTraining, weights, biases)
               weight = parseFloat(weights[i][k][j])/absMax;
             }
             catch (error) {
-              console.log(error);
+              console.error(error);
             }
           }
           cElements.push({ data: { source, target, weight } });
@@ -70,7 +70,6 @@ export function generateCytoElements(list, apiData, isTraining, weights, biases)
     }
   });
 
-  console.log('cElements before return:', cElements)
   return cElements;
 }
 
