@@ -10,7 +10,7 @@ export default function handleMessage(event, ws, params) {
     console.log("Message received with header: ", data.header)  // for debugging
     if (data.header === 'update') {  // every 1%; includes params.progress, error_list, network_weights and network_biases, sometimes also plots
 
-      if (JSON.stringify(data.params.progress) !== JSON.stringify(params.progress[params.index])) {
+      if (JSON.stringify(data.progress) !== JSON.stringify(params.progress[params.index])) {
         
         updateProgress(data, params);
 
