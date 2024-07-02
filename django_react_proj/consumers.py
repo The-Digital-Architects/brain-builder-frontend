@@ -37,6 +37,8 @@ class Transceiver(AsyncWebsocketConsumer):
             communication.cancel_vars[(self.user_id, task_id)] = False
 
             communication.send_fn_vars[(self.user_id, task_id)] = self.async_send
+            assert self.user_id == instructions['user_id']  # for debugging
+            print('send_fn_vars: ', communication.send_fn_vars)  # for debugging
 
             processes.run(file_name=instructions['file_name'], function_name=instructions['function_name'], args=instructions)
         

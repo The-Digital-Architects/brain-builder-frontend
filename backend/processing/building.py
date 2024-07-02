@@ -195,7 +195,7 @@ def main(nodes, n_inputs, n_outputs, activations_on, learning_rate, epochs, norm
     print("Network initiated, starting training")
 
     # now train the nn
-    train_nn(data, training_set, testing_set, nn, epochs, learning_rate, typ, user_id, task_id)
+    train_nn(data, training_set, testing_set, nn, epochs, learning_rate, typ, user_id=user_id, task_id=task_id)
 
     # finally, save the nn
     save_nn(user_id, nn, data)
