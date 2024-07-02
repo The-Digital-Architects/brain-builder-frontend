@@ -210,7 +210,7 @@ function QuizApp({ quizId=11 }) {
     .then(response => {
       setQuestions(response.data.questions);
   })
-    .catch(error => console.log(error));
+    .catch(error => console.error(error));
   }, []);
 
   useEffect(() => {

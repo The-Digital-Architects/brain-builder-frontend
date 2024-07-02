@@ -33,58 +33,6 @@ function BuildingWrapper(props) {
   return <Building {...props} navigate={navigate} />;
 }
 
-{/*
-// ------- EVENTSOURCE -------
-// this listens to the backend and updates the progress, error list, data plots and feature names
-function ProgressComponent(setProgress, setFeatureNames) {
-  const [errorList, setErrorList] = useState([]);
-  const [dataPlots, setDataPlots] = useState([]);
-
-  useEffect(() => {
-    const source = new EventSource('/progress');
-
-    source.onmessage = function(event) {
-      const progress = JSON.parse(event.data);
-      const errorList = JSON.parse(event.data);
-      const featureNames = JSON.parse(event.data);
-      
-      // COMMENT THESE OUT
-      const dataPlots = JSON.parse(event.data["dataplots"]).map(base64String => {  
-        const binaryString = atob(base64String);  // decode from base64 to binary string
-        const bytes = new Uint8Array(binaryString.length);  // convert from binary string to byte array
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);  // now bytes contains the binary image data
-        }
-        const blob = new Blob([bytes.buffer], { type: 'image/jpeg' });
-        const url = URL.createObjectURL(blob);
-        // now images can be accessed with <img src={url} />
-        return url;
-      })
-      setDataPlots(dataPlots);
-    // END OF COMMENT
-
-      setProgress(progress);
-      setErrorList(errorList);
-      setFeatureNames(featureNames);
-    };
-
-    source.onerror = function(event) {
-      if (source.readyState === EventSource.CLOSED) {
-        console.log("SSE connection was lost. Attempting to reconnect...");
-        source = new EventSource('/progress');
-      }
-    };
-
-    // Clean up the event source when the component is unmounted
-    return () => {
-      source.close();
-    };
-  }, []);
-
-  return null;
-}
-*/}
-
 Chart.register(
   CategoryScale, 
   LinearScale, 
@@ -132,7 +80,6 @@ class Building extends React.Component {
 
   handleTabChange = (value) => {
     this.setState({ activeTab: value });
-    console.log("Tab changed to " + value) // for debugging
   };
 
   typeWriter = (txt, speed=15, i=0) => {
@@ -148,12 +95,10 @@ class Building extends React.Component {
       this.shortDescription = response.data.short_description;
       if (response.data.description[0] === '[') {
         this.setState({ description: JSON.parse(response.data.description) });
-        console.log("Attempting to set the array")
       } else {
         if (response.data.description[0] === '*') {
           this.typeWriter(response.data.description);  // this works
         } else {
-          console.log("Attempting to convert to array")
           this.createDescriptionList(response.data.description);
         }
       }
@@ -168,7 +113,6 @@ class Building extends React.Component {
 
   continueComponentDidMount = () => {
     if (this.props.taskId === 0) {
-      console.log("Running tutorial")
       this.setState({ runTutorial: true }, () => {
         // Delay the click on the beacon until after the Joyride component has been rendered
         setTimeout(() => {
@@ -191,13 +135,12 @@ class Building extends React.Component {
   chartInstance = null;
 
   componentDidUpdate(prevProps) {
-    if (this.cy) {this.cy.resize();console.log("Resizing cytoscape");} // this seems to do nothing
+    if (this.cy) {this.cy.resize();} // this seems to do nothing
     if (this.props.taskId !== 0 && this.chartRef.current) {
       const ctx = this.chartRef.current.getContext('2d');
 
       if (this.chartInstance && (JSON.stringify(this.props.errorList[0].slice(0, prevProps.errorList[0].length)) === JSON.stringify(prevProps.errorList[0]) && this.props.errorList[0].length > prevProps.errorList[0].length)) {
         // Update the chart if the error list has changed and is longer than before
-        console.log("Updating chart")
         this.chartInstance.data.labels = this.props.errorList[0].map((_, i) => i + 1);
         this.chartInstance.data.datasets[0].data = this.props.errorList[0];
         this.chartInstance.update();
@@ -206,7 +149,6 @@ class Building extends React.Component {
         if (JSON.stringify(this.props.errorList[0].slice(0, prevProps.errorList[0].length)) !== JSON.stringify(prevProps.errorList[0])) {
           // If an old chart exists, destroy it
           if (this.chartInstance) {
-            console.log("Destroying old chart")
             this.chartInstance.destroy();
             this.chartInstance = null;
           }
@@ -215,7 +157,6 @@ class Building extends React.Component {
       // Create a new chart if there is no chart
       if (this.chartInstance === null) {
         // create a new chart
-        console.log("Creating new chart")
         this.chartInstance = new Chart(ctx, {
           type: 'line',
           data: {
@@ -277,33 +218,17 @@ class Building extends React.Component {
         );
         return [subtitle, ...formattedParagraphs];
       });
-      // this.setState({ description: descriptionList }, this.createJoyrideSteps);
       this.setState({ description: descriptionList });
     } catch (error) {
       console.error('Error parsing JSON or formatting description:', error);
     }
   }
 
-  createJoyrideSteps = () => {
-    /*
-    console.log("Creating new steps: ", this.state.description)
-    const stepList = this.state.description.map(([subtitle, ...paragraphs], index) => ({
-      target: '.buildBody',
-      content: `<h2>${subtitle}</h2> ${paragraphs.map(paragraph => `<p>${paragraph}</p>`).join(' ')}`,
-      placement: 'center',
-    }));
-    console.log("These are the first 3 steps now: ", stepList.slice(0, 3))
-    this.setState({ steps: stepList });
-    */
-  }
-
   goToSlide = (index) => {
     this.setState({ currentSlide: index });
-    console.log("Going to slide " + index)
   };
 
   handleAfClick = () => {
-    console.log("af clicked: ", !this.props.af);
     this.props.setAf(this.props.index, !this.props.af);
   }
   
@@ -330,7 +255,6 @@ class Building extends React.Component {
   handleStartClick = (() => {
     let inThrottle;
     return (event) => {
-      console.log("Click detected")
       if (!inThrottle && this.props.taskId !== 0) { 
         if (this.props.isTraining === 1) {
           this.props.cancelRequest(this.props.taskId, this.props.index)
@@ -366,7 +290,6 @@ class Building extends React.Component {
           }
           this.props.putRequest(event, putRequestParams);
         }
-        console.log("Click executed")
         inThrottle=true
         setTimeout(() => inThrottle = false, 2*this.props.pendingTime);
       }
@@ -396,9 +319,7 @@ class Building extends React.Component {
           {this.props.taskId !== 0 && (
             <Flex direction="row" gap="2" style={{ overflow: 'auto', fontFamily:'monospace', width: '100%', height: window.innerHeight-116 }}>
               <Box style={{ flexBasis: '50%' }}>
-              {this.state.description.length > 0 ? (  
-                console.log("Description: ", this.state.description),
-                console.log("Current slide: ", this.state.currentSlide),            
+              {this.state.description.length > 0 ? (            
                 <Flex direction='column' gap='2' style={{ padding: '20px 10px', display: 'flex', justifyContent:"center", alignItems:"center" }}>
                   {/*
                   <Flex direction="column" gap="2" style={{ flexbasis:'30%', justifyContent:"center", alignItems:"center", width:"100%" }}>
@@ -546,7 +467,7 @@ class Building extends React.Component {
           {this.props.afVisibility ? (
           <Text as="label" size="2">
             <Flex style={{ position:"absolute", top: Math.round(0.4 * (window.innerHeight-140)-20), left: Math.round(0.7 * (window.innerWidth * 0.97)), width: Math.round(0.27 * (window.innerWidth * 0.97)), justifyContent:"flex-start", alignItems:"flex-start"}} gap="2">          
-              <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleAfClick()} onChange={ (event) => {console.log('Checkbox changed')}} checked={this.props.af} />
+              <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleAfClick()} checked={this.props.af} />
               Enable activation functions
             </Flex>
           </Text>):(<div></div>)}
@@ -578,8 +499,6 @@ class Building extends React.Component {
               ))}
             </div>
           </Box>
-          {console.log("this.props.isTraining: ", this.props.isTraining)}
-          {console.log("type of isTraining: ", typeof(this.props.isTraining))}
           <Flex direction="row" gap="3" style={{ position: 'absolute', transform: 'translateX(-50%)', top: Math.round(0.92 * (window.innerHeight-140)), left: Math.round(0.835 * (window.innerWidth * 0.97)), fontFamily:'monospace' }}>
             <IconButton
               onClick={this.handleStartClick}

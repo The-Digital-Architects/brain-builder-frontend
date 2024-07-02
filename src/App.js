@@ -106,14 +106,14 @@ function App() {
             }, 
             timeout: pendingTime
           }).catch((error) => {
-            console.log(error);
+            console.error(error);
           });
         } else {
           // If the record does not exist, throw an error
           throw new Error('No Record in /api/backend');
         };
       }).catch((error) => {
-        console.log(error);
+        console.error(error);
         if (error.message === 'No Record in /api/backend' || error.code === 'ECONNABORTED') {
           // If the record doesn't exist or the GET times out, post a new record
           console.log('No record found, creating a new one'); 
@@ -123,7 +123,7 @@ function App() {
             }, 
             timeout: pendingTime
           }).catch((error) => {
-            console.log(error);
+            console.error(error);
           })
         }
       });
@@ -173,7 +173,6 @@ function App() {
     };
 
     ws.onerror = function(event) {
-      console.log('Failed to load data for challenge ' + taskId);
       alert("Failed to load data for challenge " + taskId + ". Try reloading the page, if the problem persists, please contact us.");
       console.error('Error:', event);
     };
@@ -197,7 +196,7 @@ function App() {
         console.log(response.data[0]);
       })
       .catch((error) => {
-        console.log(`Error fetching API data: ${error}`);
+        console.error(`Error fetching API data: ${error}`);
       });
     setIsResponding(prevIsResponding => {
         const newIsResponding = [...prevIsResponding];
@@ -265,7 +264,6 @@ function App() {
         const currentTaskData = response.data;
         currentTaskData.sort((a, b) => a.task_id - b.task_id)// sort the taskData by taskIds
         setTaskData(currentTaskData);
-        console.log(currentTaskData);
         
         const currentNInputs = [];
         const currentNOutputs = [];
@@ -354,7 +352,6 @@ function App() {
         const currentQuizData = response.data;
         currentQuizData.sort((a, b) => a.quiz_id - b.quiz_id)// sort the quizData by quizIds
         setQuizData(currentQuizData);
-        console.log(currentQuizData);
         
         const currentQuizIds = [];
 
@@ -375,7 +372,6 @@ function App() {
         const currentIntroData = response.data;
         currentIntroData.sort((a, b) => a.intro_id - b.intro_id)// sort the introData by introIds
         setIntroData(currentIntroData);
-        console.log(currentIntroData);
         
         const currentIntroIds = [];
 
@@ -390,30 +386,6 @@ function App() {
         setIntroIds(defaultIntroIds);
         console.log("Setting default states instead.")
       });
-
-    /*
-    axios.get('/api/all_intros/')
-      .then(response => {
-        const currentQuizData = response.data;
-        currentQuizData.sort((a, b) => a.quiz_id - b.quiz_id)// sort the quizData by quizIds
-        setQuizData(currentQuizData);
-        console.log(currentQuizData);
-        
-        const currentQuizIds = [];
-
-        currentQuizData.forEach(entry => {
-          currentQuizIds.push(entry.quiz_id);
-        });
-        setQuizIds(currentQuizIds);
-      })
-      .catch(error => {
-        console.error('Error fetching quizzes:', error);
-        const defaultQuizIds = [];
-        setQuizIds(defaultQuizIds);
-        console.log("Setting default states instead.")
-      });
-    */
-
     
     setTimeout(() => {
       const isLikelyMobile = (window.innerWidth <= 768 && window.innerHeight/window.innerWidth <= 0.6) || window.innerWidth <= 480 || (window.innerHeight/window.innerWidth >= 1.75 && window.innerHeight <= 768);
@@ -427,7 +399,7 @@ function App() {
   
   useEffect(() => {  // TODO: figure out what this is doing and if it's necessary
     if (cytoLayers.every(subArray => subArray.length === 0)) {
-      console.log("cytoLayers is empty, setting [4, 8, 8, 3]");
+      console.log("cytoLayers is empty, setting to default.");
       // cytoLayers is empty, set it to a default value
       taskIds.forEach((taskId, index) => {
         localStorage.setItem(`cytoLayers${taskId}`, JSON.stringify([nInputs[index], nOutputs[index]]));
@@ -460,9 +432,7 @@ function App() {
             // try to set the cytoLayers to the saved setting, if there is an error, set it to default
             setCytoLayers(prevCytoLayers => {
               const newCytoLayers = [...prevCytoLayers];
-              console.log(nInputs)  // for debugging
-              console.log("setting cytoLayers to saved setting"); 
-              console.log(localStorage.getItem(propertyName));  // for debugging
+              console.log("setting cytoLayers to saved setting");
               newCytoLayers[index] = cytoLayersSetting;
               console.log("saved setting:", cytoLayersSetting);
               // make the number of nodes in the first and last layer match the number of inputs and outputs
@@ -473,7 +443,7 @@ function App() {
             });
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
             goToStep2 = true;
         }
     }
@@ -494,8 +464,6 @@ function App() {
               newApiData[index] = response.data[0];
               return newApiData;
             });
-            console.log("apiData:");
-            console.log(response.data[0]);
             if (typeof response.data[0] === 'undefined' || !response.data[0]["network_input"] || JSON.parse(response.data[0]["network_input"]).length === 0) {
               throw new Error('response.data[0] is undefined or network_input is empty');
             }
@@ -509,14 +477,13 @@ function App() {
             });
       })
       .catch((error) => {
-        console.log(error);
-        console.log("setting cytoLayers to default");  // for debugging
+        console.error(error);
+        console.log("setting cytoLayers to default");
             setCytoLayers(prevCytoLayers => {
               const newCytoLayers = [...prevCytoLayers];
               newCytoLayers[index] = [nInputs, nOutputs];
               return newCytoLayers;
             });
-            console.log("done doing that, this is what cytoLayers are now: ", cytoLayers);
       });
     }
   };
@@ -527,9 +494,6 @@ function App() {
   // Update the state when the dependencies change
   useEffect(() => {
     setCytoElements(taskIds.map((taskId, index) => {
-      console.log("apiData:", apiData);
-      console.log("weights:", weights);
-      console.log(`cytoLayers[${index}] before running generateCytoElements:`, cytoLayers[index]);
       return generateCytoElements(cytoLayers[index], apiData[index], isTraining[index], weights[index], biases[index])
     }
     ));
@@ -568,28 +532,24 @@ function App() {
       const networkData = response.data[0];
       const formData = new FormData(event.target);
       const values = Array.from(formData.values()).map((value) => Number(value));
-      console.log("values");
-      console.log(values);
       networkData.network_input = JSON.stringify(values);
       networkData.action = 2;
       networkData.games_data = gamesData;
-      console.log("updated network data");
-      console.log(networkData);
       axios.put(window.location.origin + `/api/backend/${networkData.pk}`, networkData, {
         headers: {
           'X-CSRFToken': csrftoken
         }
       })
         .then((response) => {
-          console.log(response.status);
+          console.log(`response status: ${response.status}`);
           fetchQueryResponse(setApiData, setIsResponding, taskId, index);
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
     })
     .catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   };
 
@@ -599,9 +559,6 @@ function App() {
   // initialize an array to store the state for each slider
   const [iterations, setIterations] = useState(Array(taskIds.length).fill(100));
   const [learningRate, setLearningRate] = useState(Array(taskIds.length).fill(0.01));
-
-  console.log("iterations: ", iterations);
-  console.log("learningRate: ", learningRate);
 
   const handleIterationChange = (index, value) => {
     setIterations(prev => {

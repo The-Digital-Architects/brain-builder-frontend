@@ -29,12 +29,11 @@ class CustomBlock extends Component {
         }
 
         this.ws.onerror = (error) => {
-            console.log('WebSocket error: ', error);
+            console.error('WebSocket error: ', error);
         }
 
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            console.log("Message", data.title, " received")
             if (data.title === 'plot') {
                 const binaryString = atob(data.plot);  // decode from base64 to binary string
                 const bytes = new Uint8Array(binaryString.length);  // convert from binary string to byte array
@@ -70,7 +69,6 @@ class CustomBlock extends Component {
         value = Math.tan(value);
         value = parseFloat(value.toFixed(3));
         this.setState({ weight: value });
-        console.log("Weight changed to: " + value)  // for debugging
         // Send a message through the WebSocket
         const message = JSON.stringify({ title: 'weightChange', a: value, b: this.state.bias});
         this.ws.send(message);
