@@ -34,7 +34,7 @@ class Transceiver(AsyncWebsocketConsumer):
             task_id = instructions['task_id']
             communication.cancel_vars[(self.user_id, task_id)] = False
 
-            asyncio.create_task(self.trigger_send(self, task_id))
+            asyncio.create_task(self.trigger_send(task_id))
 
             processes.run(file_name=instructions['file_name'], function_name=instructions['function_name'], args=instructions, send_fn=self.notify)
         
