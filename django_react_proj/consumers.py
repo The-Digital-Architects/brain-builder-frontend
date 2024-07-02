@@ -1,27 +1,29 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import asyncio
+import threading
+from functools import partial
 import json
 from django_react_proj import processes
 from backend.processing import communication
 
 class Transceiver(AsyncWebsocketConsumer):
     connections = {}
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.trigger = asyncio.Event()
 
     async def connect(self):
         print(f'Connection scope: {self.scope}')
         self.user_id = self.scope['url_route']['kwargs']['userId']
         #self.task_id = self.scope['url_route']['kwargs']['taskId']
         Transceiver.connections[self.user_id] = self
-        print("switchboard connected")
-        #await self.send(json.dumps({'header': 'connected'}))
+        print("Transceiver connected")
+        self.secondary_loop = asyncio.new_event_loop()
+        t = threading.Thread(target=self.secondary_loop.run_forever)
+        t.start()
         await self.accept()
 
     async def disconnect(self, close_code):
+        self.secondary_loop.stop()
         del Transceiver.connections[self.user_id]
-        print("switchboard disconnected")
+        print("Transceiver disconnected")
         
     # Receive message from WebSocket
     async def receive(self, text_data):
@@ -34,7 +36,7 @@ class Transceiver(AsyncWebsocketConsumer):
             task_id = instructions['task_id']
             communication.cancel_vars[(self.user_id, task_id)] = False
 
-            asyncio.create_task(self.trigger_send(task_id))
+            communication.send_fn_vars[(self.user_id, task_id)] = self.async_send
 
             processes.run(file_name=instructions['file_name'], function_name=instructions['function_name'], args=instructions, send_fn=self.notify)
         
@@ -59,18 +61,23 @@ class Transceiver(AsyncWebsocketConsumer):
         #await self.send_data(ping)
     
 
-    async def trigger_send(self, task_id):
-        while Transceiver.connections.get(self.user_id) is not None:
-            await self.trigger.wait()
-            if communication.message_vars.get((str(self.user_id), str(task_id))) is not None:
-                # Assuming 'message' is structured as a dictionary that needs to be sent as JSON:
-                await self.send_data(communication.message)
-                
-                communication.message_vars[(str(self.user_id), str(task_id))] = None  # clear the message
-            await asyncio.sleep(0.1)  # adjust the interval as needed
+    def async_send(self, message, wait=False):
+        """
+        Uses a secondary loop to send messages to the frontend.
+        The loop is opened in Transceiver.connect and closed in Transceiver.disconnect.
+        Returns False if an error occurs in the loop. If wait is True, the function will wait for the message to be sent and return True when it completes.
+        """
 
-    def notify(self):
-        self.trigger.set()
+        try:
+            result = asyncio.run_coroutine_threadsafe(self.send_data(message), self.secondary_loop)
+            if wait:  
+                result.result()
+                return True
+        except Exception as e: 
+            print("Can't send: ", e)
+            return False
+
+    #secondary_loop.call_soon_threadsafe(asyncio.create_task, self.send_data(message))  # alternative way, does not allow for error handling
 
 
     # # function to handle subprocess output
