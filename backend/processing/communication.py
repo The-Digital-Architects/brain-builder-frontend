@@ -41,7 +41,7 @@ def send_update(var_names, vars, send_fn, task_id, user_id, header=None):
         send_error("TypeError in communication.py: variables should be a list or a dictionary", send_fn)
         return
     
-    message_vars[(user_id, task_id)] = message
+    message_vars[(str(user_id), str(task_id))] = message
     send_fn()
 
 
@@ -52,7 +52,7 @@ def send_print(message, send_fn, task_id, user_id):
     """
     message = {'header': 'print', 'message': message}
 
-    message_vars[(user_id, task_id)] = message
+    message_vars[(str(user_id), str(task_id))] = message
     send_fn()
 
 
@@ -64,7 +64,7 @@ def send_error(error, send_fn, task_id, user_id, code=None):
     message = {'header': 'error', 'error': error}
     if code: message['error_code'] = code
 
-    message_vars[(user_id, task_id)] = message
+    message_vars[(str(user_id), str(task_id))] = message
     send_fn()
 
 
@@ -76,5 +76,5 @@ def send_plot(img, send_fn, task_id, user_id, description=None):
     b64encode(img).decode()  # base64 encoded image
     message = {'header': 'image', 'img': img, 'description': description}
 
-    message_vars[(user_id, task_id)] = message
+    message_vars[(str(user_id), str(task_id))] = message
     send_fn()

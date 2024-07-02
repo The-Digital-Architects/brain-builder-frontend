@@ -34,7 +34,7 @@ class Transceiver(AsyncWebsocketConsumer):
             task_id = instructions['task_id']
             communication.cancel_vars[(self.user_id, task_id)] = False
 
-            asyncio.create_task(self.trigger_send(self))
+            asyncio.create_task(self.trigger_send(self, task_id))
 
             processes.run(file_name=instructions['file_name'], function_name=instructions['function_name'], args=instructions, send_fn=self.notify)
         
@@ -62,11 +62,11 @@ class Transceiver(AsyncWebsocketConsumer):
     async def trigger_send(self, task_id):
         while Transceiver.connections.get(self.user_id) is not None:
             await self.trigger.wait()
-            if communication.message.get(self.user_id, task_id) is not None:
+            if communication.message_vars.get((str(self.user_id), str(task_id))) is not None:
                 # Assuming 'message' is structured as a dictionary that needs to be sent as JSON:
                 await self.send_data(communication.message)
                 
-                communication.message[self.user_id, task_id] = None  # clear the message
+                communication.message_vars[(str(self.user_id), str(task_id))] = None  # clear the message
             await asyncio.sleep(0.1)  # adjust the interval as needed
 
     def notify(self):
