@@ -53,7 +53,8 @@ def send_update(var_names, vars, task_id, user_id, header=None):
         send_error(error="TypeError in communication.py: variables should be a list or a dictionary", user_id=user_id, task_id=task_id)
         return
     
-    send_fn_vars[(str(user_id), str(task_id))](message, wait=True)
+    result = send_fn_vars[(str(user_id), str(task_id))](message, wait=True)
+    print(result)
 
 
 def send_print(message, task_id, user_id):
