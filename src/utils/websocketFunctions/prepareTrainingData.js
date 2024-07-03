@@ -45,7 +45,7 @@ const prepareTrainingData = ({
   };
 
   // Simplified state updates
-  [setProgress, setErrorList, setWeights, setBiases, setImgs].forEach(setter => updateState(setter, []));
+  [setProgress, setWeights, setBiases, setImgs].forEach(setter => updateState(setter, []));
   updateState(setErrorList, [[], null]); // Specific update for setErrorList
 
   // Direct manipulation of cytoLayers for clarity
@@ -68,8 +68,9 @@ const prepareTrainingData = ({
     dataset,
   };
 
-  // State updates for training data
-  [setApiData, setAccuracy, setIsTraining].forEach(setter => updateState(setter, trainingData));
+  updateState(setApiData, trainingData);
+  updateState(setAccuracy, null);
+  updateState(setIsTraining, 1);
 
   return trainingData;
 }
