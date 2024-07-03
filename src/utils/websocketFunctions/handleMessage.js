@@ -11,6 +11,8 @@ export default function handleMessage(event, ws, params) {
     if (data.header === 'update') {  // every 1%; includes params.progress, error_list, network_weights and network_biases, sometimes also plots
 
       if (JSON.stringify(data.progress) !== JSON.stringify(params.progress[params.index])) {
+
+        console.log(`isTraining[${params.index}] = ${params.isTraining[params.index]}`);  // for debugging
         
         updateProgress(data, params);
 
