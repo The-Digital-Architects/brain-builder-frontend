@@ -23,7 +23,9 @@ class Transceiver(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):  # TODO
         try:
+            communication.cancel_vars[(self.user_id, self.task_id)] = True
             self.secondary_thread.join()
+            print("Secondary thread closed")
         except Exception as e:
             print("Can't close secondary thread: ", e)
     
