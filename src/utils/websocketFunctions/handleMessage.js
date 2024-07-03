@@ -12,7 +12,7 @@ export default function handleMessage(event, ws, params) {
 
       if (JSON.stringify(data.progress) !== JSON.stringify(params.progress[params.index])) {
 
-        console.log(`isTraining[${params.index}] = ${params.isTraining[params.index]}`);  // for debugging
+        console.log(`isTraining = ${params.isTraining}`);  // for debugging
         
         updateProgress(data, params);
 

@@ -73,5 +73,5 @@ function handleClose(params) {
 
     /*handle websocket closure*/
 
-    console.log('WebSocket connection closed', params.isTraining[params.index], params.progress[params.index]);
+    console.log('WebSocket connection closed', params.isTraining, params.progress);
 }
