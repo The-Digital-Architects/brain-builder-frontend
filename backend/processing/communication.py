@@ -53,7 +53,7 @@ def send_update(var_names, vars, task_id, user_id, header=None):
         send_error(error="TypeError in communication.py: variables should be a list or a dictionary", user_id=user_id, task_id=task_id)
         return
     
-    send_fn_vars[(str(user_id), str(task_id))](message)
+    send_fn_vars[(str(user_id), str(task_id))](message, wait=True)
 
 
 def send_print(message, task_id, user_id):
@@ -63,7 +63,7 @@ def send_print(message, task_id, user_id):
     """
     message = {'header': 'print', 'message': message}
 
-    send_fn_vars[(str(user_id), str(task_id))](message)
+    send_fn_vars[(str(user_id), str(task_id))](message, wait=True)
 
 
 def send_error(error, task_id, user_id, code=None):
@@ -74,7 +74,7 @@ def send_error(error, task_id, user_id, code=None):
     message = {'header': 'error', 'error': error}
     if code: message['error_code'] = code
 
-    send_fn_vars[(str(user_id), str(task_id))](message)
+    send_fn_vars[(str(user_id), str(task_id))](message, wait=True)
 
 
 def send_image(img, task_id, user_id, description=None):  # TODO
@@ -93,4 +93,4 @@ def send_image(img, task_id, user_id, description=None):  # TODO
     b64encode(img).decode()  # base64 encoded image
     message = {'header': 'image', 'img': img, 'description': description}
 
-    send_fn_vars[(str(user_id), str(task_id))](message)
+    send_fn_vars[(str(user_id), str(task_id))](message, wait=True)
