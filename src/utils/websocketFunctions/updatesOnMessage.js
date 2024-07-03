@@ -43,7 +43,7 @@ function updateWeightsIfNeeded(data, params) {
 
     /*update the weights if they changed*/
 
-    if (params.weights[params.index].length === 0 || data.network_weights[0][0] !== params.weights[params.index][0][0]) {
+    if (params.weights.length === 0 || data.network_weights[0][0] !== params.weights[0][0]) {
         params.setWeights(prevWeights => {
           const newWeights = [...prevWeights];
           newWeights[params.index] = data.network_weights;
@@ -56,7 +56,7 @@ function updateBiasesIfNeeded(data, params) {
 
     /*update the biases if they changed*/
 
-    if (params.biases[params.index].length !== 0 || data.network_biases[0] !== params.biases[params.index][0]) {
+    if (params.biases.length !== 0 || data.network_biases[0] !== params.biases[0]) {
         params.setBiases(prevBiases => {
           const newBiases = [...prevBiases];
           newBiases[params.index] = data.network_biases;
@@ -69,7 +69,7 @@ function updateImagesIfNeeded(data, params) {
 
     /*decompress and parse the images in 'plots', but only if it's not empty or the same as the current params.imgs*/
 
-    if (data.plot.length > 0 && data.plot.length !== params.imgs[params.index].length) {
+    if (data.plot.length > 0 && data.plot.length !== params.imgs.length) {
         params.setImgs(prevImgs => {
           const newImgs = [...prevImgs];
           const binaryString = atob(data.plot);  // decode from base64 to binary string
