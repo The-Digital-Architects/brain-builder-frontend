@@ -13,15 +13,17 @@ function checkTrainingComplete(data, params, ws) {
 
     /*check if training is complete and close the websocket if it is*/
 
-    if (data.progress >= 0.98 || (params.iterations <=30 && data.progress >= 0.95) || (params.iterations <=20 && data.progress*params.iterations >= (params.iterations - 1))) {
-      ws.close();
-      clearTimeout(params.timeoutId);
-      params.setIsTraining(prevIsTraining => {
-        const newIsTraining = [...prevIsTraining];
-        newIsTraining[params.index] = 2;
-        return newIsTraining;
-      });
-      console.log("Training finished")
+    if (data?.progress !== undefined && params?.iterations !== undefined) {
+      if (data.progress >= 0.98 || (params.iterations <=30 && data.progress >= 0.95) || (params.iterations <=20 && data.progress*params.iterations >= (params.iterations - 1))) {
+        ws.close();
+        clearTimeout(params.timeoutId);
+        params.setIsTraining(prevIsTraining => {
+          const newIsTraining = [...prevIsTraining];
+          newIsTraining[params.index] = 2;
+          return newIsTraining;
+        });
+        console.log("Training finished")
+      }
     }
 }
 
@@ -29,7 +31,8 @@ function updateErrorListIfNeeded(data, params) {
 
     /*update the error list if it changed*/
     
-    if (data.error_list[0].length !== params.errorList[0].length || data.error_list[1] !== params.errorList[1]) {
+    if (data?.error_list?.[0] !== undefined && data?.error_list?.[1] !== undefined && params?.errorList?.[0] !== undefined && params?.errorList?.[1] !== undefined) { 
+      if (data.error_list[0].length !== params.errorList[0].length || data.error_list[1] !== params.errorList[1]) {
         console.log("updating error list");  // for debugging
         params.setErrorList(prevErrorList => {
           const newErrorList = [...prevErrorList];
@@ -37,18 +40,21 @@ function updateErrorListIfNeeded(data, params) {
           return newErrorList;
         });
       }
+    }
 }
 
 function updateWeightsIfNeeded(data, params) {
 
     /*update the weights if they changed*/
 
-    if (params.weights.length === 0 || data.network_weights[0][0] !== params.weights[0][0]) {
-        params.setWeights(prevWeights => {
-          const newWeights = [...prevWeights];
-          newWeights[params.index] = data.network_weights;
-          return newWeights;
-        });
+    if (params?.weights?.length !== undefined && data?.network_weights?.[0]?.[0] !== undefined && params?.weights?.[0]?.[0] !== undefined) {
+      if (params.weights.length === 0 || data.network_weights[0][0] !== params.weights[0][0]) {
+          params.setWeights(prevWeights => {
+            const newWeights = [...prevWeights];
+            newWeights[params.index] = data.network_weights;
+            return newWeights;
+          });
+      }
     }
 }
 
@@ -56,12 +62,14 @@ function updateBiasesIfNeeded(data, params) {
 
     /*update the biases if they changed*/
 
-    if (params.biases.length !== 0 || data.network_biases[0] !== params.biases[0]) {
-        params.setBiases(prevBiases => {
-          const newBiases = [...prevBiases];
-          newBiases[params.index] = data.network_biases;
-          return newBiases;
-        });
+    if (params?.biases?.length !== undefined && data?.network_biases?.[0] !== undefined && params?.biases?.[0] !== undefined) {
+      if (params.biases.length !== 0 || data.network_biases[0] !== params.biases[0]) {
+          params.setBiases(prevBiases => {
+            const newBiases = [...prevBiases];
+            newBiases[params.index] = data.network_biases;
+            return newBiases;
+          });
+      }
     }
 }
 
@@ -69,7 +77,8 @@ function updateImagesIfNeeded(data, params) {
 
     /*decompress and parse the images in 'plots', but only if it's not empty or the same as the current params.imgs*/
 
-    if (data.plot.length > 0 && data.plot.length !== params.imgs.length) {
+    if (data?.plot !== undefined && params?.imgs !== undefined) {
+      if (data.plot.length > 0 && data.plot.length !== params.imgs.length) {
         params.setImgs(prevImgs => {
           const newImgs = [...prevImgs];
           const binaryString = atob(data.plot);  // decode from base64 to binary string
@@ -84,6 +93,7 @@ function updateImagesIfNeeded(data, params) {
           return newImgs;
         });
       }
+    }
 }
 
 export { updateProgress, checkTrainingComplete, updateErrorListIfNeeded, updateWeightsIfNeeded, updateBiasesIfNeeded, updateImagesIfNeeded };
