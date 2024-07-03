@@ -29,6 +29,9 @@ function updateErrorListIfNeeded(data, params) {
 
     /*update the error list if it changed*/
 
+    console.log(`params.errorList: ${params.errorList}`)
+    console.log(`params.errorList[params.index]: ${params.errorList[params.index]}`)
+    
     if (data.error_list[0].length !== params.errorList[params.index][0].length || data.error_list[1] !== params.errorList[params.index][1]) {
         console.log("updating error list");  // for debugging
         params.setErrorList(prevErrorList => {
