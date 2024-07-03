@@ -22,18 +22,16 @@ class Transceiver(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):  # TODO
-        try:
-            for key, value in communication.cancel_vars.items():
-                if key[0] == self.user_id:
-                    communication.cancel_vars[key] = True
-            self.secondary_thread.join()
-            print("Secondary thread closed")
-        except Exception as e:
-            print("Can't close secondary thread: ", e)
+
+        for key, value in communication.cancel_vars.items():
+            if key[0] == self.user_id:
+                communication.cancel_vars[key] = True
+            #self.secondary_thread.join()
+        print("Cancelling enabled for secondary thread")
     
         #self.secondary_loop.stop()
         del Transceiver.connections[self.user_id]
-        print("Transceiver disconnected")
+        print("Main thread disconnected")
         
     # Receive message from WebSocket
     async def receive(self, text_data):

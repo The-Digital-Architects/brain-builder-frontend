@@ -200,6 +200,8 @@ def main(nodes, n_inputs, n_outputs, activations_on, learning_rate, epochs, norm
     # finally, save the nn
     save_nn(user_id, nn, data)
 
+    print("Secondary thread done.")
+
 
 '''
 def send_update(send_fn, progress, error_list=None, weights=None, biases=None, plot=None, block_id=None):  # TODO: replace this with cool way-too-advanced function

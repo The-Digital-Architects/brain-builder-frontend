@@ -4,7 +4,7 @@ These functions can be implemented in the backend/processing files.
 Current version includes send_print, send_error, send_plot and send_update. The latter is more flexible and can send more variables.
 There is also is_cancelled, which checks whether the process has been cancelled by the frontend. Check this if your process has a cancel button in the frontend. 
 
-# A rough guide on how to set up your own backend process:
+## A rough guide on how to set up your own backend process:
 1. Create a new file in backend/processing/ with the name of your process.
 2. Import the necessary libraries: currently matplotlib, pandas, numpy, torch and sklearn are available. 
 Also import the necessary communication functions from this file (see above).
