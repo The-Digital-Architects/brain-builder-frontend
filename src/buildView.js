@@ -257,7 +257,7 @@ class Building extends React.Component {
     return (event) => {
       if (!inThrottle && this.props.taskId !== 0) { 
         if (this.props.isTraining === 1) {
-          this.props.cancelRequest(this.props.taskId, this.props.index)
+          this.props.cancelRequest.current(this.props.taskId, this.props.index)
         } else { 
           let putRequestParams = {
             cytoLayers: this.props.cytoLayers,
@@ -474,6 +474,7 @@ class Building extends React.Component {
 
           {/* make the position of the box shift down if normalization is true */}
           <Box style={{ position:"absolute", top: Math.round(0.4 * (window.innerHeight-140)) + ((this.props.normalizationVisibility || this.props.afVisibility) ? 30 : 0), left: Math.round(0.7 * (window.innerWidth * 0.97)), alignItems: 'center', justifyContent: 'start', height: '100vh', fontSize: '14px', color: 'var(--slate-11)' }}>
+            <label>isTraining: {this.props.isTraining}</label>
             <div id="/api-data">
               {this.props.isTraining===2 ? (
                 <Flex direction='column' >
