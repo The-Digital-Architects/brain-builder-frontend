@@ -13,7 +13,7 @@ ReLu, Sigmoid, Softmax, Log_Softmax, or None.
 # Idea: look into different options for activations, e.g. tanh, leaky ReLu, ELU, SELU, etc.
 # Idea: look into different options for optimizers, e.g. Adam, Adagrad, RMSProp, etc.
 
-import torch
+#import torch
 
 class BuildNetwork(torch.nn.Module):
     def __init__(self, inp):

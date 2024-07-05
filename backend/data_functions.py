@@ -4,20 +4,19 @@
 
 import os
 from io import BytesIO  # for saving the images
-import numpy as np
-import math
-import pandas as pd
-import torch
-from torch.utils.data import Dataset, DataLoader
+#import numpy as np
+#import pandas as pd
+#import torch
+#from torch.utils.data import Dataset, DataLoader
 #from matplotlib import pyplot as plt
-import matplotlib.figure as mf
-from matplotlib.lines import Line2D
-from matplotlib.cm import ScalarMappable
-from matplotlib.colors import Normalize
+#import matplotlib.figure as mf
+#from matplotlib.lines import Line2D
+#from matplotlib.cm import ScalarMappable
+#from matplotlib.colors import Normalize
 
-import pandas as pd
-from sklearn import datasets
-from sklearn.model_selection import train_test_split
+#import pandas as pd
+#from sklearn import datasets
+#from sklearn.model_selection import train_test_split
 
 
 def get_data(dataset, typ:int=None, normalization=False, test_size=None, val_size=None, data=None):  # TODO: test this
