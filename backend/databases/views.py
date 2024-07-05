@@ -280,7 +280,7 @@ def get_notebook(request, notebook_path:str):
         notebook_url = os.getenv("NOTEBOOK_URL") + notebook_path
 
         if notebook_url[-1] == '/': notebook_url = notebook_url[:-1]  # remove trailing slash
-        print(notebook_url)
+        print('Get notebook: ', notebook_url)
 
         headers = {'Authorization': f'token {os.getenv("NOTEBOOK_TOKEN")}'}
 
@@ -292,6 +292,7 @@ def get_notebook(request, notebook_path:str):
                 content_type, _ = mimetypes.guess_type(notebook_url)
                 # Explicitly set MIME type for JavaScript files
                 if notebook_path.endswith('.js'):
+                    print('Setting to js')
                     content_type = 'application/javascript'
                 # Otherwise set the default MIME type
                 if content_type is None:
