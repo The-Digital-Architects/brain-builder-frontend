@@ -278,6 +278,10 @@ def feedback(request):
 def get_notebook(request, notebook_path:str):
     if os.getenv("NOTEBOOK_URL") is not None: 
         notebook_url = os.getenv("NOTEBOOK_URL") + notebook_path
+        
+        if notebook_url[-1] == '/': notebook_url = notebook_url[:-1]  # remove trailing slash
+        print(notebook_url)
+
         headers = {'Authorization': f'token {os.getenv("NOTEBOOK_TOKEN")}'}
 
         response = requests.get(notebook_url, headers=headers)
