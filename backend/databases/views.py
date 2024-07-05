@@ -278,7 +278,7 @@ def feedback(request):
 def get_notebook(request, notebook_path:str):
     if os.getenv("NOTEBOOK_URL") is not None: 
         notebook_url = os.getenv("NOTEBOOK_URL") + notebook_path
-        
+
         if notebook_url[-1] == '/': notebook_url = notebook_url[:-1]  # remove trailing slash
         print(notebook_url)
 
@@ -290,8 +290,12 @@ def get_notebook(request, notebook_path:str):
             if 'jupyter' in notebook_path:
                 # Guess the MIME type of the file based on its extension
                 content_type, _ = mimetypes.guess_type(notebook_url)
+                # Explicitly set MIME type for JavaScript files
+                if notebook_path.endswith('.js'):
+                    content_type = 'application/javascript'
+                # Otherwise set the default MIME type
                 if content_type is None:
-                    content_type = 'application/octet-stream'  # Default MIME type
+                    content_type = 'application/octet-stream'  
                 return HttpResponse(response.content, content_type=content_type)
             else:
                 return JsonResponse(response.json())
