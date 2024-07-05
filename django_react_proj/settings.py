@@ -97,6 +97,8 @@ MIDDLEWARE = [
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'  # This allows the site to be rendered on an iframe in the same domain
+
 redis_url = urllib.parse.urlparse(os.environ.get('REDISCLOUD_URL', 'redis://localhost:6379'))
 
 CHANNEL_LAYERS = {

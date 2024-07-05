@@ -53,7 +53,8 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build:jupyter": "cd jupyter_lite && jupyter lite build --output-dir=../build/static/jupyter"
   },
   "eslintConfig": {
     "extends": [
