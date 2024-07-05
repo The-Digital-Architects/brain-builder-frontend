@@ -275,15 +275,15 @@ def feedback(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def get_notebook(request, notebook_path):
+def get_notebook(request, notebook_path:str):
     if os.getenv("NOTEBOOK_URL") is not None: 
         notebook_url = os.getenv("NOTEBOOK_URL") + notebook_path
         headers = {'Authorization': f'token {os.getenv("NOTEBOOK_TOKEN")}'}
 
         response = requests.get(notebook_url, headers=headers)
 
-        if response.ok:
-            if notebook_path.contains('jupyter'):
+        if response.ok: 
+            if 'jupyter' in notebook_path:
                 # Guess the MIME type of the file based on its extension
                 content_type, _ = mimetypes.guess_type(notebook_url)
                 if content_type is None:
