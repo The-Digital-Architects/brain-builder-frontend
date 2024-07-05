@@ -17,6 +17,7 @@ import FeedbackApp from './feedback';
 import LinksPage from './links';
 import NotFound from './common/notFound';
 import NotebookView from './notebookView';
+import JupyterLite from './jupyterLiteView';
 import StartPage from './startpage/startPage';
 import { generateCytoElements, generateCytoStyle } from './utils/cytoUtils';
 import getCookie from './utils/cookieUtils';
@@ -715,6 +716,8 @@ function App() {
             userId = {getCookie('user_id')}
             />
           } />
+
+          <Route path="/jupyterLite" element={<JupyterLite />}/>
 
           {taskIds.map((taskId, index) => (
             <>

@@ -4,7 +4,7 @@ import { Flex, Box, Heading, IconButton } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
 import { styled } from '@stitches/react';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
-import { RocketIcon, Pencil2Icon, Link2Icon, CopyIcon } from '@radix-ui/react-icons';
+import { RocketIcon, Pencil2Icon, Link2Icon, CopyIcon, CodeIcon } from '@radix-ui/react-icons';
 import Readme from '../readme';
 import * as Progress from '@radix-ui/react-progress';
 import '@radix-ui/themes/styles.css';
@@ -187,9 +187,10 @@ function WrappingUp() {
       <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
           <LevelHeading level={-1} name="Wrapping Up" />
           <GridBox>
-              <ChallengeButton link="notebookTest" label="Notebook Test" Icon={RocketIcon} active={true} />
+              <ChallengeButton link="notebookTest" label="Custom Notebook" Icon={CodeIcon} active={true} />
               <ChallengeButton link="feedback" label="Give Feedback" Icon={Pencil2Icon} active={true} />
               <ChallengeButton link="links" label="Useful Links" Icon={Link2Icon} active={true} />
+              <ChallengeButton link="jupyterLite" label="JupyterLite" Icon={CodeIcon} active={true} />
           </GridBox>
       </Box>
   );
