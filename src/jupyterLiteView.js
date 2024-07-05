@@ -7,7 +7,7 @@ class JupyterLite extends React.Component {
             <div>
                 <Header showHomeButton={true} />
                 <iframe
-                    src= '/api/notebooks/jupyter/index.html/'  // TODO: change this to the right URL
+                    src= '/api/notebooks/jupyter/'  // TODO: change this to the right URL
                     style={{  // TODO: check style
                         width: '100%',
                         height: 'calc(100vh - 50px)', 
