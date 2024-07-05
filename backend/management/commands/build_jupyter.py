@@ -10,9 +10,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             # Build jupyter lite static app with specified output directory
-            subprocess.check_call(['jupyter', 'lite', 'build', '--output-dir=../build/static/jupyter'], cwd='jupyter_lite', shell=True)
+            subprocess.check_call('jupyter lite build --output-dir=../build/static/jupyter', cwd='jupyter_lite', shell=True)
             
             self.stdout.write(self.style.SUCCESS('Successfully executed command'))
         except subprocess.CalledProcessError as e:
-            self.stdout.write(self.style.ERROR('Error executing command'))
+            self.stdout.write(self.style.ERROR('Error executing command, ', e))
             raise CommandError('Error executing command') from e
