@@ -20,7 +20,7 @@ from backend import data_functions as df
 import os
 import pickle
 import requests
-#import pandas as pd
+import pandas as pd
 import json
 from base64 import b64encode, b64decode
 from django_react_proj.consumers import Transceiver

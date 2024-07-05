@@ -1,8 +1,8 @@
-
+'''
 import sys
-#import numpy as np
-#import matplotlib as mpl
-#import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 from io import BytesIO  # for saving the images
 
 
@@ -73,3 +73,4 @@ if __name__ == '__main__':
         # TODO: look into error handling
         sys.exit(1)
 
+'''
