@@ -19,6 +19,8 @@ import asyncio
 import os
 import requests
 
+import mimetypes
+
 
 def index(request, path=''):
     user_id = request.GET.get('user_id')
@@ -281,7 +283,14 @@ def get_notebook(request, notebook_path):
         response = requests.get(notebook_url, headers=headers)
 
         if response.ok:
-            return JsonResponse(response.json())
+            if notebook_path.contains('jupyter'):
+                # Guess the MIME type of the file based on its extension
+                content_type, _ = mimetypes.guess_type(notebook_url)
+                if content_type is None:
+                    content_type = 'application/octet-stream'  # Default MIME type
+                return HttpResponse(response.content, content_type=content_type)
+            else:
+                return JsonResponse(response.json())
         else:
             return JsonResponse({'error': 'Error loading notebook'}, status=500)  # internal server error
     
