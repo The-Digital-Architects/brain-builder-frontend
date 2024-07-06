@@ -5,7 +5,6 @@
 import os
 from io import BytesIO  # for saving the images
 
-'''
 import numpy as np
 import pandas as pd
 import torch
@@ -950,4 +949,3 @@ class DataFromFunction(Dataset):  # this one is for one to one regression on sim
         img.seek(0)
         self.images[-1] = img.getvalue()
         fig.clear()
-'''

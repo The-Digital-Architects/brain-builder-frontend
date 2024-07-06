@@ -279,27 +279,13 @@ def get_notebook(request, notebook_path:str):
     if os.getenv("NOTEBOOK_URL") is not None: 
         notebook_url = os.getenv("NOTEBOOK_URL") + notebook_path
 
-        if notebook_url[-1] == '/': notebook_url = notebook_url[:-1]  # remove trailing slash
-        print('Get notebook: ', notebook_url)
+        print('Get notebook: ', notebook_url)  # for debugging
 
         headers = {'Authorization': f'token {os.getenv("NOTEBOOK_TOKEN")}'}
-
         response = requests.get(notebook_url, headers=headers)
 
         if response.ok: 
-            if 'jupyter' in notebook_path:
-                # Guess the MIME type of the file based on its extension
-                content_type, _ = mimetypes.guess_type(notebook_url)
-                # Explicitly set MIME type for JavaScript files
-                if notebook_path.endswith('.js'):
-                    print('Setting to js')
-                    content_type = 'application/javascript'
-                # Otherwise set the default MIME type
-                if content_type is None:
-                    content_type = 'application/octet-stream'  
-                return HttpResponse(response.content, content_type=content_type)
-            else:
-                return JsonResponse(response.json())
+            return JsonResponse(response.json())
         else:
             return JsonResponse({'error': 'Error loading notebook'}, status=500)  # internal server error
     

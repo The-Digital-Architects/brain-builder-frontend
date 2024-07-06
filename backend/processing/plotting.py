@@ -1,4 +1,4 @@
-'''
+
 import sys
 import numpy as np
 import matplotlib as mpl
@@ -72,5 +72,3 @@ if __name__ == '__main__':
         raise ValueError("Use either no or two arguments")
         # TODO: look into error handling
         sys.exit(1)
-
-'''
