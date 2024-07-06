@@ -282,7 +282,35 @@
     },
     "fullLabextensionsUrl": "./extensions",
     "fullStaticUrl": "./build",
-    "licensesUrl": "./lab/api/licenses"
+    "licensesUrl": "./lab/api/licenses",
+    "kernelspecs": {
+      "python": {
+        "name": "python",
+        "spec": {
+          "display_name": "Python 3",
+          "language": "python",
+          "argv": [
+            "python",
+            "-m",
+            "ipykernel_launcher",
+            "-f",
+            "{connection_file}"
+          ],
+          "env": {},
+          "resources": {}
+        }
+      }
+    },
+    "pyodide": {
+      "fullUrl": "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/",
+      "indexUrl": "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/index.html",
+      "loadPyodide": "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/pyodide.js",
+      "packageUrls": {
+        "numpy": "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/numpy.js",
+        "pandas": "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/pandas.js",
+        "scipy": "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/scipy.js"
+      }
+    }
   },
   "jupyter-lite-schema-version": 0
 }
