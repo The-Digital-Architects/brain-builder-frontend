@@ -1,23 +1,22 @@
 from django.db import models
 
+# Row model: used for front-end to back-end communication
 class Row(models.Model):
     action = models.IntegerField()
     user_id = models.CharField(max_length=100)
     task_id = models.IntegerField()
-    activations_on = models.BooleanField(default=True)
-    learning_rate = models.FloatField(max_length=10)
-    epochs = models.IntegerField()
-    normalization = models.BooleanField()
-    network_input = models.CharField(max_length=200)
-    games_data = models.CharField(max_length=1000000, default='[]')
+    inputs = models.JSONField()
     timestamp = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.network_input
 
+# ___________________________________________________________________________________________________
+
 
 class TaskDescription(models.Model):
     task_id = models.IntegerField(unique=True)
+    short_name = models.CharField(max_length=20)
     name = models.CharField(max_length=200)
     short_description = models.TextField()
     description = models.TextField()
@@ -25,6 +24,13 @@ class TaskDescription(models.Model):
     type = models.IntegerField()
     n_inputs = models.IntegerField()
     n_outputs = models.IntegerField()
+
+    def __str__(self):
+        return str(self.task_id) + " - " + str(self.name)
+    
+
+class NeuralNetworkDescription(models.Model):
+    task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True)
     max_epochs = models.IntegerField()
     max_layers = models.IntegerField()
     max_nodes = models.IntegerField()
@@ -33,9 +39,18 @@ class TaskDescription(models.Model):
     normalization_visibility = models.BooleanField()
     af_visibility = models.BooleanField(default=False)
     decision_boundary_visibility = models.BooleanField()
+    
 
-    def __str__(self):
-        return str(self.task_id) + " - " + str(self.name)
+class ClusteringDescription(models.Model):
+    task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True)
+    model_type = models.TextField(max_length=10)
+    type_selection_visibility = models.BooleanField()
+    distance_visibility = models.BooleanField()
+    cluster_slider_visibility = models.BooleanField()
+    linkage_visibility = models.BooleanField()
+    silhouette_coefficient_visibility = models.BooleanField()
+    elbow_plot_visibility = models.BooleanField()
+
     
 class Intro(models.Model):
     intro_id = models.IntegerField(unique=True)
@@ -46,19 +61,6 @@ class Intro(models.Model):
     def __str__(self):
         return str(self.intro_id) + " - " + str(self.name)
 
-class Progress(models.Model):
-    user_id = models.CharField(max_length=100)
-    task_id = models.IntegerField()
-    progress = models.FloatField(max_length = 10)
-    error_list = models.CharField(max_length=2000)
-    network_weights = models.CharField(max_length=1000000)
-    network_biases = models.CharField(max_length=1000000)
-    plots = models.CharField(max_length=1000000)
-    feature_names = models.CharField(max_length=2000)
-    timestamp = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.user_id
     
 class Quiz(models.Model):
     quiz_id = models.IntegerField(unique=True)

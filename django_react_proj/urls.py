@@ -40,9 +40,6 @@ urlpatterns = [
     re_path(r'^api/all_intros/$', views.all_intros),
     re_path(r'^api/intros$', views.intro_description_detail),
     re_path(r'^api/intros/$', views.intro_description_detail),
-    re_path(r'^api/progress$', views.q_list),
-    re_path(r'^api/progress/$', views.q_list),
-    re_path(r'^api/progress/(?P<pk>[0-9]+)$', views.q_detail),
     re_path(r'^api/feedback$', views.feedback),
 
     # catch-all pattern

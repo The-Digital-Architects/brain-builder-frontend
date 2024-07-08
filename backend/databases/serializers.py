@@ -1,20 +1,28 @@
 from rest_framework import serializers
-from .models import Row, TaskDescription, Progress, Quiz, Intro, Feedback
+from .models import Row, TaskDescription, NeuralNetworkDescription, ClusteringDescription, Quiz, Intro, Feedback
 
 class RowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Row
-        fields = ('pk', 'action', 'task_id', 'user_id', 'activations_on', 'learning_rate', 'epochs', 'normalization', 'network_input', 'games_data','timestamp')
+        fields = ('pk', 'action', 'task_id', 'user_id', 'inputs', 'timestamp')
+
+class NeuralNetworkDescriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NeuralNetworkDescription
+        fields = ('task_description', 'max_epochs', 'max_layers', 'max_nodes', 'iterations_slider_visibility', 'lr_slider_visibility', 'normalization_visibility', 'af_visibility', 'decision_boundary_visibility')
+
+class ClusteringDescriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClusteringDescription
+        fields = '__all__'
 
 class TaskDescriptionSerializer(serializers.ModelSerializer):
+    neural_network_description = NeuralNetworkDescriptionSerializer(read_only=True)
+    clustering_description = ClusteringDescriptionSerializer(read_only=True)
+
     class Meta:
         model = TaskDescription
-        fields = ('pk', 'task_id', 'name', 'short_description', 'description', 'type', 'dataset', 'n_inputs', 'n_outputs', 'max_epochs', 'max_layers', 'max_nodes', 'iterations_slider_visibility', 'lr_slider_visibility', 'af_visibility', 'normalization_visibility', 'decision_boundary_visibility')
-
-class ProgressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Progress
-        fields = ('pk', 'task_id', 'user_id', 'progress', 'error_list', 'network_weights', 'network_biases', 'plots', 'feature_names', 'timestamp')
+        fields = ('pk', 'task_id', 'name', 'short_name', 'short_description', 'description', 'type', 'dataset', 'n_inputs', 'n_outputs', 'neural_network_description', 'clustering_description')
 
 class IntroSerializer(serializers.ModelSerializer):
     class Meta:
