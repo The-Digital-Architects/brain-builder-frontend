@@ -370,8 +370,6 @@ function App() {
         setBiases(currentTaskIds.map(() => []));
         setImgs(currentTaskIds.map(() => []));
         setInitPlots(currentTaskIds.map(() => []));
-
-        console.log('linkIds & Links:', currentLinkIds, currentLinks);  // TODO: remove this
       })
       .catch(error => {
         console.error('Error fetching tasks:', error);
@@ -457,7 +455,6 @@ function App() {
     acc[curr] = links[index];
     return acc;
   }, {});
-  console.log('linksDict:', linksDict);  // TODO: remove this
   
   useEffect(() => { 
     if (cytoLayers.every(subArray => subArray.length === 0)) {
