@@ -378,6 +378,8 @@ function App() {
         setBiases(currentTaskIds.map(() => []));
         setImgs(currentTaskIds.map(() => []));
         setInitPlots(currentTaskIds.map(() => []));
+
+        console.log('iterations & LR slider visibility:', iterationsSliderVisibility, lrSliderVisibility);  // for debugging
       })
       .catch(error => {
         console.error('Error fetching tasks:', error);
@@ -532,7 +534,7 @@ function App() {
               return newApiData;
             });
             if (typeof response.data[0] === 'undefined' || !response.data[0]["in_out"] || JSON.parse(response.data[0]["in_out"]).length === 0) {
-              throw new Error('response.data[0] is undefined or network_input is empty');
+              throw new Error('response.data[0] is undefined or in_out is empty');
             }
             setCytoLayers(prevCytoLayers => {
               const newCytoLayers = [...prevCytoLayers];
