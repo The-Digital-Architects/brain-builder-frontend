@@ -319,8 +319,8 @@ function App() {
           currentIcons.push(findIcon(entry));
     
           let nnDescription = entry.neural_network_description;
-          console.log(entry.task_id, nnDescription, nnDescription.iterations_slider_visibility, nnDescription.lr_slider_visibility)  // TODO remove this
           if (nnDescription) {
+            console.log(entry.task_id, nnDescription.iterations_slider_visibility, nnDescription.lr_slider_visibility)  // TODO remove this
             currentMaxEpochs.push(nnDescription.max_epochs);
             currentMaxLayers.push(nnDescription.max_layers);
             currentMaxNodes.push(nnDescription.max_nodes);
