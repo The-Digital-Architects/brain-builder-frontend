@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import Header from './common/header'
+import Header from './common/header';
 import { Flex } from '@radix-ui/themes';
 
 function generateData(numPoints, numClusters) {
@@ -26,10 +26,10 @@ function KMeansClusteringVisualization() {
     useEffect(() => {
         const generatedData = generateData(numPoints, numClusters);
         setData(generatedData);
-    }, [numPoints, numClusters]); // React to changes in numPoints and numClusters
+    }, [numPoints, numClusters]);
 
     useEffect(() => {
-        if (data.length === 0) return; // Guard clause if data is empty
+        if (data.length === 0) return;
 
         const svg = d3.select(svgRef.current);
         svg.selectAll("*").remove();
@@ -61,11 +61,32 @@ function KMeansClusteringVisualization() {
     }, [data]);
 
     return (
-        <Flex direction="column">
-            <Header />
-            <svg ref={svgRef}></svg>;
+        <Flex direction="column" gap="2">
+            <Header showHomeButton={true} />
+            <Flex gap="2">
+                <label>
+                    Number of Points:
+                    <input
+                        type="number"
+                        value={numPoints}
+                        onChange={(e) => setNumPoints(Number(e.target.value))}
+                    />
+                </label>
+                <label>
+                    Number of Clusters:
+                    <input
+                        type="number"
+                        value={numClusters}
+                        onChange={(e) => setNumClusters(Number(e.target.value))}
+                    />
+                </label>
+                <button onClick={() => setData(generateData(numPoints, numClusters))}>
+                    Generate
+                </button>
+            </Flex>
+            <svg ref={svgRef}></svg>
         </Flex>
-    )
+    );
 }
 
 export default KMeansClusteringVisualization;
