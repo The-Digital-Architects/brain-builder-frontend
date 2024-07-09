@@ -320,7 +320,6 @@ function App() {
     
           let nnDescription = entry.neural_network_description;
           if (nnDescription) {
-            console.log(entry.task_id, nnDescription.iterations_slider_visibility, nnDescription.lr_slider_visibility)  // TODO remove this
             currentMaxEpochs.push(nnDescription.max_epochs);
             currentMaxLayers.push(nnDescription.max_layers);
             currentMaxNodes.push(nnDescription.max_nodes);
@@ -382,7 +381,7 @@ function App() {
         setImgs(currentTaskIds.map(() => []));
         setInitPlots(currentTaskIds.map(() => []));
 
-        console.log('iterations & LR slider visibility:', iterationsSliderVisibility, lrSliderVisibility);  // for debugging
+        console.log('taskIcons:', currentIcons);  // for debugging
       })
       .catch(error => {
         console.error('Error fetching tasks:', error);
@@ -506,11 +505,11 @@ function App() {
               const newCytoLayers = [...prevCytoLayers];
               console.log("setting cytoLayers to saved setting");
               newCytoLayers[index] = cytoLayersSetting;
-              console.log("saved setting:", cytoLayersSetting);
+              // console.log("saved setting:", cytoLayersSetting);
               // make the number of nodes in the first and last layer match the number of inputs and outputs
               newCytoLayers[index][0] = nInputs;  
               newCytoLayers[index][newCytoLayers[index].length - 1] = nOutputs;
-              console.log("new setting: ", newCytoLayers)  // for debugging
+              // console.log("new setting: ", newCytoLayers)  // for debugging
               return newCytoLayers;
             });
         }

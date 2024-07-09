@@ -28,7 +28,7 @@ function ChallengeButton({ link, label, Icon, active, completed }) {
   const isExternalLink = (link) => /^https?:\/\//.test(link);
   
   return isExternalLink(link) ? (
-    <Link to={link} style={{ color: 'inherit', textDecoration: 'none' }}>
+    <a href={link} style={{ color: 'inherit', textDecoration: 'none' }} target="_blank" rel="noopener noreferrer">
       <div style={{ position: 'relative', width: '136px', height: '84px' }}>
           <Button
             size="1"
@@ -47,7 +47,7 @@ function ChallengeButton({ link, label, Icon, active, completed }) {
           {/* Checkmark icon in bottom right corner of the button */}
           {completed && <CheckCircledIcon color='var(--cyan-10)' width={18} height={18} style={{ position: 'absolute', bottom: 3, right: 3 }} />}
       </div>
-  </Link>
+  </a>
   ) : (
     <Link to={link} style={{ color: 'inherit', textDecoration: 'none' }}>
       <div style={{ position: 'relative', width: '136px', height: '84px' }}>
