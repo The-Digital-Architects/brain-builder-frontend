@@ -14,7 +14,7 @@ class Row(models.Model):
 
 class Progress(models.Model):
     user_id = models.CharField(max_length=100)
-    task_description = models.ForeignKey('TaskDescription', on_delete=models.CASCADE)
+    task_description = models.ForeignKey('TaskDescription', on_delete=models.CASCADE, related_name='progress')
     status = models.IntegerField()
     timestamp = models.DateTimeField(auto_now=True)
 

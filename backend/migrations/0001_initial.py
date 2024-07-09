@@ -110,4 +110,19 @@ class Migration(migrations.Migration):
                 ('decision_boundary_visibility', models.BooleanField()),
             ],
         ),
+        migrations.CreateModel(
+            name='Progress',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('user_id', models.CharField(max_length=100)),
+                ('task_id', models.IntegerField()),
+                ('progress', models.FloatField(max_length=10)),
+                ('error_list', models.CharField(max_length=2000)),
+                ('network_weights', models.CharField(max_length=1000000)),
+                ('network_biases', models.CharField(max_length=1000000)),
+                ('plots', models.CharField(max_length=1000000)),
+                ('feature_names', models.CharField(max_length=2000)),
+                ('timestamp', models.DateTimeField(auto_now=True)),
+            ],
+        ),
     ]
