@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
+import Header from './common/header'
+import { Flex } from '@radix-ui/themes';
 
 function generateData(numPoints, numClusters) {
     const data = [];
@@ -24,6 +26,10 @@ function KMeansClusteringVisualization() {
     useEffect(() => {
         const generatedData = generateData(numPoints, numClusters);
         setData(generatedData);
+    }, [numPoints, numClusters]); // React to changes in numPoints and numClusters
+
+    useEffect(() => {
+        if (data.length === 0) return; // Guard clause if data is empty
 
         const svg = d3.select(svgRef.current);
         svg.selectAll("*").remove();
@@ -52,9 +58,14 @@ function KMeansClusteringVisualization() {
         svg.append('g')
         .attr('transform', 'translate(50, 0)')
         .call(d3.axisLeft(yScale));
-    }, [numPoints, numClusters]); // React to changes in numPoints and numClusters
+    }, [data]);
 
-    return <svg ref={svgRef}></svg>;
+    return (
+        <Flex direction="column">
+            <Header />
+            <svg ref={svgRef}></svg>;
+        </Flex>
+    )
 }
 
 export default KMeansClusteringVisualization;
