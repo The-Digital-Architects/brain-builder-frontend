@@ -367,6 +367,17 @@ function App() {
         setLoadedTasks(true);
         setTyp(currentTyp);
         setDataset(currentDataset);
+        setCytoLayers(currentTaskIds.map(() => []));
+        setIsTraining(currentTaskIds.map(() => 0));
+        setApiData(currentTaskIds.map(() => null));
+        setAccuracy(currentTaskIds.map(() => 0));
+        setIsResponding(currentTaskIds.map(() => false));
+        setProgress(currentTaskIds.map(() => 0));
+        setErrorList(currentTaskIds.map(() => [[], null]));
+        setFeatureNames(currentTaskIds.map(() => []));  // TODO: load these somewhere else
+        setBiases(currentTaskIds.map(() => []));
+        setImgs(currentTaskIds.map(() => []));
+        setInitPlots(currentTaskIds.map(() => []));
       })
       .catch(error => {
         console.error('Error fetching tasks:', error);
@@ -551,12 +562,8 @@ function App() {
   useEffect(() => {
     console.log('cytolayers are ', cytoLayers, 'while task ids are ', taskIds);  // TODO: remove
     setCytoElements(taskIds.map((taskId, index) => {
-      if (cytoLayers[index]) {
-        return generateCytoElements(cytoLayers[index], apiData[index], isTraining[index], weights[index], biases[index])
-      } else {
-        return [];
+      return generateCytoElements(cytoLayers[index], apiData[index], isTraining[index], weights[index], biases[index])
       }
-    }
     ));
   }, [taskIds, cytoLayers, apiData, isTraining, weights, biases]);
 
