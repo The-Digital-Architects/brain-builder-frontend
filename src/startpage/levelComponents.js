@@ -211,10 +211,11 @@ function WrappingUp() {
       <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
           <LevelHeading level={-1} name="Wrapping Up" />
           <GridBox>
-              <ChallengeButton link="notebookTest" label="Custom Notebook" Icon={CodeIcon} active={true} />
+              <ChallengeButton link="notebookTest" label="Custom ipynb" Icon={CodeIcon} active={true} />
               <ChallengeButton link="feedback" label="Give Feedback" Icon={Pencil2Icon} active={true} />
               <ChallengeButton link="links" label="Useful Links" Icon={Link2Icon} active={true} />
               <ChallengeButton link="jupyterLite" label="JupyterLite" Icon={CodeIcon} active={true} />
+              <ChallengeButton link="clusteringTest" label="Clustering" Icon={RocketIcon} active={true} />
           </GridBox>
       </Box>
   );

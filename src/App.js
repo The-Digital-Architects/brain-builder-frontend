@@ -22,6 +22,7 @@ import StartPage from './startpage/startPage';
 import { generateCytoElements, generateCytoStyle } from './utils/cytoUtils';
 import getCookie from './utils/cookieUtils';
 import putRequest from './utils/websocketUtils';
+import ClusteringTest from './clustering'
 
 // ------- APP FUNCTION -------
 
@@ -776,6 +777,8 @@ function App() {
           } />
 
           <Route path="/jupyterLite" element={<JupyterLite />}/>
+
+          <Route path="/clusteringTest" element={<ClusteringTest />}/>
 
           {taskIds.map((taskId, index) => (
             <>
