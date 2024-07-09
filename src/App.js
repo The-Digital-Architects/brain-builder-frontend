@@ -278,9 +278,9 @@ function App() {
     axios.get('/api/all_tasks/')
       .then(response => {
         const currentTaskData = response.data;
-        currentTaskData.sort((a, b) => a.task_id - b.task_id)// sort the taskData by taskIds
+        currentTaskData.sort((a, b) => a.task_id - b.task_id); // sort the taskData by taskIds
         setTaskData(currentTaskData);
-        
+    
         const currentNInputs = [];
         const currentNOutputs = [];
         const currentMaxEpochs = [];
@@ -292,21 +292,46 @@ function App() {
         const currentTyp = [];
         const currentDataset = [];
         const currentIcons = [];
-
+        const currentNormalizationVisibility = [];
+        const currentAfVisibility = [];
+        const currentIterationsSliderVisibility = [];
+        const currentLRSliderVisibility = [];
+        const currentImageVisibility = [];
+    
         currentTaskData.forEach(entry => {
           currentNInputs.push(entry.n_inputs);
           currentNOutputs.push(entry.n_outputs);
-          currentMaxEpochs.push(entry.max_epochs);
-          currentMaxLayers.push(entry.max_layers);
-          currentMaxNodes.push(entry.max_nodes);
           currentTaskIds.push(entry.task_id);
           currentWeights.push([]);
           currentTaskNames[entry.task_id] = entry.name;
           currentTyp.push(entry.type);
           currentDataset.push(entry.dataset);
           currentIcons.push(findIcon(entry));
+    
+          const nnDescription = entry.neural_network_description;
+          if (nnDescription) {
+            currentMaxEpochs.push(nnDescription.max_epochs);
+            currentMaxLayers.push(nnDescription.max_layers);
+            currentMaxNodes.push(nnDescription.max_nodes);
+            currentNormalizationVisibility.push(nnDescription.normalization_visibility || null);
+            currentAfVisibility.push(nnDescription.af_visibility || null);
+            currentIterationsSliderVisibility.push(nnDescription.iterations_slider_visibility || null);
+            currentLRSliderVisibility.push(nnDescription.lr_slider_visibility || null);
+            currentImageVisibility.push(nnDescription.decision_boundary_visibility || null);
+          } else {
+            // Set default values to null if neural_network_description does not exist
+            currentMaxEpochs.push(null);
+            currentMaxLayers.push(null);
+            currentMaxNodes.push(null);
+            currentNormalizationVisibility.push(null);
+            currentAfVisibility.push(null);
+            currentIterationsSliderVisibility.push(null);
+            currentLRSliderVisibility.push(null);
+            currentImageVisibility.push(null);
+          }
         });
-
+    
+        // Set state for all the collected data
         setTaskIds(currentTaskIds);
         setGamesData(JSON.stringify(currentTaskData));
         setNInputs(currentNInputs);
@@ -318,25 +343,13 @@ function App() {
         setWeights(currentWeights);
         setTaskNames(currentTaskNames);
         setTaskIcons(currentIcons);
-
-        setNormalizationVisibility(currentTaskData.map(entry => entry.normalization_visibility));
-        setAfs(currentTaskData.map(() => true));
-        setAfVisibility(currentTaskData.map(entry => entry.af_visibility));
-        setIterationsSliderVisibility(currentTaskData.map(entry => entry.iterations_slider_visibility));
-        setLRSliderVisibility(currentTaskData.map(entry => entry.lr_slider_visibility));
-        setImageVisibility(currentTaskData.map(entry => entry.decision_boundary_visibility));
-        setCytoLayers(currentTaskIds.map(() => []));
-        setIsTraining(currentTaskIds.map(() => 0));
-        setApiData(currentTaskIds.map(() => null));
-        setAccuracy(currentTaskIds.map(() => 0));
-        setIsResponding(currentTaskIds.map(() => false));
-        setProgress(currentTaskIds.map(() => 0));
-        setErrorList(currentTaskIds.map(() => [[], null]));
-        setFeatureNames(currentTaskIds.map(() => []));  // TODO: load these somewhere else
-        setBiases(currentTaskIds.map(() => []));
-        setImgs(currentTaskIds.map(() => []));
-        setInitPlots(currentTaskIds.map(() => []));
-        setLoadedTasks(true)
+        setNormalizationVisibility(currentNormalizationVisibility);
+        setAfVisibility(currentAfVisibility);
+        setIterationsSliderVisibility(currentIterationsSliderVisibility);
+        setLRSliderVisibility(currentLRSliderVisibility);
+        setImageVisibility(currentImageVisibility);
+        // Continue setting the rest of the state as before
+        setLoadedTasks(true);
         setTyp(currentTyp);
         setDataset(currentDataset);
       })

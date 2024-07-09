@@ -46,6 +46,9 @@ class ExternalLink(models.Model):
     task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True)
     url = models.TextField()
     
+    def __str__(self):
+        return super().__str__()
+
 
 class NeuralNetworkDescription(models.Model):
     task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True)
@@ -58,6 +61,9 @@ class NeuralNetworkDescription(models.Model):
     af_visibility = models.BooleanField(default=False)
     decision_boundary_visibility = models.BooleanField()
     
+    def __str__(self) -> str:
+        return super().__str__()
+
 
 class ClusteringDescription(models.Model):
     task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True)
@@ -69,6 +75,9 @@ class ClusteringDescription(models.Model):
     silhouette_coefficient_visibility = models.BooleanField()
     elbow_plot_visibility = models.BooleanField()
 
+    def __str__(self) -> str:
+        return super().__str__()
+    
     
 class Intro(models.Model):
     intro_id = models.IntegerField(unique=True)
