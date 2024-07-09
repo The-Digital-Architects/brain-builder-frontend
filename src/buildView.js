@@ -90,7 +90,6 @@ class Building extends React.Component {
   };
 
   componentDidMount() {
-    console.log('Iteration & LR slider visibility:', this.props.iterationsSliderVisibility, this.props.lrSliderVisibility);  // TODO: remove this
     axios.get(window.location.origin + '/api/tasks/?task_id=' + this.props.taskId)
     .then(response => {
       this.shortDescription = response.data.short_description;

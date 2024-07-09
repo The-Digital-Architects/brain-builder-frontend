@@ -266,16 +266,6 @@ function App() {
       return newAfs;
     });
   };
-
-  function findIcon(entry) {
-    // if the entry has an externallink field, use the Link2Icon
-    if (entry.externallink) {
-      return Link2Icon;
-    } else {
-      // otherwise, use null (the default will be used, currently RocketIcon)
-      return null;
-    }
-  }
   
   // ------- CYTOSCAPE EDITING -------
   const [loadedTasks, setLoadedTasks] = useState(false);
@@ -303,7 +293,6 @@ function App() {
         const currentIterationsSliderVisibility = [];
         const currentLRSliderVisibility = [];
         const currentImageVisibility = [];
-        const nnDescription = null
 
         const currentLinkIds = [];
         const currentLinks = [];
@@ -316,7 +305,6 @@ function App() {
           currentTaskNames[entry.task_id] = entry.name;
           currentTyp.push(entry.type);
           currentDataset.push(entry.dataset);
-          currentIcons.push(findIcon(entry));
     
           let nnDescription = entry.neural_network_description;
           if (nnDescription) {
@@ -341,6 +329,9 @@ function App() {
             if (entry.external_link) {
               currentLinkIds.push(entry.task_id)
               currentLinks.push(entry.external_link.url)
+              currentIcons.push(Link2Icon);
+            } else {
+              currentIcons.push(null);
             }
           }
         });
@@ -381,7 +372,7 @@ function App() {
         setImgs(currentTaskIds.map(() => []));
         setInitPlots(currentTaskIds.map(() => []));
 
-        console.log('taskIcons:', currentIcons);  // for debugging
+        console.log('taskIcons:', currentIcons);  // TODO: remove this
       })
       .catch(error => {
         console.error('Error fetching tasks:', error);
