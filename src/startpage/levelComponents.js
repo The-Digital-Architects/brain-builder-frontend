@@ -23,8 +23,11 @@ function ChallengeButton({ link, label, Icon, active, completed }) {
   if (completed) {
     buttonStyle.outline = '2px solid var(--cyan-8)';
   }
+
+  // Function to check if a link is external
+  const isExternalLink = (link) => /^https?:\/\//.test(link);
   
-  return (
+  return isExternalLink(link) ? (
     <Link to={link} style={{ color: 'inherit', textDecoration: 'none' }}>
       <div style={{ position: 'relative', width: '136px', height: '84px' }}>
           <Button
@@ -45,6 +48,27 @@ function ChallengeButton({ link, label, Icon, active, completed }) {
           {completed && <CheckCircledIcon color='var(--cyan-10)' width={18} height={18} style={{ position: 'absolute', bottom: 3, right: 3 }} />}
       </div>
   </Link>
+  ) : (
+    <Link to={link} style={{ color: 'inherit', textDecoration: 'none' }}>
+      <div style={{ position: 'relative', width: '136px', height: '84px' }}>
+          <Button
+            size="1"
+            variant="outline"
+            disabled={!active}
+            style={buttonStyle}
+          >
+              
+            <Flex gap="2" style={{ flexDirection: "column", alignItems: "center" }}>
+                <label>{label}</label>
+                <div>{Icon ? <Icon width="27" height="27" /> : null}</div>
+            </Flex>
+
+          </Button>
+
+          {/* Checkmark icon in bottom right corner of the button */}
+          {completed && <CheckCircledIcon color='var(--cyan-10)' width={18} height={18} style={{ position: 'absolute', bottom: 3, right: 3 }} />}
+      </div>
+    </Link>
   );
 }
 

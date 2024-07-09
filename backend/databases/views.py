@@ -132,7 +132,7 @@ def task_description_detail(request):
 @api_view(['GET'])
 def all_tasks(request):
     if request.method == 'GET':
-        tasks = TaskDescription.objects.all().select_related('externallink', 'neuralnetworkdescription', 'clusteringdescription')
+        tasks = TaskDescription.objects.all().select_related('external_link', 'neural_network_description', 'clustering_description')
         serializer = TaskDescriptionSerializer(tasks, many=True, context={'request': request})
         return Response(serializer.data)
     

@@ -254,6 +254,10 @@ function App() {
   const [introIds, setIntroIds] = useState([]);
   const [introData, setIntroData] = useState([]);
 
+  // this is for the links
+  const [linkIds, setLinkIds] = useState([]);
+  const [links, setLinks] = useState([]);
+
   function setAf(index, value) {
     setAfs(prevAfs => {
       const newAfs = [...prevAfs];
@@ -263,8 +267,8 @@ function App() {
   };
 
   function findIcon(entry) {
-    // if the entry has an external_link field, use the Link2Icon
-    if (entry.external_link) {
+    // if the entry has an externallink field, use the Link2Icon
+    if (entry.externallink) {
       return Link2Icon;
     } else {
       // otherwise, use null (the default will be used, currently RocketIcon)
@@ -297,6 +301,9 @@ function App() {
         const currentIterationsSliderVisibility = [];
         const currentLRSliderVisibility = [];
         const currentImageVisibility = [];
+
+        const currentLinkIds = [];
+        const currentLinks = [];
     
         currentTaskData.forEach(entry => {
           currentNInputs.push(entry.n_inputs);
@@ -328,6 +335,10 @@ function App() {
             currentIterationsSliderVisibility.push(null);
             currentLRSliderVisibility.push(null);
             currentImageVisibility.push(null);
+            if (entry.external_link) {
+              currentLinkIds.push(entry.task_id)
+              currentLinks.push(entry.external_link.url)
+            }
           }
         });
     
@@ -348,6 +359,9 @@ function App() {
         setIterationsSliderVisibility(currentIterationsSliderVisibility);
         setLRSliderVisibility(currentLRSliderVisibility);
         setImageVisibility(currentImageVisibility);
+        // Set states for the external links
+        setLinkIds(currentLinkIds)
+        setLinks(currentLinks)
         // Continue setting the rest of the state as before
         setLoadedTasks(true);
         setTyp(currentTyp);
@@ -378,6 +392,8 @@ function App() {
         setTyp(defaultTaskIds.map(() => 1));
         setDataset(defaultTaskIds.map(() => 'Clas2.csv'));
         setTaskIcons(defaultTaskIds.map(() => null));
+        setLinkIds([])
+        setLinks([])
         console.log("Setting default states instead.")
       });
 
@@ -431,7 +447,12 @@ function App() {
 
   }, []);
   
-  useEffect(() => {  // TODO: figure out what this is doing and if it's necessary
+  const linksDict = linkIds.reduce((acc, curr, index) => {
+    acc[curr] = links[index];
+    return acc;
+  }, {});
+  
+  useEffect(() => { 
     if (cytoLayers.every(subArray => subArray.length === 0)) {
       console.log("cytoLayers is empty, setting to default.");
       // cytoLayers is empty, set it to a default value
@@ -676,7 +697,7 @@ function App() {
       <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
       <Router>
         <Routes>
-          <Route path="/" element={<StartPage levelNames={levelNames} taskNames={taskNames} introData={introData} quizData={quizData} taskIds={taskIds} taskIcons={taskIcons} quizIds={quizIds} introIds={introIds} />} />
+          <Route path="/" element={<StartPage levelNames={levelNames} taskNames={taskNames} introData={introData} quizData={quizData} taskIds={taskIds} taskIcons={taskIcons} quizIds={quizIds} introIds={introIds} links={linksDict} />} />
           
           {introIds.map((introId, index) => (
             <>

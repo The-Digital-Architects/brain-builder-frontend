@@ -43,7 +43,7 @@ class TaskDescription(models.Model):
 
 
 class ExternalLink(models.Model):
-    task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True)
+    task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True, related_name='external_link')
     url = models.TextField()
     
     def __str__(self):
@@ -51,7 +51,7 @@ class ExternalLink(models.Model):
 
 
 class NeuralNetworkDescription(models.Model):
-    task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True)
+    task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True, related_name='neural_network_description')
     max_epochs = models.IntegerField()
     max_layers = models.IntegerField()
     max_nodes = models.IntegerField()
@@ -66,7 +66,7 @@ class NeuralNetworkDescription(models.Model):
 
 
 class ClusteringDescription(models.Model):
-    task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True)
+    task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True, related_name='clustering_description')
     model_type = models.TextField(max_length=10)
     type_selection_visibility = models.BooleanField()
     distance_visibility = models.BooleanField()
