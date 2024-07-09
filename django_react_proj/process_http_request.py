@@ -38,7 +38,7 @@ async def process(req):
 
     if req['action'] == 0:  # load the data and send the feature names and images to the frontend
         d = {}
-        tag = int(inputs['task_id'])
+        tag = int(req['task_id'])
         gd = json.loads(inputs['games_data'])
         gd = pd.DataFrame(gd).set_index('task_id')
         dataset = gd.loc[tag, 'dataset']
