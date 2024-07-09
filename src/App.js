@@ -303,6 +303,7 @@ function App() {
         const currentIterationsSliderVisibility = [];
         const currentLRSliderVisibility = [];
         const currentImageVisibility = [];
+        const nnDescription = null
 
         const currentLinkIds = [];
         const currentLinks = [];
@@ -317,7 +318,8 @@ function App() {
           currentDataset.push(entry.dataset);
           currentIcons.push(findIcon(entry));
     
-          const nnDescription = entry.neural_network_description;
+          let nnDescription = entry.neural_network_description;
+          console.log(entry.task_id, nnDescription)  // TODO remove this
           if (nnDescription) {
             currentMaxEpochs.push(nnDescription.max_epochs);
             currentMaxLayers.push(nnDescription.max_layers);
