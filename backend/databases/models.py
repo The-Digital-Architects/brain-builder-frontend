@@ -47,7 +47,7 @@ class ExternalLink(models.Model):
     url = models.TextField()
     
     def __str__(self):
-        return super().__str__()
+        return str(self.task_description.task_id) + " - " + str(self.task_description.name)
 
 
 class NeuralNetworkDescription(models.Model):
@@ -62,7 +62,7 @@ class NeuralNetworkDescription(models.Model):
     decision_boundary_visibility = models.BooleanField()
     
     def __str__(self) -> str:
-        return super().__str__()
+        return str(self.task_description.task_id) + " - " + str(self.task_description.name)
 
 
 class ClusteringDescription(models.Model):
@@ -76,7 +76,7 @@ class ClusteringDescription(models.Model):
     elbow_plot_visibility = models.BooleanField()
 
     def __str__(self) -> str:
-        return super().__str__()
+        return str(self.task_description.task_id) + " - " + str(self.task_description.name)
     
     
 class Intro(models.Model):
