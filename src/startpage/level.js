@@ -3,7 +3,7 @@ import { RocketIcon, Pencil2Icon } from '@radix-ui/react-icons';
 import { ChallengeButton, LevelBox, LevelHeading, GridBox } from './levelComponents';
 
 
-function Level({ level, levelNames, taskNames, introData, quizData, introsByLevel, quizzesByLevel, challenges, showContent, handleShowContent, progressData }) {
+function Level({ level, levelNames, taskNames, introData, quizData, introsByLevel, quizzesByLevel, challengeIcons, challenges, showContent, handleShowContent, progressData }) {
 
   const levelStr = String(level);
 
@@ -54,7 +54,7 @@ function Level({ level, levelNames, taskNames, introData, quizData, introsByLeve
                     <ChallengeButton key={`challenge${level}${challenge}_button`}
                         link={`challenge${level}${challenge}`}
                         label={taskNames[`${level}${challenge}`]}
-                        Icon={RocketIcon}
+                        Icon={challengeIcons[index] || RocketIcon}
                         active={isActive("challenges", levelStr, index)}
                         completed={isCompleted("challenges", levelStr, index)}
                     />

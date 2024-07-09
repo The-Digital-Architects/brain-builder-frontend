@@ -1,10 +1,15 @@
 from rest_framework import serializers
-from .models import Row, TaskDescription, NeuralNetworkDescription, ClusteringDescription, Quiz, Intro, Feedback
+from .models import Row, Progress, TaskDescription, ExternalLink, NeuralNetworkDescription, ClusteringDescription, Quiz, Intro, Feedback
 
 class RowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Row
         fields = ('pk', 'action', 'task_id', 'user_id', 'inputs', 'timestamp')
+
+class ProgressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Progress
+        fields = ('pk', 'user_id', 'task_description', 'status', 'timestamp')
 
 class NeuralNetworkDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,13 +21,19 @@ class ClusteringDescriptionSerializer(serializers.ModelSerializer):
         model = ClusteringDescription
         fields = '__all__'
 
+class ExternalLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExternalLink
+        fields = '__all__'
+
 class TaskDescriptionSerializer(serializers.ModelSerializer):
+    external_link = ExternalLinkSerializer(read_only=True)
     neural_network_description = NeuralNetworkDescriptionSerializer(read_only=True)
     clustering_description = ClusteringDescriptionSerializer(read_only=True)
 
     class Meta:
         model = TaskDescription
-        fields = ('pk', 'task_id', 'name', 'short_name', 'short_description', 'description', 'type', 'dataset', 'n_inputs', 'n_outputs', 'neural_network_description', 'clustering_description')
+        fields = ('pk', 'task_id', 'name', 'short_name', 'short_description', 'description', 'type', 'dataset', 'n_inputs', 'n_outputs', 'file_name', 'function_name', 'external_link', 'neural_network_description', 'clustering_description')
 
 class IntroSerializer(serializers.ModelSerializer):
     class Meta:

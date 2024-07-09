@@ -6,7 +6,7 @@ import * as Slider from '@radix-ui/react-slider';
 import '@radix-ui/themes/styles.css';
 import tu_delft_pic from './images/tud_black_new.png';
 import { Link, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { HomeIcon } from '@radix-ui/react-icons';
+import { HomeIcon, Link2Icon } from '@radix-ui/react-icons';
 import axios from 'axios';
 import BuildView from './buildView';
 import Introduction from './introduction';
@@ -27,7 +27,7 @@ import putRequest from './utils/websocketUtils';
 
 function App() {
 
-    // Setting the interval- and timing-related states
+  // Setting the interval- and timing-related states
   const intervalTimeout = 20000;  // in milliseconds, the time to wait before ending the interval
   const pendingTime = 1000;  // in milliseconds, the time to wait when putting or posting a request -> set this close to 0 in production, but higher for debugging
 
@@ -64,16 +64,20 @@ function App() {
 
     normalization = false;  // TODO: make this an actual variable
 
-    const dataData = {
-      action: 0,
-      user_id: userId,
-      task_id: taskId,
+    const inData = {
       learning_rate: 0,
       epochs: 0,
       normalization: normalization, 
       activations_on: true,
       network_input: JSON.stringify([]),
       games_data: gamesData,
+    }
+    
+    const dataData = {
+      action: 0,
+      user_id: userId,
+      task_id: taskId,
+      in_out: JSON.stringify(inData),
     };
     // first, set up the websocket
     const ws = new WebSocket(`wss://${window.location.host}/ws/${userId}/`);
@@ -211,6 +215,7 @@ function App() {
   const [taskData, setTaskData] = useState([]);
   const [taskNames, setTaskNames] = useState({})
   const [taskIds, setTaskIds] = useState([]);
+  const [taskIcons, setTaskIcons] = useState([]);
   const [gamesData, setGamesData] = useState([[]]);
   const [typ, setTyp] = useState([[]]);
   const [dataset, setDataset] = useState([[]]);
@@ -257,6 +262,16 @@ function App() {
     });
   };
 
+  function findIcon(entry) {
+    // if the entry has an external_link field, use the Link2Icon
+    if (entry.external_link) {
+      return Link2Icon;
+    } else {
+      // otherwise, use null (the default will be used, currently RocketIcon)
+      return null;
+    }
+  }
+  
   // ------- CYTOSCAPE EDITING -------
   const [loadedTasks, setLoadedTasks] = useState(false);
   useEffect(() => {
@@ -276,6 +291,7 @@ function App() {
         const currentTaskNames = {};
         const currentTyp = [];
         const currentDataset = [];
+        const currentIcons = [];
 
         currentTaskData.forEach(entry => {
           currentNInputs.push(entry.n_inputs);
@@ -288,6 +304,7 @@ function App() {
           currentTaskNames[entry.task_id] = entry.name;
           currentTyp.push(entry.type);
           currentDataset.push(entry.dataset);
+          currentIcons.push(findIcon(entry));
         });
 
         setTaskIds(currentTaskIds);
@@ -300,6 +317,8 @@ function App() {
         setMaxNodes(currentMaxNodes);
         setWeights(currentWeights);
         setTaskNames(currentTaskNames);
+        setTaskIcons(currentIcons);
+
         setNormalizationVisibility(currentTaskData.map(entry => entry.normalization_visibility));
         setAfs(currentTaskData.map(() => true));
         setAfVisibility(currentTaskData.map(entry => entry.af_visibility));
@@ -345,6 +364,7 @@ function App() {
         setImgs(defaultTaskIds.map(() => []));
         setTyp(defaultTaskIds.map(() => 1));
         setDataset(defaultTaskIds.map(() => 'Clas2.csv'));
+        setTaskIcons(defaultTaskIds.map(() => null));
         console.log("Setting default states instead.")
       });
 
@@ -643,7 +663,7 @@ function App() {
       <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
       <Router>
         <Routes>
-          <Route path="/" element={<StartPage levelNames={levelNames} taskNames={taskNames} introData={introData} quizData={quizData} taskIds={taskIds} quizIds={quizIds} introIds={introIds} />} />
+          <Route path="/" element={<StartPage levelNames={levelNames} taskNames={taskNames} introData={introData} quizData={quizData} taskIds={taskIds} taskIcons={taskIcons} quizIds={quizIds} introIds={introIds} />} />
           
           {introIds.map((introId, index) => (
             <>

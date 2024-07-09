@@ -5,11 +5,22 @@ class Row(models.Model):
     action = models.IntegerField()
     user_id = models.CharField(max_length=100)
     task_id = models.IntegerField()
-    inputs = models.JSONField()
+    in_out = models.JSONField()
     timestamp = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.network_input
+
+
+class Progress(models.Model):
+    user_id = models.CharField(max_length=100)
+    task_description = models.ForeignKey('TaskDescription', on_delete=models.CASCADE)
+    status = models.IntegerField()
+    timestamp = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.user_id + " - " + str(self.task_id)
+
 
 # ___________________________________________________________________________________________________
 
@@ -29,6 +40,11 @@ class TaskDescription(models.Model):
 
     def __str__(self):
         return str(self.task_id) + " - " + str(self.name)
+
+
+class ExternalLink(models.Model):
+    task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True)
+    url = models.TextField()
     
 
 class NeuralNetworkDescription(models.Model):

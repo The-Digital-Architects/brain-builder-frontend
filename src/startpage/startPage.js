@@ -26,6 +26,7 @@ class StartPage extends React.Component {
         super(props);
         this.state = {
             tasksByLevel: this.groupByIds(props.taskIds),
+            iconsByLevel: this.groupByIndex(props.taskIcons, props.taskIds),
             quizzesByLevel: this.groupByIds(props.quizIds),
             introsByLevel: this.groupByIds(props.introIds),
             showContent: Array(props.levelNames.length+1).fill(false),
@@ -44,6 +45,21 @@ class StartPage extends React.Component {
             acc[level].push(challenge);
             return acc;
         }, {});
+    }
+
+    groupByIndex(vars, ids, groupedIds = null) {
+        if (!groupedIds) {
+            groupedIds = this.groupByIds(ids);
+        }
+        const groupedVars = {};
+        for (const level in groupedIds) {
+            groupedVars[level] = groupedIds[level].map(challenge => {
+                const id = parseInt(level) * 10 + challenge;
+                const index = ids.indexOf(id);
+                return vars[index];
+            });
+        }
+        return groupedVars;
     }
 
     initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel) {
@@ -97,6 +113,7 @@ class StartPage extends React.Component {
 
     componentDidMount() {
         let tasksByLevel = this.groupByIds(this.props.taskIds);
+        let iconsByLevel = this.groupByIndex(this.props.taskIcons, this.props.taskIds, tasksByLevel);
         let quizzesByLevel = this.groupByIds(this.props.quizIds);
         let introsByLevel = this.groupByIds(this.props.introIds);
         let progressData = getProgress();
@@ -107,6 +124,7 @@ class StartPage extends React.Component {
 
         this.setState({
             tasksByLevel,
+            iconsByLevel,
             quizzesByLevel,
             introsByLevel,
             progressData,
@@ -120,11 +138,13 @@ class StartPage extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.taskIds !== prevProps.taskIds || this.props.quizIds !== prevProps.quizIds || this.props.introIds !== prevProps.introIds) {
             const tasksByLevel = this.groupByIds(this.props.taskIds);
+            const iconsByLevel = this.groupByIndex(this.props.taskIcons, this.props.taskIds, tasksByLevel);
             const quizzesByLevel = this.groupByIds(this.props.quizIds);
             const introsByLevel = this.groupByIds(this.props.introIds);
             
             this.setState({
                 tasksByLevel,
+                iconsByLevel,
                 quizzesByLevel,
                 introsByLevel,
                 progressData: this.initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel),
@@ -161,7 +181,7 @@ class StartPage extends React.Component {
                 <GettingStarted showContent={this.state.showContent[this.state.showContent.length-1]} handleShowContent={this.handleShowContent} />
 
                 {Object.entries(this.state.tasksByLevel).map(([level, challenges]) => (
-                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challenges={challenges} showContent={this.state.showContent[level-1]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
+                    <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challengeIcons={this.state.iconsByLevel[level]} challenges={challenges} showContent={this.state.showContent[level-1]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} />
                 ))} 
 
                 <WrappingUp />
