@@ -27,9 +27,9 @@ class ExternalLinkSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TaskDescriptionSerializer(serializers.ModelSerializer):
-    #external_link = ExternalLinkSerializer(read_only=True)
-    #neural_network_description = NeuralNetworkDescriptionSerializer(read_only=True)
-    #clustering_description = ClusteringDescriptionSerializer(read_only=True)
+    external_link = ExternalLinkSerializer(read_only=True)
+    neural_network_description = NeuralNetworkDescriptionSerializer(read_only=True)
+    clustering_description = ClusteringDescriptionSerializer(read_only=True)
 
     class Meta:
         model = TaskDescription
