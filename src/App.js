@@ -549,7 +549,11 @@ function App() {
   // Update the state when the dependencies change
   useEffect(() => {
     setCytoElements(taskIds.map((taskId, index) => {
-      return generateCytoElements(cytoLayers[index], apiData[index], isTraining[index], weights[index], biases[index])
+      if (cytoLayers[index]) {
+        return generateCytoElements(cytoLayers[index], apiData[index], isTraining[index], weights[index], biases[index])
+      } else {
+        return [];
+      }
     }
     ));
   }, [taskIds, cytoLayers, apiData, isTraining, weights, biases]);
