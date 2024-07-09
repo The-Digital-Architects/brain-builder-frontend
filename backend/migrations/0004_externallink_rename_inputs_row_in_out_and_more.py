@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='progress',
             name='task_description',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='backend.taskdescription', related_name='progress'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='backend.taskdescription', related_name='progress'),
             preserve_default=False,
         ),
         migrations.AlterField(
