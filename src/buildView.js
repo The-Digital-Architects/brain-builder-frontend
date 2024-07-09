@@ -257,7 +257,7 @@ class Building extends React.Component {
     return (event) => {
       if (!inThrottle && this.props.taskId !== 0) { 
         if (this.props.isTraining === 1) {
-          this.props.cancelRequest.current(this.props.taskId, this.props.index)
+          this.props.cancelRequestRef.current(this.props.taskId, this.props.index)
         } else { 
           let putRequestParams = {
             cytoLayers: this.props.cytoLayers,
