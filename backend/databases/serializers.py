@@ -4,7 +4,7 @@ from .models import Row, Progress, TaskDescription, ExternalLink, NeuralNetworkD
 class RowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Row
-        fields = ('pk', 'action', 'task_id', 'user_id', 'inputs', 'timestamp')
+        fields = ('pk', 'action', 'task_id', 'user_id', 'in_out', 'timestamp')
 
 class ProgressSerializer(serializers.ModelSerializer):
     class Meta:

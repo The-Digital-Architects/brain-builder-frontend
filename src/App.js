@@ -285,6 +285,7 @@ function App() {
         const currentTaskData = response.data;
         currentTaskData.sort((a, b) => a.task_id - b.task_id); // sort the taskData by taskIds
         setTaskData(currentTaskData);
+        console.log('currentTaskData: ', currentTaskData)
     
         const currentNInputs = [];
         const currentNOutputs = [];
@@ -321,11 +322,11 @@ function App() {
             currentMaxEpochs.push(nnDescription.max_epochs);
             currentMaxLayers.push(nnDescription.max_layers);
             currentMaxNodes.push(nnDescription.max_nodes);
-            currentNormalizationVisibility.push(nnDescription.normalization_visibility || null);
-            currentAfVisibility.push(nnDescription.af_visibility || null);
-            currentIterationsSliderVisibility.push(nnDescription.iterations_slider_visibility || null);
-            currentLRSliderVisibility.push(nnDescription.lr_slider_visibility || null);
-            currentImageVisibility.push(nnDescription.decision_boundary_visibility || null);
+            currentNormalizationVisibility.push(nnDescription.normalization_visibility);
+            currentAfVisibility.push(nnDescription.af_visibility);
+            currentIterationsSliderVisibility.push(nnDescription.iterations_slider_visibility);
+            currentLRSliderVisibility.push(nnDescription.lr_slider_visibility);
+            currentImageVisibility.push(nnDescription.decision_boundary_visibility);
           } else {
             // Set default values to null if neural_network_description does not exist
             currentMaxEpochs.push(null);
