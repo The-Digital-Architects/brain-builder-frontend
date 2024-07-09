@@ -549,6 +549,7 @@ function App() {
 
   // Update the state when the dependencies change
   useEffect(() => {
+    console.log('cytolayers are ', cytoLayers, 'while task ids are ', taskIds);  // TODO: remove
     setCytoElements(taskIds.map((taskId, index) => {
       if (cytoLayers[index]) {
         return generateCytoElements(cytoLayers[index], apiData[index], isTraining[index], weights[index], biases[index])
