@@ -33,7 +33,7 @@ async def process(req):
 
     req = dict(req)
     task_id, user_id = req['task_id'], req['user_id']
-    inputs = req['in_out']
+    inputs = json.loads(req['in_out'])
 
 
     if req['action'] == 0:  # load the data and send the feature names and images to the frontend

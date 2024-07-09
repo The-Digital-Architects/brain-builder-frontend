@@ -384,8 +384,8 @@ function App() {
         const defaultTaskIds = [11, 12];
         setTaskIds(defaultTaskIds);
         setGamesData(JSON.stringify([{task_id: 11, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'Clas2.csv'}, {task_id: 12, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'load_iris()'}]));
-        setNInputs(defaultTaskIds.map(() => 4));  // TODO: set a default value for this
-        setNOutputs(defaultTaskIds.map(() => 3));  // TODO: set a default value for this
+        setNInputs(defaultTaskIds.map(() => 4));  
+        setNOutputs(defaultTaskIds.map(() => 3));  
         setNObjects(defaultTaskIds.map(() => 0));
         setMaxEpochs(defaultTaskIds.map(() => 200));
         setMaxLayers(defaultTaskIds.map(() => 10));
@@ -531,12 +531,12 @@ function App() {
               newApiData[index] = response.data[0];
               return newApiData;
             });
-            if (typeof response.data[0] === 'undefined' || !response.data[0]["network_input"] || JSON.parse(response.data[0]["network_input"]).length === 0) {
+            if (typeof response.data[0] === 'undefined' || !response.data[0]["in_out"] || JSON.parse(response.data[0]["in_out"]).length === 0) {
               throw new Error('response.data[0] is undefined or network_input is empty');
             }
             setCytoLayers(prevCytoLayers => {
               const newCytoLayers = [...prevCytoLayers];
-              newCytoLayers[index] = JSON.parse(response.data[0]["network_input"]);
+              newCytoLayers[index] = JSON.parse(response.data[0]["in_out"]);
               // make the number of nodes in the first and last layer match the number of inputs and outputs
               newCytoLayers[index][0] = nInputs;
               newCytoLayers[index][newCytoLayers[index].length - 1] = nOutputs;
@@ -560,7 +560,6 @@ function App() {
 
   // Update the state when the dependencies change
   useEffect(() => {
-    console.log('cytolayers are ', cytoLayers, 'while task ids are ', taskIds);  // TODO: remove
     setCytoElements(taskIds.map((taskId, index) => {
       return generateCytoElements(cytoLayers[index], apiData[index], isTraining[index], weights[index], biases[index])
       }
