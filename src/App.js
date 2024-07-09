@@ -326,13 +326,12 @@ function App() {
             currentIterationsSliderVisibility.push(null);
             currentLRSliderVisibility.push(null);
             currentImageVisibility.push(null);
-            if (entry.external_link) {
-              currentLinkIds.push(entry.task_id)
-              currentLinks.push(entry.external_link.url)
-              currentIcons.push(Link2Icon);
-            } else {
-              currentIcons.push(null);
-            }
+          } if (entry.external_link) {
+            currentLinkIds.push(entry.task_id)
+            currentLinks.push(entry.external_link.url)
+            currentIcons.push(Link2Icon);
+          } else {
+            currentIcons.push(null);
           }
         });
     
@@ -372,7 +371,7 @@ function App() {
         setImgs(currentTaskIds.map(() => []));
         setInitPlots(currentTaskIds.map(() => []));
 
-        console.log('taskIcons:', currentIcons);  // TODO: remove this
+        console.log('linkIds & Links:', currentLinkIds, currentLinks);  // TODO: remove this
       })
       .catch(error => {
         console.error('Error fetching tasks:', error);
@@ -458,6 +457,7 @@ function App() {
     acc[curr] = links[index];
     return acc;
   }, {});
+  console.log('linksDict:', linksDict);  // TODO: remove this
   
   useEffect(() => { 
     if (cytoLayers.every(subArray => subArray.length === 0)) {
