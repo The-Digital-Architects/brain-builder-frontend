@@ -213,9 +213,12 @@ function App() {
   };
 
   let accuracyColor = 'var(--slate-11)';
+
+  // this is for all the tasks
   const [taskData, setTaskData] = useState([]);
   const [taskNames, setTaskNames] = useState({})
   const [taskIds, setTaskIds] = useState([]);
+  const [NNTaskIds, setNNTaskIds] = useState([]);
   const [taskIcons, setTaskIcons] = useState([]);
   const [gamesData, setGamesData] = useState([[]]);
   const [typ, setTyp] = useState([[]]);
@@ -224,6 +227,9 @@ function App() {
   const [nInputs, setNInputs] = useState([]);
   const [nOutputs, setNOutputs] = useState([]);
   const [nObjects, setNObjects] = useState([]);
+  const [isResponding, setIsResponding] = useState([]);
+
+  // this is for the neural network tasks
   const [maxEpochs, setMaxEpochs] = useState([]);
   const [maxLayers, setMaxLayers] = useState([]);
   const [maxNodes, setMaxNodes] = useState([]);
@@ -238,14 +244,30 @@ function App() {
   const [isTraining, setIsTraining] = useState([]);
   const [apiData, setApiData] = useState([]);
   const [accuracy, setAccuracy] = useState([]);
-  const [isResponding, setIsResponding] = useState([]);
-  // Setting default values for the network-related states
+  // setting default values for the network-related states
   const [progress, setProgress] = useState(-1);
   const [errorList, setErrorList] = useState([[], null]);
   const [featureNames, setFeatureNames] = useState([]);
   const [weights, setWeights] = useState([]);
   const [biases, setBiases] = useState([]);
   const [imgs, setImgs] = useState([[], [], []]);
+
+  // this is for the SVM tasks
+  const [svmTaskIds, setSvmTaskIds] = useState([]);
+  // TODO
+
+  // this is for the basics tasks
+  const [basicsTaskIds, setBasicsIds] = useState([]);
+  // TODO
+
+  // this is for the clustering tasks
+  const [clusteringTaskIds, setClusteringIds] = useState([]);
+  // TODO
+  const customClusteringId = 72  // TODO: remove this after the demo
+
+  // this is for the external links
+  const [linkIds, setLinkIds] = useState([]);
+  const [links, setLinks] = useState([]);
 
   // this is for the quizzes
   const [quizIds, setQuizIds] = useState([]);
@@ -255,9 +277,6 @@ function App() {
   const [introIds, setIntroIds] = useState([]);
   const [introData, setIntroData] = useState([]);
 
-  // this is for the links
-  const [linkIds, setLinkIds] = useState([]);
-  const [links, setLinks] = useState([]);
 
   function setAf(index, value) {
     setAfs(prevAfs => {
@@ -266,97 +285,158 @@ function App() {
       return newAfs;
     });
   };
+
+
+
+
+  // ------- FETCHING TASK DATA -------
+  const currentNInputs = [];
+  const currentNOutputs = [];
+  const currentTaskIds = [];
+  const currentTaskNames = {};
+  const currentTyp = [];
+  const currentDataset = [];
+  const currentIcons = [];
+
+  const currentNNTaskIds = [];
+  const currentMaxEpochs = [];
+  const currentMaxLayers = [];
+  const currentMaxNodes = [];
+  const currentNormalizationVisibility = [];
+  const currentAfVisibility = [];
+  const currentIterationsSliderVisibility = [];
+  const currentLRSliderVisibility = [];
+  const currentImageVisibility = [];
+  const currentWeights = [];
+
+  const currentSVMTaskIds = [];
+  // TODO
+
+  const currentBasicsTaskIds = [];
+  // TODO
+
+  const currentClusteringTaskIds = [];
+  // TODO
+
+  const currentLinkIds = [];
+  const currentLinks = [];
+
+  function readTaskEntry(entry) {
+
+    // set TaskDescription states
+    currentNInputs.push(entry.n_inputs);
+    currentNOutputs.push(entry.n_outputs);
+    currentTaskIds.push(entry.task_id);
+    currentWeights.push([]);
+    currentTaskNames[entry.task_id] = entry.name;
+    currentTyp.push(entry.type);
+    currentDataset.push(entry.dataset);
+
+    // set NeuralNetworkDescription states
+    let nnDescription = entry.neural_network_description;
+    if (nnDescription) {
+      currentNNTaskIds.push(entry.task_id);
+      currentMaxEpochs.push(nnDescription.max_epochs);
+      currentMaxLayers.push(nnDescription.max_layers);
+      currentMaxNodes.push(nnDescription.max_nodes);
+      currentNormalizationVisibility.push(nnDescription.normalization_visibility);
+      currentAfVisibility.push(nnDescription.af_visibility);
+      currentIterationsSliderVisibility.push(nnDescription.iterations_slider_visibility);
+      currentLRSliderVisibility.push(nnDescription.lr_slider_visibility);
+      currentImageVisibility.push(nnDescription.decision_boundary_visibility);
+      currentIcons.push(null);
+    } else {
+
+      // set svm states
+      let svmDescription = entry.svm_description;
+      if (svmDescription) {
+        currentSVMTaskIds.push(entry.task_id);
+        // TODO
+        currentIcons.push(null);
+      } else {
+
+        // set basics states
+        let basicsDescription = entry.basics_description;
+        if (basicsDescription) {
+          currentBasicsTaskIds.push(entry.task_id);
+          // TODO
+          currentIcons.push(null);
+        } else {
+
+          // set clustering states
+          let clusteringDescription = entry.clustering_description;
+          if (clusteringDescription) {
+            currentClusteringTaskIds.push(entry.task_id);
+            // TODO
+            currentIcons.push(null);
+          } else {
+
+            // set external link states
+            if (entry.external_link) {
+            currentLinkIds.push(entry.task_id)
+            currentLinks.push(entry.external_link.url)
+            currentIcons.push(Link2Icon);
+            } else {
+              currentIcons.push(null);
+              console.log("Task " + entry.task_id + " is not implemented in the frontend.")
+            }
+          }
+        }
+      }
+    }
+  }
   
-  // ------- CYTOSCAPE EDITING -------
   const [loadedTasks, setLoadedTasks] = useState(false);
   useEffect(() => {
     axios.get('/api/all_tasks/')
       .then(response => {
         const currentTaskData = response.data;
         currentTaskData.sort((a, b) => a.task_id - b.task_id); // sort the taskData by taskIds
-        setTaskData(currentTaskData);
-        console.log('currentTaskData: ', currentTaskData)
-    
-        const currentNInputs = [];
-        const currentNOutputs = [];
-        const currentMaxEpochs = [];
-        const currentMaxLayers = [];
-        const currentMaxNodes = [];
-        const currentTaskIds = [];
-        const currentWeights = [];
-        const currentTaskNames = {};
-        const currentTyp = [];
-        const currentDataset = [];
-        const currentIcons = [];
-        const currentNormalizationVisibility = [];
-        const currentAfVisibility = [];
-        const currentIterationsSliderVisibility = [];
-        const currentLRSliderVisibility = [];
-        const currentImageVisibility = [];
-
-        const currentLinkIds = [];
-        const currentLinks = [];
+        setTaskData(currentTaskData); 
+        console.log('currentTaskData: ', currentTaskData)  // for debugging
     
         currentTaskData.forEach(entry => {
-          currentNInputs.push(entry.n_inputs);
-          currentNOutputs.push(entry.n_outputs);
-          currentTaskIds.push(entry.task_id);
-          currentWeights.push([]);
-          currentTaskNames[entry.task_id] = entry.name;
-          currentTyp.push(entry.type);
-          currentDataset.push(entry.dataset);
-    
-          let nnDescription = entry.neural_network_description;
-          if (nnDescription) {
-            currentMaxEpochs.push(nnDescription.max_epochs);
-            currentMaxLayers.push(nnDescription.max_layers);
-            currentMaxNodes.push(nnDescription.max_nodes);
-            currentNormalizationVisibility.push(nnDescription.normalization_visibility);
-            currentAfVisibility.push(nnDescription.af_visibility);
-            currentIterationsSliderVisibility.push(nnDescription.iterations_slider_visibility);
-            currentLRSliderVisibility.push(nnDescription.lr_slider_visibility);
-            currentImageVisibility.push(nnDescription.decision_boundary_visibility);
-          } else {
-            // Set default values to null if neural_network_description does not exist
-            currentMaxEpochs.push(null);
-            currentMaxLayers.push(null);
-            currentMaxNodes.push(null);
-            currentNormalizationVisibility.push(null);
-            currentAfVisibility.push(null);
-            currentIterationsSliderVisibility.push(null);
-            currentLRSliderVisibility.push(null);
-            currentImageVisibility.push(null);
-          } if (entry.external_link) {
-            currentLinkIds.push(entry.task_id)
-            currentLinks.push(entry.external_link.url)
-            currentIcons.push(Link2Icon);
-          } else {
-            currentIcons.push(null);
-          }
+          readTaskEntry(entry);
         });
     
-        // Set state for all the collected data
+        // Set universal states
         setTaskIds(currentTaskIds);
         setGamesData(JSON.stringify(currentTaskData));
         setNInputs(currentNInputs);
         setNOutputs(currentNOutputs);
         setNObjects(currentTaskIds.map(() => 0));
+        setTaskNames(currentTaskNames);
+        setTaskIcons(currentIcons);
+
+        // Set neural network states
+        setNNTaskIds(currentNNTaskIds);
         setMaxEpochs(currentMaxEpochs);
         setMaxLayers(currentMaxLayers);
         setMaxNodes(currentMaxNodes);
         setWeights(currentWeights);
-        setTaskNames(currentTaskNames);
-        setTaskIcons(currentIcons);
         setNormalizationVisibility(currentNormalizationVisibility);
         setAfVisibility(currentAfVisibility);
         setIterationsSliderVisibility(currentIterationsSliderVisibility);
         setLRSliderVisibility(currentLRSliderVisibility);
         setImageVisibility(currentImageVisibility);
-        // Set states for the external links
+
+        // Set svm states
+        setSvmTaskIds(currentSVMTaskIds);
+        // TODO
+
+        // Set basics states
+        setBasicsIds(currentBasicsTaskIds);
+        // TODO
+
+        // Set clustering states
+        setClusteringIds(currentClusteringTaskIds);
+        // TODO
+
+        // Set link states
         setLinkIds(currentLinkIds)
         setLinks(currentLinks)
-        // Continue setting the rest of the state as before
-        setLoadedTasks(true);
+
+        // Initialise the rest of the states 
         setTyp(currentTyp);
         setDataset(currentDataset);
         setCytoLayers(currentTaskIds.map(() => []));
@@ -370,11 +450,15 @@ function App() {
         setBiases(currentTaskIds.map(() => []));
         setImgs(currentTaskIds.map(() => []));
         setInitPlots(currentTaskIds.map(() => []));
+
+        setLoadedTasks(true);
       })
       .catch(error => {
+        // TODO: initialise the states with these default values
         console.error('Error fetching tasks:', error);
         const defaultTaskIds = [11, 12];
         setTaskIds(defaultTaskIds);
+        setNNTaskIds(defaultTaskIds);  // other task ids are [] by default
         setGamesData(JSON.stringify([{task_id: 11, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'Clas2.csv'}, {task_id: 12, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'load_iris()'}]));
         setNInputs(defaultTaskIds.map(() => 4));  
         setNOutputs(defaultTaskIds.map(() => 3));  
@@ -450,6 +534,10 @@ function App() {
     }, 1000);
 
   }, []);
+
+
+
+  // ------- PROCESSING TASK DATA -------
   
   const linksDict = linkIds.reduce((acc, curr, index) => {
     acc[curr] = links[index];
@@ -460,13 +548,13 @@ function App() {
     if (cytoLayers.every(subArray => subArray.length === 0)) {
       console.log("cytoLayers is empty, setting to default.");
       // cytoLayers is empty, set it to a default value
-      taskIds.forEach((taskId, index) => {
+      NNTaskIds.forEach((taskId, index) => {
         localStorage.setItem(`cytoLayers${taskId}`, JSON.stringify([nInputs[index], nOutputs[index]]));
       });
     } else {
       // cytoLayers is not empty, proceed as usual
       cytoLayers.forEach((cytoLayer, index) => {
-        localStorage.setItem(`cytoLayers${taskIds[index]}`, JSON.stringify(cytoLayer));
+        localStorage.setItem(`cytoLayers${NNTaskIds[index]}`, JSON.stringify(cytoLayer));  // TODO: check if this works
         if (isTraining[index] !== -1) {
         setIsTraining(prevIsTraining => {
         const newIsTraining = [...prevIsTraining];
@@ -476,7 +564,7 @@ function App() {
     }
     });
     }
-  }, [cytoLayers, taskIds, nInputs, nOutputs]);
+  }, [cytoLayers, NNTaskIds, nInputs, nOutputs]);
 
   
   const loadLastCytoLayers = (setCytoLayers, apiData, setApiData, propertyName, taskId, index, nInputs, nOutputs) => {
@@ -552,17 +640,17 @@ function App() {
 
   // Update the state when the dependencies change
   useEffect(() => {
-    setCytoElements(taskIds.map((taskId, index) => {
+    setCytoElements(NNTaskIds.map((taskId, index) => {
       return generateCytoElements(cytoLayers[index], apiData[index], isTraining[index], weights[index], biases[index])
       }
     ));
-  }, [taskIds, cytoLayers, apiData, isTraining, weights, biases]);
+  }, [NNTaskIds, cytoLayers, apiData, isTraining, weights, biases]);
 
   useEffect(() => {
-    setCytoStyle(taskIds.map((taskId, index) => 
+    setCytoStyle(NNTaskIds.map((taskId, index) => 
       generateCytoStyle(cytoLayers[index])
     ));
-  }, [taskIds, cytoLayers]);
+  }, [NNTaskIds, cytoLayers]);
 
 
   const cancelRequestRef = useRef(null);
@@ -616,8 +704,8 @@ function App() {
   // ------- SLIDERS -------
 
   // initialize an array to store the state for each slider
-  const [iterations, setIterations] = useState(Array(taskIds.length).fill(100));
-  const [learningRate, setLearningRate] = useState(Array(taskIds.length).fill(0.01));
+  const [iterations, setIterations] = useState(Array(NNTaskIds.length).fill(100));
+  const [learningRate, setLearningRate] = useState(Array(NNTaskIds.length).fill(0.01));
 
   const handleIterationChange = (index, value) => {
     setIterations(prev => {
@@ -635,7 +723,7 @@ function App() {
     });
   };
 
-  const iterationsSliders = taskIds.map((taskId, index) => {
+  const iterationsSliders = NNTaskIds.map((taskId, index) => {
     return (
       <Slider.Root
         key={index}
@@ -655,7 +743,7 @@ function App() {
     );
   });
 
-  const learningRateSliders = taskIds.map((challenge, index) => {
+  const learningRateSliders = NNTaskIds.map((challenge, index) => {
     return (
       <Slider.Root
         key={index}
@@ -779,7 +867,9 @@ function App() {
 
           <Route path="/clusteringTest" element={<ClusteringTest />}/>
 
-          {taskIds.map((taskId, index) => (
+          <Route path={`/challenge${customClusteringId}`} element={<ClusteringTest />} />
+
+          {NNTaskIds.map((taskId, index) => (
             <>
             <Route
               key={taskId}

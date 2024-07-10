@@ -80,8 +80,8 @@ These classes and their functions are used in the building.py and levels.py modu
 class DataFromExcel(Dataset):
     """Create a dataset from a CSV file with column labels in the first row.
     data_type can be one of the following integers:
-    - 0: classification (a single 'Targets' column, data in columns labeled with feature names)
-    - 1: regression (multiple 'Target_n' or 'Target_abc' columns, data in columns labeled with feature names)
+    - 1: classification (a single 'Targets' column, data in columns labeled with feature names)
+    - 2: regression (multiple 'Target_n' or 'Target_abc' columns, data in columns labeled with feature names)
     """
 
     def __init__(self, csv_file_path, data_type=1, normalize=False):

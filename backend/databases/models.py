@@ -5,7 +5,7 @@ class Row(models.Model):
     action = models.IntegerField()
     user_id = models.CharField(max_length=100)
     task_id = models.IntegerField()
-    in_out = models.JSONField()
+    in_out = models.JSONField(null=True)
     timestamp = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -26,17 +26,18 @@ class Progress(models.Model):
 
 
 class TaskDescription(models.Model):
+    visibility = models.BooleanField(default=True)
     task_id = models.IntegerField(unique=True)
     short_name = models.CharField(max_length=20)
     name = models.CharField(max_length=200)
     short_description = models.TextField()
-    description = models.TextField()
-    dataset = models.TextField()
-    type = models.IntegerField()
-    n_inputs = models.IntegerField()
-    n_outputs = models.IntegerField()
-    file_name = models.TextField(max_length=50)
-    function_name = models.TextField(max_length=50)
+    description = models.TextField(null=True)
+    dataset = models.TextField(null=True)
+    type = models.IntegerField(choices=[(1, '1'), (2, '2'), (3, '3')])
+    n_inputs = models.IntegerField(null=True)
+    n_outputs = models.IntegerField(null=True)
+    file_name = models.TextField(max_length=50, null=True)
+    function_name = models.TextField(max_length=50, null=True)
 
     def __str__(self):
         return str(self.task_id) + " - " + str(self.name)
@@ -53,12 +54,12 @@ class ExternalLink(models.Model):
 class BasicsDescription(models.Model):
     task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True, related_name='basics_description')
     order_slider_visibility = models.BooleanField()
-    max_order = models.IntegerField()
-    min_order = models.IntegerField()
+    max_order = models.IntegerField(null=True)
+    min_order = models.IntegerField(null=True)
     datapoints_field_visibility = models.BooleanField()
     features_field_visibility = models.BooleanField()
     type_menu_visibility = models.BooleanField()
-    type_menu_options = models.TextField()
+    type_menu_options = models.TextField(null=True)
 
     def __str__(self):
         return str(self.task_description.task_id) + " - " + str(self.task_description.name)
@@ -70,6 +71,8 @@ class SVMDescription(models.Model):
     c_slider_visibility = models.BooleanField()
     gamma_slider_visibility = models.BooleanField()
     highlight_support_vectors = models.BooleanField()
+    accuracy_visibility = models.BooleanField()
+    f1_visibility = models.BooleanField()
 
     def __str__(self):
         return str(self.task_description.task_id) + " - " + str(self.task_description.name)
@@ -77,14 +80,14 @@ class SVMDescription(models.Model):
 
 class NeuralNetworkDescription(models.Model):
     task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True, related_name='neural_network_description')
-    max_epochs = models.IntegerField()
-    max_layers = models.IntegerField()
-    max_nodes = models.IntegerField()
-    iterations_slider_visibility = models.BooleanField()
-    lr_slider_visibility = models.BooleanField()
-    normalization_visibility = models.BooleanField()
+    max_epochs = models.IntegerField(default=100)
+    max_layers = models.IntegerField(default=4)
+    max_nodes = models.IntegerField(default=8)
+    iterations_slider_visibility = models.BooleanField(default=True)
+    lr_slider_visibility = models.BooleanField(default=True)
+    normalization_visibility = models.BooleanField(default=False)
     af_visibility = models.BooleanField(default=False)
-    decision_boundary_visibility = models.BooleanField()
+    decision_boundary_visibility = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return str(self.task_description.task_id) + " - " + str(self.task_description.name)
@@ -92,7 +95,7 @@ class NeuralNetworkDescription(models.Model):
 
 class ClusteringDescription(models.Model):
     task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True, related_name='clustering_description')
-    model_type = models.TextField(max_length=10)
+    type_selection_options = models.TextField(max_length=10, null=True)
     type_selection_visibility = models.BooleanField()
     distance_visibility = models.BooleanField()
     cluster_slider_visibility = models.BooleanField()

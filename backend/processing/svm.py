@@ -1,5 +1,5 @@
 """
-This module contains the backend code for the clustering tasks. 
+This module contains the backend code for the SVM tasks. 
 Work in progress.
 """
 
@@ -13,6 +13,6 @@ if __name__ == '__main__':
 
 from communication import send_error, send_image, is_cancelled
 import numpy as np
-import sklearn.cluster as sc
+from sklearn.svm import SVC
 
 ...
