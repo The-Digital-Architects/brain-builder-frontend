@@ -16,6 +16,7 @@ import Tutorial from './tutorial';
 import FeedbackApp from './feedback';
 import LinksPage from './links';
 import NotFound from './common/notFound';
+import DefaultView from './defaultView';
 import NotebookView from './notebookView';
 import JupyterLite from './jupyterLiteView';
 import StartPage from './startpage/startPage';
@@ -1003,6 +1004,11 @@ function App() {
           <Route path={`/links`} element={
             <LinksPage/>
           } />
+
+          <Route path={`/challenge:taskId`} element={
+            <DefaultView/>
+          } />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
