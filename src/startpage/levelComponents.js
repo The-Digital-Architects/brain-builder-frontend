@@ -26,6 +26,7 @@ function ChallengeButton({ link, label, Icon, active, completed }) {
 
   // Function to check if a link is external
   const isExternalLink = (link) => /^https?:\/\//.test(link);
+  console.log('External Link: ', link, isExternalLink(link));
   
   return isExternalLink(link) ? (
     <a href={link} style={{ color: 'inherit', textDecoration: 'none' }} target="_blank" rel="noopener noreferrer">
