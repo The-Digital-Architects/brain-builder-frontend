@@ -1005,7 +1005,7 @@ function App() {
             <LinksPage/>
           } />
 
-          <Route path={`/challenge:taskId`} element={
+          <Route path={`/challenge*`} element={
             <DefaultView/>
           } />
 

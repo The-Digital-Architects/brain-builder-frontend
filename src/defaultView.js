@@ -7,13 +7,12 @@ class DefaultView extends React.Component {
         return (
             <div>
                 <Header showHomeButton={true} />
-                <h1>Default View</h1>
 
                 <img style={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    width: "80%",  // TODO tune this
+                    width: "auto",  // TODO tune this
                     height: "calc(100vh - 50px)",
                     margin: "auto"
                 }} src={underConstructionImage} alt="Under construction" />
