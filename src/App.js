@@ -11,7 +11,7 @@ import axios from 'axios';
 import BuildView from './buildView';
 import Introduction from './introduction';
 import QuizApp from './quiz';
-import CustomBlock from './customBlocks';
+import ManualTask from './customBlocks';
 import Tutorial from './tutorial';
 import FeedbackApp from './feedback';
 import LinksPage from './links';
@@ -455,7 +455,7 @@ function App() {
         setLoadedTasks(true);
       })
       .catch(error => {
-        // TODO: initialise the states with these default values
+        // TODO: initialise the states with these default values  TODONOW
         console.error('Error fetching tasks:', error);
         const defaultTaskIds = [11, 12];
         setTaskIds(defaultTaskIds);
@@ -539,6 +539,11 @@ function App() {
 
 
   // ------- PROCESSING TASK DATA -------
+
+  // some custom taskIds
+  const manualRegressionId = taskNames.find(task => task === 'Linear Regr.');
+  const manualRegressionDescription = taskData.find(task => task.task_id === manualRegressionId).description;
+  console.log("manualRegressionId & Description: ", manualRegressionId, manualRegressionDescription); // TODO remove this
   
   const linksDict = linkIds.reduce((acc, curr, index) => {
     acc[curr] = links[index];
@@ -848,14 +853,6 @@ function App() {
             />
           }/>
 
-          <Route path="/custom11" element={
-            <CustomBlock
-            host = {window.location.host}
-            customId = {11}
-            userId = {getCookie('user_id')}
-            />
-          } />
-
           <Route path="/notebookTest" element={
             <NotebookView
             host = {window.location.host}
@@ -869,6 +866,16 @@ function App() {
           <Route path="/clusteringTest" element={<ClusteringTest />}/>
 
           <Route path={`/exercise${customClusteringId/10}`} element={<ClusteringTest />} />
+
+          <Route path={`/exercise${manualRegressionId/10}`} element={
+            <ManualTask
+            type = {'ManualRegression'}
+            host = {window.location.host}
+            customId = {manualRegressionId}
+            userId = {getCookie('user_id')}
+            description = {manualRegressionDescription}
+            />
+          } />
 
           {NNTaskIds.map((taskId, index) => (
             <>
@@ -1005,7 +1012,7 @@ function App() {
             <LinksPage/>
           } />
 
-          <Route path={"/exercise*"} element={
+          <Route path="/exercise:id" element={
             <DefaultView/>
           } />
 

@@ -62,7 +62,7 @@ class StartPage extends React.Component {
         return groupedVars;
     }
 
-    initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel) {
+    initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel) {  // TODONOW
     
         const progressData = {
             challenges: {},
@@ -178,7 +178,10 @@ class StartPage extends React.Component {
 
                 <ProgressBox progress={this.state.percentCompleted} />
 
-                <GettingStarted showContent={this.state.showContent[this.state.showContent.length-1]} handleShowContent={this.handleShowContent} />
+                {/* 
+                <GettingStarted showContent={this.state.showContent[this.state.showContent.length-1]} handleShowContent={this.handleShowContent} />  
+                // TODO: deprecated
+                */} 
 
                 {Object.entries(this.state.tasksByLevel).map(([level, challenges]) => (
                     <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challengeIcons={this.state.iconsByLevel[level]} challenges={challenges} showContent={this.state.showContent[level-1]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} links={this.props.links} />

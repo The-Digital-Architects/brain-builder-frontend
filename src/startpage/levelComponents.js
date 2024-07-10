@@ -180,7 +180,7 @@ function ProgressBox({progress}) {
   );
 }
 
-function GettingStarted({showContent, handleShowContent}) {
+function GettingStarted({showContent, handleShowContent}) {  // TODO: deprecated
 
   const toggleContent = () => handleShowContent(-1, !showContent);
 
@@ -209,8 +209,9 @@ function GettingStarted({showContent, handleShowContent}) {
 function WrappingUp() {
   return (
       <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-          <LevelHeading level={-1} name="Wrapping Up" />
+          <LevelHeading level={-1} name="Miscellaneous" />
           <GridBox>
+              <ChallengeButton link="tutorial" label="Tutorial" Icon={RocketIcon} active={true} />
               <ChallengeButton link="notebookTest" label="Custom ipynb" Icon={CodeIcon} active={true} />
               <ChallengeButton link="feedback" label="Give Feedback" Icon={Pencil2Icon} active={true} />
               <ChallengeButton link="links" label="Useful Links" Icon={Link2Icon} active={true} />

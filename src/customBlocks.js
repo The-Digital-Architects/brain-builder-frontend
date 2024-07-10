@@ -5,13 +5,18 @@ import { Flex, Theme, Box, Heading, Separator } from '@radix-ui/themes';
 import Header from './common/header';
 
 
-class CustomBlock extends Component {
+class ManualTask extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            weight: 1,
-            bias: 0,
-            error: null,
+            in1: 1,
+            in1Name: 'Weight',
+            in2: 0,
+            in2Name: 'Bias',
+            out1: null,
+            out1Name: 'Error',
+            out2: null, 
+            out2Name: '',
             img: null,
         };
         this.ws = new WebSocket(`wss://${this.props.host}/custom/${this.props.userId}/${this.props.customId}/`);
@@ -24,8 +29,12 @@ class CustomBlock extends Component {
 
         this.ws.onopen = () => {
             console.log('WebSocket connection opened');
-            // send a message to the websocket to create a baseline plot
-            this.ws.send(JSON.stringify({ title: 'initialize', a: 1, b: 0 }));
+            if (this.props.type === 'ManualRegression') {
+                // send a message to the websocket to create a baseline plot
+                this.ws.send(JSON.stringify({ title: 'initialize', a: 1, b: 0 }));
+            } else if (this.props.type === 'ManualPCA') {
+                // for example
+            }
         }
 
         this.ws.onerror = (error) => {
@@ -68,22 +77,22 @@ class CustomBlock extends Component {
         value = value[0] * Math.PI / 180;
         value = Math.tan(value);
         value = parseFloat(value.toFixed(3));
-        this.setState({ weight: value });
+        this.setState({ in1: value });
         // Send a message through the WebSocket
-        const message = JSON.stringify({ title: 'weightChange', a: value, b: this.state.bias});
+        const message = JSON.stringify({ title: 'weightChange', a: value, b: this.state.in2});
         this.ws.send(message);
     }, 100)
 
     handleBiasChange = this.throttle((value) => {
-        this.setState({ bias: value[0] });
+        this.setState({ in2: value[0] });
         // Send a message through the WebSocket
-        const message = JSON.stringify({ title: 'biasChange', a: this.state.weight, b: value[0]});
+        const message = JSON.stringify({ title: 'biasChange', a: this.state.in1, b: value[0]});
         this.ws.send(message);
     }, 100)
 
     render() {
         const texts = {
-            11: [
+            "Perceptron": [
                 ["Perceptrons",
                 "The building block of a neural network is the 'perceptron': a simple model which takes a number of inputs, multiplies each with a weight and then adds a bias. When we visualize this, we get a simple linear function like the one on the right. Note that this is a simplified version of the perceptron: many variations exist."],
                 ["Your Task",
@@ -91,7 +100,7 @@ class CustomBlock extends Component {
                 ["The Data",
                 "The data consists of points generated along a line, with some random noise added."],
             ]
-        }
+        }  // TODO: deprecated
 
         return (
         <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
@@ -102,7 +111,7 @@ class CustomBlock extends Component {
             <Box style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', fontFamily: 'monospace', height: window.innerHeight-52, width:'100vw' }}>
                 <Flex direction='row' gap="0" style={{ height: window.innerHeight-52, width:'100vw', alignItems: 'center', justifyContent: 'center' }}>
                     <Box style={{ flex:1, display: 'flex', flexDirection: 'column', textAlign:'justify', alignItems: 'flex-start', justifyContent: 'center', height: window.innerHeight-52, padding:'30px 50px' }}>
-                        {texts[this.props.customId].map(([subtitle, text], index) => (
+                        {this.props.description.map(([subtitle, text], index) => (
                             <div key={index}>
                             <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7 }}>&gt;_{subtitle} </Heading>
                             <p>{text}</p>
@@ -110,7 +119,7 @@ class CustomBlock extends Component {
                         ))}
                     </Box>
                     <Separator orientation='vertical' style = {{ height: window.innerHeight-110 }}/>
-                    {this.props.customId === 11 && (this.animation11())}
+                    {this.animation()}
                 </Flex>
             </Box>
             </Flex>
@@ -119,7 +128,7 @@ class CustomBlock extends Component {
         );
     }
 
-    animation11() {
+    animation() {
         const weightSlider = (
             <Slider.Root
               className="SliderRoot"
@@ -157,23 +166,37 @@ class CustomBlock extends Component {
         return (
             <Box style={{ flex:1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: window.innerHeight-52, padding:'30px 50px' }}>
                 <Flex direction='column' gap="0" style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <div className="weightSlider" style={{ marginTop:50 }}>
+                
+                <div className="slider" style={{ marginTop:50 }}>
                     {weightSlider}
                 </div>
-                <div>Weight: {this.state.weight}</div>
-                <div className="biasSlider" style={{ marginTop:25 }}>
+                <div>{this.state.in1Name}: {this.state.in1}</div>
+                {this.state.in2 !== null && (
+                <>
+                <div className="slider" style={{ marginTop:25 }}>
                     {biasSlider}
                 </div>
-                <div>Bias: {this.state.bias}</div>
+                <div>{this.state.in2Name}: {this.state.in2}</div>
+                </>
+                )}
+                
                 <img src={this.state.img} alt="No plot available" style={{ height: window.innerHeight*0.55, marginBottom:10 }}/>
+                
                 <div>
                     {/* Drag the sliders to change the weight and bias of the perceptron. Try to minimize the error. */}
-                    Current error: {this.state.error}
+                    Current {this.state.out1Name}: {this.state.out1}
                 </div>
+                {this.state.in2 !== null && (
+                <>
+                <div>
+                    Current {this.state.out2Name}: {this.state.out2}
+                </div>
+                </>
+                )}
                 </Flex>
             </Box>
         );
     }
 }
 
-export default CustomBlock;
+export default ManualTask;
