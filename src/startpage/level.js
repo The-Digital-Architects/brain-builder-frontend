@@ -52,7 +52,7 @@ function Level({ level, levelNames, taskNames, introData, quizData, introsByLeve
 
                 {challenges.map((challenge, index) => (
                     <ChallengeButton key={`challenge${level}${challenge}_button`}
-                        link={links?.[10*level+challenge] ?? `exercise${level}${challenge}`}
+                        link={links?.[10*level+challenge] ?? `exercise${level}.${challenge}`}
                         label={taskNames[`${level}${challenge}`]}
                         Icon={challengeIcons[index] || RocketIcon}
                         active={isActive("challenges", levelStr, index)}

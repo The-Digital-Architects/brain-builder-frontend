@@ -137,8 +137,8 @@ function App() {
     };
     timeoutId = setTimeout(() => {
       ws.close();
-      console.log('Failed to load data for exercise ' + taskId);
-      alert("Failed to load data for exercise " + taskId + ". Try reloading the page, if the problem persists, please contact us.");
+      console.log('Failed to load data for exercise ' + taskId/10);
+      alert("Failed to load data for exercise " + taskId/10 + ". Try reloading the page, if the problem persists, please contact us.");
     }, intervalTimeout); // stop after n milliseconds
 
     ws.onmessage = function(event) {
@@ -171,7 +171,7 @@ function App() {
           newInitPlots[index] = url;
           return newInitPlots;
         });
-        console.log(`Data for exercise ${taskId} loaded`)
+        console.log(`Data for exercise ${taskId/10} loaded`)
         ws.close();
         clearTimeout(timeoutId);
       } else {
@@ -180,7 +180,7 @@ function App() {
     };
 
     ws.onerror = function(event) {
-      alert("Failed to load data for exercise " + taskId + ". Try reloading the page, if the problem persists, please contact us.");
+      alert("Failed to load data for exercise " + taskId/10 + ". Try reloading the page, if the problem persists, please contact us.");
       console.error('Error:', event);
     };
     };
@@ -868,13 +868,13 @@ function App() {
 
           <Route path="/clusteringTest" element={<ClusteringTest />}/>
 
-          <Route path={`/exercise${customClusteringId}`} element={<ClusteringTest />} />
+          <Route path={`/exercise${customClusteringId/10}`} element={<ClusteringTest />} />
 
           {NNTaskIds.map((taskId, index) => (
             <>
             <Route
               key={taskId}
-              path={`/exercise${taskId}`}
+              path={`/exercise${taskId/10}`}
               element={
                 <>
                 <BuildView
@@ -1005,7 +1005,7 @@ function App() {
             <LinksPage/>
           } />
 
-          <Route path={"/exercise:taskId"} element={
+          <Route path={"/exercise*"} element={
             <DefaultView/>
           } />
 
