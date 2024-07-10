@@ -216,42 +216,43 @@ function App() {
   let accuracyColor = 'var(--slate-11)';
 
   // this is for all the tasks
+  const defaultTaskIds = [11, 12];
   const [taskData, setTaskData] = useState([]);
   const [taskNames, setTaskNames] = useState({})
-  const [taskIds, setTaskIds] = useState([]);
-  const [NNTaskIds, setNNTaskIds] = useState([]);
-  const [taskIcons, setTaskIcons] = useState([]);
-  const [gamesData, setGamesData] = useState([[]]);
-  const [typ, setTyp] = useState([[]]);
-  const [dataset, setDataset] = useState([[]]);
-  const [initPlots, setInitPlots] = useState([[]]);
-  const [nInputs, setNInputs] = useState([]);
-  const [nOutputs, setNOutputs] = useState([]);
-  const [nObjects, setNObjects] = useState([]);
-  const [isResponding, setIsResponding] = useState([]);
+  const [taskIds, setTaskIds] = useState(defaultTaskIds);
+  const [NNTaskIds, setNNTaskIds] = useState(defaultTaskIds);
+  const [taskIcons, setTaskIcons] = useState(defaultTaskIds.map(() => null));
+  const [gamesData, setGamesData] = useState(JSON.stringify([{task_id: 11, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'Clas2.csv'}, {task_id: 12, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'load_iris()'}]));
+  const [typ, setTyp] = useState(defaultTaskIds.map(() => 1));
+  const [dataset, setDataset] = useState(defaultTaskIds.map(() => 'Clas2.csv'));
+  const [initPlots, setInitPlots] = useState(defaultTaskIds.map(() => []));
+  const [nInputs, setNInputs] = useState(defaultTaskIds.map(() => 4));
+  const [nOutputs, setNOutputs] = useState(defaultTaskIds.map(() => 3));
+  const [nObjects, setNObjects] = useState(defaultTaskIds.map(() => 0));
+  const [isResponding, setIsResponding] = useState(defaultTaskIds.map(() => 0));
 
   // this is for the neural network tasks
-  const [maxEpochs, setMaxEpochs] = useState([]);
-  const [maxLayers, setMaxLayers] = useState([]);
-  const [maxNodes, setMaxNodes] = useState([]);
-  const [normalization, setNormalization] = useState([true]);
+  const [maxEpochs, setMaxEpochs] = useState(defaultTaskIds.map(() => 200));
+  const [maxLayers, setMaxLayers] = useState(defaultTaskIds.map(() => 10));
+  const [maxNodes, setMaxNodes] = useState(defaultTaskIds.map(() => 16));
+  const [normalization, setNormalization] = useState(defaultTaskIds.map(() => true));
   const [normalizationVisibility, setNormalizationVisibility] = useState([false]);
-  const [afs, setAfs] = useState([]);
-  const [afVisibility, setAfVisibility] = useState([false]);
+  const [afs, setAfs] = useState(defaultTaskIds.map(() => []));
+  const [afVisibility, setAfVisibility] = useState(defaultTaskIds.map(() => false));
   const [iterationsSliderVisibility, setIterationsSliderVisibility] = useState([false]);
-  const [lrSliderVisibility, setLRSliderVisibility] = useState([false]);
-  const [imageVisibility, setImageVisibility] = useState([false]);
-  const [cytoLayers, setCytoLayers] = useState([]);
-  const [isTraining, setIsTraining] = useState([]);
-  const [apiData, setApiData] = useState([]);
-  const [accuracy, setAccuracy] = useState([]);
+  const [lrSliderVisibility, setLRSliderVisibility] = useState(defaultTaskIds.map(() => false));
+  const [imageVisibility, setImageVisibility] = useState(defaultTaskIds.map(() => false));
+  const [cytoLayers, setCytoLayers] = useState(defaultTaskIds.map(() => []));
+  const [isTraining, setIsTraining] = useState(defaultTaskIds.map(() => false));
+  const [apiData, setApiData] = useState(defaultTaskIds.map(() => null));
+  const [accuracy, setAccuracy] = useState(defaultTaskIds.map(() => 0));
   // setting default values for the network-related states
-  const [progress, setProgress] = useState(-1);
-  const [errorList, setErrorList] = useState([[], null]);
-  const [featureNames, setFeatureNames] = useState([]);
-  const [weights, setWeights] = useState([]);
-  const [biases, setBiases] = useState([]);
-  const [imgs, setImgs] = useState([[], [], []]);
+  const [progress, setProgress] = useState(defaultTaskIds.map(() => -1));
+  const [errorList, setErrorList] = useState(defaultTaskIds.map(() => [[], null]));
+  const [featureNames, setFeatureNames] = useState(defaultTaskIds.map(() => []));
+  const [weights, setWeights] = useState(defaultTaskIds.map(() => []));
+  const [biases, setBiases] = useState(defaultTaskIds.map(() => []));
+  const [imgs, setImgs] = useState(defaultTaskIds.map(() => []));
 
   // this is for the SVM tasks
   const [svmTaskIds, setSvmTaskIds] = useState([]);
@@ -323,6 +324,9 @@ function App() {
   const currentLinks = [];
 
   function readTaskEntry(entry) {
+    if (!entry.visibility) {
+      console.log("Skipping task " + entry.task_id)
+    } else {
 
     // set TaskDescription states
     currentNInputs.push(entry.n_inputs);
@@ -385,6 +389,7 @@ function App() {
         }
       }
     }
+    }
   }
   
   const [loadedTasks, setLoadedTasks] = useState(false);
@@ -394,6 +399,7 @@ function App() {
         const currentTaskData = response.data;
         currentTaskData.sort((a, b) => a.task_id - b.task_id); // sort the taskData by taskIds
         setTaskData(currentTaskData); 
+        // IMPORTANT: taskData will include challenges with 'visibility' set to false
         console.log('currentTaskData: ', currentTaskData)  // for debugging
     
         currentTaskData.forEach(entry => {
@@ -455,35 +461,7 @@ function App() {
         setLoadedTasks(true);
       })
       .catch(error => {
-        // TODO: initialise the states with these default values  TODONOW
         console.error('Error fetching tasks:', error);
-        const defaultTaskIds = [11, 12];
-        setTaskIds(defaultTaskIds);
-        setNNTaskIds(defaultTaskIds);  // other task ids are [] by default
-        setGamesData(JSON.stringify([{task_id: 11, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'Clas2.csv'}, {task_id: 12, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'load_iris()'}]));
-        setNInputs(defaultTaskIds.map(() => 4));  
-        setNOutputs(defaultTaskIds.map(() => 3));  
-        setNObjects(defaultTaskIds.map(() => 0));
-        setMaxEpochs(defaultTaskIds.map(() => 200));
-        setMaxLayers(defaultTaskIds.map(() => 10));
-        setMaxNodes(defaultTaskIds.map(() => 16));
-        setCytoLayers(defaultTaskIds.map(() => []));
-        setIsTraining(defaultTaskIds.map(() => false));
-        setApiData(defaultTaskIds.map(() => null));
-        setAccuracy(defaultTaskIds.map(() => 0));
-        setIsResponding(defaultTaskIds.map(() => 0));
-        setProgress(defaultTaskIds.map(() => 0));
-        setErrorList(defaultTaskIds.map(() => [[], null]));
-        setFeatureNames(defaultTaskIds.map(() => []));  // TODO: load these somewhere else
-        setWeights(defaultTaskIds.map(() => []));
-        setBiases(defaultTaskIds.map(() => []));
-        setImgs(defaultTaskIds.map(() => []));
-        setTyp(defaultTaskIds.map(() => 1));
-        setDataset(defaultTaskIds.map(() => 'Clas2.csv'));
-        setTaskIcons(defaultTaskIds.map(() => null));
-        setLinkIds([])
-        setLinks([])
-        console.log("Setting default states instead.")
       });
 
     axios.get('/api/all_quizzes/')
@@ -541,8 +519,9 @@ function App() {
   // ------- PROCESSING TASK DATA -------
 
   // some custom taskIds
+  console.log(taskNames, taskData); // TODO remove this
   const manualRegressionId = taskNames.find(task => task === 'Linear Regr.');
-  const manualRegressionDescription = taskData.find(task => task.task_id === manualRegressionId).description;
+  const manualRegressionDescription = Object.keys(taskData).find(key => taskData[key].task_id === manualRegressionId).description;
   console.log("manualRegressionId & Description: ", manualRegressionId, manualRegressionDescription); // TODO remove this
   
   const linksDict = linkIds.reduce((acc, curr, index) => {

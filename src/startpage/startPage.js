@@ -62,7 +62,7 @@ class StartPage extends React.Component {
         return groupedVars;
     }
 
-    initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel) {  // TODONOW
+    initializeProgressData(tasksByLevel, quizzesByLevel, introsByLevel) { // TODO: link this to the Progress database
     
         const progressData = {
             challenges: {},
@@ -79,7 +79,7 @@ class StartPage extends React.Component {
                 }
                 // First item 'open', rest 'disabled'
                 progressData[type][level] = byLevel[level].map((item, index) => 
-                    index === 0 ? 'completed' : 'disabled');
+                    index === 0 ? 'completed' : 'open');  // other option is 'disabled'
             });
         });
     
