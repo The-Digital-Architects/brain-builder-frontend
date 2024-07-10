@@ -31,13 +31,13 @@ class TaskDescription(models.Model):
     short_name = models.CharField(max_length=20)
     name = models.CharField(max_length=200)
     short_description = models.TextField()
-    description = models.TextField(null=True)
-    dataset = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
+    dataset = models.TextField(null=True, blank=True)
     type = models.IntegerField(choices=[(1, '1'), (2, '2'), (3, '3')])
-    n_inputs = models.IntegerField(null=True)
-    n_outputs = models.IntegerField(null=True)
-    file_name = models.TextField(max_length=50, null=True)
-    function_name = models.TextField(max_length=50, null=True)
+    n_inputs = models.IntegerField(null=True, blank=True)
+    n_outputs = models.IntegerField(null=True, blank=True)
+    file_name = models.TextField(max_length=50, null=True, blank=True)
+    function_name = models.TextField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return str(self.task_id) + " - " + str(self.name)
@@ -54,12 +54,12 @@ class ExternalLink(models.Model):
 class BasicsDescription(models.Model):
     task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True, related_name='basics_description')
     order_slider_visibility = models.BooleanField()
-    max_order = models.IntegerField(null=True)
-    min_order = models.IntegerField(null=True)
+    max_order = models.IntegerField(null=True, blank=True)
+    min_order = models.IntegerField(null=True, blank=True)
     datapoints_field_visibility = models.BooleanField()
     features_field_visibility = models.BooleanField()
     type_menu_visibility = models.BooleanField()
-    type_menu_options = models.TextField(null=True)
+    type_menu_options = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return str(self.task_description.task_id) + " - " + str(self.task_description.name)
@@ -95,7 +95,7 @@ class NeuralNetworkDescription(models.Model):
 
 class ClusteringDescription(models.Model):
     task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True, related_name='clustering_description')
-    type_selection_options = models.TextField(max_length=10, null=True)
+    type_selection_options = models.TextField(max_length=10, null=True, blank=True)
     type_selection_visibility = models.BooleanField()
     distance_visibility = models.BooleanField()
     cluster_slider_visibility = models.BooleanField()
