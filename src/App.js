@@ -1005,7 +1005,7 @@ function App() {
             <LinksPage/>
           } />
 
-          <Route path={`/exercise*`} element={
+          <Route path={"/exercise:taskId"} element={
             <DefaultView/>
           } />
 
