@@ -261,6 +261,8 @@ function App() {
   // this is for the basics tasks
   const [basicsTaskIds, setBasicsIds] = useState([]);
   // TODO
+  const [manualRegressionId, setManualRegressionId] = useState(11); 
+  const [manualRegressionDescription, setManualRegressionDescription] = useState('')
 
   // this is for the clustering tasks
   const [clusteringTaskIds, setClusteringIds] = useState([]);
@@ -458,6 +460,11 @@ function App() {
         setImgs(currentTaskIds.map(() => []));
         setInitPlots(currentTaskIds.map(() => []));
 
+          // some custom taskIds
+        setManualRegressionId(taskNames.find(task => task === 'Linear Regr.'));
+        setManualRegressionDescription(taskData.find(task => task.task_id === manualRegressionId).description);
+        console.log("manualRegressionId & Description: ", manualRegressionId, manualRegressionDescription); // TODO remove this
+
         setLoadedTasks(true);
       })
       .catch(error => {
@@ -517,12 +524,6 @@ function App() {
 
 
   // ------- PROCESSING TASK DATA -------
-
-  // some custom taskIds
-  console.log(taskNames, taskData); // TODO remove this
-  const manualRegressionId = taskNames.find(task => task === 'Linear Regr.');
-  const manualRegressionDescription = Object.keys(taskData).find(key => taskData[key].task_id === manualRegressionId).description;
-  console.log("manualRegressionId & Description: ", manualRegressionId, manualRegressionDescription); // TODO remove this
   
   const linksDict = linkIds.reduce((acc, curr, index) => {
     acc[curr] = links[index];
