@@ -461,6 +461,7 @@ function App() {
         setInitPlots(currentTaskIds.map(() => []));
 
           // some custom taskIds
+        console.log(taskNames) // TODO: remove
         setManualRegressionId(Object.keys(taskNames).find(key => taskNames[key] === 'Linear Regr.'));
         setManualRegressionDescription(taskData.find(task => task.task_id === manualRegressionId).description);
         console.log("manualRegressionId & Description: ", manualRegressionId, manualRegressionDescription); // TODO remove this
