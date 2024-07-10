@@ -45,7 +45,7 @@ async def process(req):
         #print(dataset)
         normalization = bool(inputs['normalization'])
 
-        data, (training_set, test_set) = df.get_data(dataset=dataset, normalization=normalization)
+        data, (training_set, test_set) = df.get_data(dataset=dataset, normalization=normalization, typ=gd.loc[tag, 'type'])
         cache.set(f'{user_id}_data', pickle.dumps(data), 10*60)  # cache the data for 10 minutes
         print("Data loaded and stored in cache")
 
