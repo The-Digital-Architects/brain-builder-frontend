@@ -50,6 +50,31 @@ class ExternalLink(models.Model):
         return str(self.task_description.task_id) + " - " + str(self.task_description.name)
 
 
+class BasicsDescription(models.Model):
+    task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True, related_name='basics_description')
+    order_slider_visibility = models.BooleanField()
+    max_order = models.IntegerField()
+    min_order = models.IntegerField()
+    datapoints_field_visibility = models.BooleanField()
+    features_field_visibility = models.BooleanField()
+    type_menu_visibility = models.BooleanField()
+    type_menu_options = models.TextField()
+
+    def __str__(self):
+        return str(self.task_description.task_id) + " - " + str(self.task_description.name)
+
+
+class SVMDescription(models.Model):
+    task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True, related_name='svm_description')
+    rbf_visibility = models.BooleanField()
+    c_slider_visibility = models.BooleanField()
+    gamma_slider_visibility = models.BooleanField()
+    highlight_support_vectors = models.BooleanField()
+
+    def __str__(self):
+        return str(self.task_description.task_id) + " - " + str(self.task_description.name)
+
+
 class NeuralNetworkDescription(models.Model):
     task_description = models.OneToOneField(TaskDescription, on_delete=models.CASCADE, primary_key=True, related_name='neural_network_description')
     max_epochs = models.IntegerField()

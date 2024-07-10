@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Row, Progress, TaskDescription, ExternalLink, NeuralNetworkDescription, ClusteringDescription, Quiz, Intro, Feedback
+from .models import Row, Progress, TaskDescription, ExternalLink, NeuralNetworkDescription, ClusteringDescription, BasicsDescription, SVMDescription, Quiz, Intro, Feedback
 
 class RowSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,10 +11,20 @@ class ProgressSerializer(serializers.ModelSerializer):
         model = Progress
         fields = ('pk', 'user_id', 'task_description', 'status', 'timestamp')
 
+class BasicsDescriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BasicsDescription
+        fields = '__all__'
+
+class SVMDescriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SVMDescription
+        fields = '__all__'
+
 class NeuralNetworkDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = NeuralNetworkDescription
-        fields = ('task_description', 'max_epochs', 'max_layers', 'max_nodes', 'iterations_slider_visibility', 'lr_slider_visibility', 'normalization_visibility', 'af_visibility', 'decision_boundary_visibility')
+        fields = '__all__'
 
 class ClusteringDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,13 +38,15 @@ class ExternalLinkSerializer(serializers.ModelSerializer):
 
 class TaskDescriptionSerializer(serializers.ModelSerializer):
     external_link = ExternalLinkSerializer(read_only=True)
+    basics_description = BasicsDescriptionSerializer(read_only=True)
+    svm_description = SVMDescriptionSerializer(read_only=True)
     neural_network_description = NeuralNetworkDescriptionSerializer(read_only=True)
     clustering_description = ClusteringDescriptionSerializer(read_only=True)
 
     class Meta:
         model = TaskDescription
         fields = ('pk', 'task_id', 'name', 'short_name', 'short_description', 'description', 'type', 'dataset', 'n_inputs', 'n_outputs', 'file_name', 'function_name',
-                  'external_link', 'neural_network_description', 'clustering_description')
+                  'external_link', 'basics_description', 'svm_description', 'neural_network_description', 'clustering_description')
 
 class IntroSerializer(serializers.ModelSerializer):
     class Meta:
