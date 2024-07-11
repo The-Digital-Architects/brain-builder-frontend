@@ -1,25 +1,21 @@
 
 import React, { useCallback } from 'react';
 import { PlusIcon, MinusIcon, ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
-import { styled } from '@stitches/react';
 import { IconButton } from '@radix-ui/themes';
 
 
-
-// ------- STYLED COMPONENT -------
-
-const FloatingButton = styled(IconButton, {
+function FloatingButton(props) {
+  const buttonStyle = {
     position: 'absolute',
     zIndex: 9999,
     borderRadius: 'var(--radius-3)',
     width: 33,
     height: 33,
     boxShadow: '0 2px 8px var(--slate-a11)'
-  });
+  };
 
-
-
-// ------- FUNCTIONS -------
+  return <IconButton {...props} style={buttonStyle} />;
+}
 
 function LayerRemoveButton({setCytoLayers, index, taskId, cytoLayers, isTraining}) {
 

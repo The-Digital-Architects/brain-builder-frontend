@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button } from '@radix-ui/themes';
 import { Flex, Box, Heading, IconButton } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
-import { styled } from '@stitches/react';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { RocketIcon, Pencil2Icon, Link2Icon, CopyIcon, CodeIcon } from '@radix-ui/react-icons';
 import Readme from '../readme';
@@ -127,13 +126,17 @@ function LevelHeading({ level, name }) {
   );
 }
 
-const GridBox = styled(Box, {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(136px, 136px))',
-  gap: '15px',
-  alignItems: 'start',
-  justifyContent: 'start'
-});
+function GridBox(props) {
+  
+  const gridBoxStyle = {display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(136px, 136px))',
+    gap: '15px',
+    alignItems: 'start',
+    justifyContent: 'start'
+  };
+
+  return <Box style={gridBoxStyle} {...props} />;
+}
 
 function ProgressBox({progress, userId}) {
 
