@@ -18,7 +18,7 @@ class DefaultView extends React.Component {
                 }} src={underConstructionImage} alt="Under construction" />
 
                 <p style={{ textAlign: "center" }}>
-                    Image by 
+                    Image by{" "}
                     <a href="https://www.freepik.com/free-vector/flat-construction-template_1584487.htm#query=under%20construction&position=7&from_view=keyword&track=ais_hybrid&uuid=29acba93-07b5-4497-9035-a974460776df">
                         Freepik
                     </a>

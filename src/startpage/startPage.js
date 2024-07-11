@@ -176,7 +176,7 @@ class StartPage extends React.Component {
 
             <Flex direction='column' gap='3' style={{ flex:1 }}>
 
-                <ProgressBox progress={this.state.percentCompleted} />
+                <ProgressBox progress={this.state.percentCompleted} userId={this.props.userId} />
 
                 {/* 
                 <GettingStarted showContent={this.state.showContent[this.state.showContent.length-1]} handleShowContent={this.handleShowContent} />  

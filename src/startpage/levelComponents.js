@@ -9,7 +9,6 @@ import Readme from '../readme';
 import * as Progress from '@radix-ui/react-progress';
 import '@radix-ui/themes/styles.css';
 import '../css/App.css';
-const verbalid = require('verbal-id');
 
 function ChallengeButton({ link, label, Icon, active, completed }) {
   const buttonStyle = {
@@ -136,9 +135,9 @@ const GridBox = styled(Box, {
   justifyContent: 'start'
 });
 
-function ProgressBox({progress}) {
+function ProgressBox({progress, userId}) {
 
-  const [myId, setMyId] = useState(verbalid.create().replace(/\s/g, '-'));
+  const [myId, setMyId] = useState(userId)
   const [copyFeedback, setCopyFeedback] = useState(myId);
   const [copySuccess, setCopySuccess] = useState(false);
 
