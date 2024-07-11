@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Button } from '@radix-ui/themes';
+import { Button, TextField } from '@radix-ui/themes';
 import { Flex, Box, Heading, IconButton } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
@@ -186,12 +186,15 @@ function ProgressBox({progress}) {
 
   const [code, setCode] = useState('');
 
+
   const handleCodeChange = (event) => {
     setCode(event.target.value);
   };
 
-  const handleSubmit = () => {
-    document.cookie = `code=${code}; expires=Thu, 31 Dec 2099 23:59:59 GMT; path=/`;
+  const handleSubmit = (event) => {
+    if (event.key === 'Enter') {
+      document.cookie = `user_id=${code}; expires=Thu, 31 Dec 2099 23:59:59 GMT; path=/`;
+    }
   };
 
   return (
@@ -211,14 +214,15 @@ function ProgressBox({progress}) {
         </IconButton>
 
         <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Do you already have a code? Enter it below!</label>
-        <input type="text" placeholder="Enter your code" value={code} onChange={handleCodeChange} />
-        <Button onClick={handleSubmit}>Submit</Button>
+        <Box maxWidth="250px">
+          <TextField.Root size="2" placeholder="Paste and click Enter to save" value={code} onChange={handleCodeChange} onKeyDown={handleSubmit} />
+        </Box>
       </Flex>
     </Box>
   );
 }
 
-function GettingStarted({showContent, handleShowContent}) {  // TODO: deprecated
+function GettingStarted({showContent, handleShowContent}) {
 
   const toggleContent = () => handleShowContent(-1, !showContent);
 
