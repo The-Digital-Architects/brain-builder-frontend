@@ -776,7 +776,7 @@ function App() {
       <Theme accentColor="cyan" grayColor="slate" panelBackground="solid" radius="large" appearance='light'>
       <Router>
         <Routes>
-          <Route path="/" element={<StartPage levelNames={levelNames} taskNames={taskNames} introData={introData} quizData={quizData} taskIds={taskIds} taskIcons={taskIcons} quizIds={quizIds} introIds={introIds} links={linksDict} userId={getCookie('user_id')} />} />
+          <Route path="/" element={<StartPage levelNames={levelNames} taskNames={taskNames} introData={introData} quizData={quizData} taskIds={taskIds} taskIcons={taskIcons} quizIds={quizIds} introIds={introIds} links={linksDict} />} />
           
           {introIds.map((introId, index) => (
             <>

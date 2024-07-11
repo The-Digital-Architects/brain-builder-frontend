@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Button } from '@radix-ui/themes';
 import { Flex, Box, Heading, IconButton } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
@@ -8,6 +8,7 @@ import Readme from '../readme';
 import * as Progress from '@radix-ui/react-progress';
 import '@radix-ui/themes/styles.css';
 import '../css/App.css';
+import getCookie from '../utils/cookieUtils';
 
 function ChallengeButton({ link, label, Icon, active, completed }) {
   const buttonStyle = {
@@ -127,7 +128,7 @@ function LevelHeading({ level, name }) {
 }
 
 function GridBox(props) {
-  
+
   const gridBoxStyle = {display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(136px, 136px))',
     gap: '15px',
@@ -138,47 +139,82 @@ function GridBox(props) {
   return <Box style={gridBoxStyle} {...props} />;
 }
 
-function ProgressBox({progress, userId}) {
+function useUserId() {
+  const [userId, setUserId] = useState(getCookie('user_id'));
+  const userIdRef = useRef(userId);
 
-  const [myId, setMyId] = useState(userId)
-  const [copyFeedback, setCopyFeedback] = useState(myId);
-  const [copySuccess, setCopySuccess] = useState(false);
+  useEffect(() => {
+    const checkUserId = () => {
+      const currentUserId = getCookie('user_id');
+      if (userIdRef.current !== currentUserId) {
+        setUserId(currentUserId);
+        userIdRef.current = currentUserId; // Update the ref to the new value
+      }
+    };
+
+    checkUserId(); // Check immediately in case it changed before the interval is set
+
+    const intervalId = setInterval(checkUserId, 200); // Check every 0.2 seconds
+
+    return () => clearInterval(intervalId); // Clean up the interval on component unmount
+  }, []); // Empty dependency array means this effect runs once on mount
+
+  return userId;
+}
+
+function ProgressBox({progress}) {
+
+  // Use the custom hook to manage userId
+  const userId = useUserId();
+
+  const [copyFeedback, setCopyFeedback] = useState(userId);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(myId)
+    navigator.clipboard.writeText(userId)
       .then(() => {
         setCopyFeedback('Copied!'); // Update feedback message
-        setCopySuccess(true); // Indicate copy success
         setTimeout(() => {
-          setCopyFeedback(myId); // Revert
-          setCopySuccess(false); // Reset copy success
+          setCopyFeedback(userId); // Revert
         }, 1000);
       })
       .catch(err => {
         console.error('Could not copy text: ', err);
         setCopyFeedback('Error copying text'); // Provide feedback for error
-        setTimeout(() => setCopyFeedback(myId), 1000); // Revert
+        setTimeout(() => setCopyFeedback(userId), 1000); // Revert
       });
   };
 
+  const [code, setCode] = useState('');
+
+  const handleCodeChange = (event) => {
+    setCode(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    document.cookie = `code=${code}; expires=Thu, 31 Dec 2099 23:59:59 GMT; path=/`;
+  };
+
   return (
-      <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} >
-          <Flex direction='column' gap='1' style={{ justifyContent: 'center', alignItems: 'center' }}>
-              {/*<Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:10 }}>Your Progress</Heading>*/}
-              <label style={{marginBottom: 10, fontSize: 'var(--font-size-2)', fontWeight: 'bold'}}>Your Progress</label>
-              <Progress.Root className="ProgressRoot" value={progress} style={{ marginBottom:5, width: '100%' }}>
-                  <Progress.Indicator
-                  className="ProgressIndicator"
-                  style={{ transform: `translateX(-${100 - progress}%)` }}
-                  />
-              </Progress.Root>
-              <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Copy this code to continue in a different browser</label>
-              {/*when you click the text, it will copy the code to the clipboard*/}
-              <IconButton variant='soft' radius='full' size={2} style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}} onClick={handleCopy}>
-                {copyFeedback}{copyFeedback === myId && <><span>&nbsp;</span><CopyIcon/></>}
-              </IconButton>
-          </Flex>
-      </Box>
+    <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px'}} >
+      <Flex direction='column' gap='1' style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <label style={{marginBottom: 10, fontSize: 'var(--font-size-2)', fontWeight: 'bold'}}>Your Progress</label>
+        <Progress.Root className="ProgressRoot" value={progress} style={{ marginBottom:5, width: '100%' }}>
+          <Progress.Indicator
+            className="ProgressIndicator"
+            style={{ transform: `translateX(-${100 - progress}%)` }}
+          />
+        </Progress.Root>
+
+        <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Copy this code to continue in a different browser</label>
+        <IconButton variant='soft' radius='full' size={2} style={{fontSize: 'var(--font-size-2)', color: 'var(--cyan-10)'}} onClick={handleCopy}>
+          {copyFeedback}{copyFeedback === userId && <><span>&nbsp;</span><CopyIcon/></>}
+        </IconButton>
+
+        <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Do you already have a code? Enter it below!</label>
+        <input type="text" placeholder="Enter your code" value={code} onChange={handleCodeChange} />
+        <Button onClick={handleSubmit}>Submit</Button>
+      </Flex>
+    </Box>
   );
 }
 
