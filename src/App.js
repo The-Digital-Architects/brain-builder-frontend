@@ -464,7 +464,7 @@ function App() {
 
         // some custom taskIds
         console.log(currentTaskNames) // TODO: remove
-        manualRegressionId = Object.keys(currentTaskNames).find(key => currentTaskNames[key] === 'Linear Regr.')
+        manualRegressionId = currentTaskNames.findIndex(name => name === 'Linear Regr.')
         manualRegressionDescription = currentTaskData.find(task => task.task_id === manualRegressionId).description;
         console.log("manualRegressionId & Description: ", manualRegressionId, manualRegressionDescription); // TODO remove this
 
