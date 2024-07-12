@@ -470,12 +470,12 @@ function App() {
 
         // some custom taskIds
         console.log(currentTaskNames) // TODO: remove
-        manualLinRegId = parseInt(Object.keys(taskNames).find(key => taskNames[key] === 'Linear Regr.'));
+        manualLinRegId = parseInt(Object.keys(currentTaskNames).find(key => taskNames[key] === 'Linear Regr.'));
         manualLinRegDescription = JSON.parse(currentTaskData.find(task => task.task_id === manualLinRegId).description);
         console.log("manualLinRegId & Description: ", manualLinRegId, manualLinRegDescription); // TODO remove this
-        manualPolyRegId = parseInt(Object.keys(taskNames).find(key => taskNames[key] === 'Polynomial Regr.'));
+        manualPolyRegId = parseInt(Object.keys(currentTaskNames).find(key => taskNames[key] === 'Polynomial Regr.'));
         manualPolyRegDescription = JSON.parse(currentTaskData.find(task => task.task_id === manualPolyRegId).description);
-        manualMatrixId = parseInt(Object.keys(taskNames).find(key => taskNames[key] === 'Data Matrix'));
+        manualMatrixId = parseInt(Object.keys(currentTaskNames).find(key => taskNames[key] === 'Data Matrix'));
         manualMatrixDescription = JSON.parse(currentTaskData.find(task => task.task_id === manualMatrixId).description);
 
         setLoadedTasks(true);

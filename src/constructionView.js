@@ -2,12 +2,13 @@ import React from "react";
 import {useParams, Navigate} from 'react-router-dom';
 import Header from "./common/header";
 import underConstructionImage from "./images/under_construction_by_freepik.jpg";
+import NotFound from "./common/notFound";
 
 function ConstructionView() {
     let { ex } = useParams();
 
     if (!ex.startsWith("exercise")) {  // if the URL does not start with "exercise", redirect to the not found page
-        return <Navigate to="/notfound" replace />;
+        return <NotFound />;
     } else {
         return (
             <div>

@@ -32,7 +32,7 @@ class Model extends React.Component {
         activeTab: 'building',
         showCode: false,
         code: '',
-        description: '',
+        description: [],
         // TODO: add all your states here
         dummySliderValue: 50  // remove this
       };
@@ -91,7 +91,7 @@ class Model extends React.Component {
         })
         .catch(error => {
           console.error('Task description error:', error);
-          this.setState({ description: "There was an error loading the task description. You should be able to continue, but notify us if this issue persists." });
+          this.setState({ description: ["Error while Loading Description", "There was an error loading the task description. You should be able to continue, but notify us if this issue persists."] });
           this.continueComponentDidMount();
         });
       }
@@ -287,7 +287,8 @@ class Model extends React.Component {
                     <Flex direction="row" gap="2" style={{ overflow: 'auto', fontFamily:'monospace', width: '100%', height: window.innerHeight-116 }}>
                         
                         {/* slides with descriptions loaded from the database */}
-                        <Box style={{ flexBasis: '50%' }}>           
+                        <Box style={{ flexBasis: '50%' }}>   
+                        {this.state.description.length > 0 ? (           
                         <Flex direction='column' gap='2' style={{ padding: '20px 10px', display: 'flex', justifyContent:"center", alignItems:"center" }}>
                             <Flex style={{ flexbasis:'100%', marginBottom: 0, width:'100%' }}>
                             <Slider key={this.state.currentSlide} classNames={horizontalCss} infinite={false} slideIndex={this.state.currentSlide}
@@ -323,6 +324,7 @@ class Model extends React.Component {
                             </Slider>
                             </Flex>
                         </Flex>
+                        ):(<div/>)}
                         </Box>
 
                         <Separator orientation='vertical' style = {{ height: window.innerHeight-152, position: 'fixed', left: window.innerWidth * 0.5, bottom: (window.innerHeight-92) * 0.5, transform: `translateY(${(window.innerHeight - 152) / 2}px)` }}/>
