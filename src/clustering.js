@@ -2,19 +2,23 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import Header from './common/header';
 import { Flex, Button } from '@radix-ui/themes';
+const { kmeans } = require('ml-kmeans');
 
-function generateData(numPoints, numClusters) {
+function generateData(numPoints) {
     const data = [];
-    for (let i = 0; i < numClusters; i++) {
-        const centerX = Math.random() * 500;
-        const centerY = Math.random() * 500;
-        for (let j = 0; j < numPoints / numClusters; j++) {
-            const x = centerX + Math.random() * 50 - 25;
-            const y = centerY + Math.random() * 50 - 25;
-            data.push({ x, y, cluster: i });
-        }
+    for (let i = 0; i < numPoints; i++) {
+        const x = Math.random() * 500;
+        const y = Math.random() * 500;
+        data.push({ x, y });
     }
     return data;
+}
+
+function applyKMeansClustering(data, numClusters) {
+    // Convert your data into a format suitable for the KMeans library
+    const points = data.map(d => [d.x, d.y]);
+    const KMeans = new kmeans(points, numClusters);
+    return data.map((d, i) => ({ ...d, cluster: KMeans.clusters[i] }));
 }
 
 function KMeansClusteringVisualization() {
@@ -22,11 +26,6 @@ function KMeansClusteringVisualization() {
     const [data, setData] = useState([]);
     const [numPoints, setNumPoints] = useState(200);
     const [numClusters, setNumClusters] = useState(4);
-
-    useEffect(() => {
-        const generatedData = generateData(numPoints, numClusters);
-        setData(generatedData);
-    }, [numPoints, numClusters]);
 
     useEffect(() => {
         if (data.length === 0) return;
@@ -59,6 +58,14 @@ function KMeansClusteringVisualization() {
         .attr('transform', 'translate(50, 0)')
         .call(d3.axisLeft(yScale));
     }, [data]);
+
+    useEffect(() => {
+        const generatedData = generateData(numPoints, numClusters);
+        // Apply KMeans clustering here
+        const clusteredData = applyKMeansClustering(generatedData, numClusters);
+        setData(clusteredData);
+    }, [numPoints, numClusters, applyKMeansClustering]);
+
 
     return (
         <Flex direction="column" gap="2">

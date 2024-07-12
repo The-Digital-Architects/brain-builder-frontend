@@ -194,7 +194,7 @@ function ProgressBox({progress}) {
   const handleSubmit = (event) => {
     if (event.key === 'Enter') {
       if (!isValidUUID(code)) {
-        alert('Invalid code. Please try again.');
+        alert('Oops, invalid code! Please try again.');
       } else {
         document.cookie = `user_id=${code}; expires=Thu, 31 Dec 2099 23:59:59 GMT; path=/`;
         window.location.reload();
