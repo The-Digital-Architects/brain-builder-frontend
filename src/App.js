@@ -296,8 +296,9 @@ function App() {
 
   // ------- FETCHING TASK DATA -------
 
-  let manualRegressionId = 11
-  let manualRegressionDescription = ''
+  let manualLinRegDescription = '', manualLinRegId = 11
+  let manualPolyRegDescription = '', manualPolyRegId = 12
+  let manualMatrixDescription = '', manualMatrixId = 13
 
   const currentNInputs = [];
   const currentNOutputs = [];
@@ -469,9 +470,13 @@ function App() {
 
         // some custom taskIds
         console.log(currentTaskNames) // TODO: remove
-        manualRegressionId = Object.keys(taskNames).find(key => taskNames[key] === 'Linear Regr.');
-        manualRegressionDescription = JSON.parse(currentTaskData.find(task => task.task_id === manualRegressionId).description);
-        console.log("manualRegressionId & Description: ", manualRegressionId, manualRegressionDescription); // TODO remove this
+        manualLinRegId = parseInt(Object.keys(taskNames).find(key => taskNames[key] === 'Linear Regr.'));
+        manualLinRegDescription = JSON.parse(currentTaskData.find(task => task.task_id === manualLinRegId).description);
+        console.log("manualLinRegId & Description: ", manualLinRegId, manualLinRegDescription); // TODO remove this
+        manualPolyRegId = parseInt(Object.keys(taskNames).find(key => taskNames[key] === 'Polynomial Regr.'));
+        manualPolyRegDescription = JSON.parse(currentTaskData.find(task => task.task_id === manualPolyRegId).description);
+        manualMatrixId = parseInt(Object.keys(taskNames).find(key => taskNames[key] === 'Data Matrix'));
+        manualMatrixDescription = JSON.parse(currentTaskData.find(task => task.task_id === manualMatrixId).description);
 
         setLoadedTasks(true);
       })
@@ -859,15 +864,37 @@ function App() {
             isTraining={isTraining[22]} taskId={22} cancelRequestRef={cancelRequestRef} index={taskIds.indexOf(22)} name={'Template Test'} startTraining={() => console.log("startTraining placeholder")} pendingTime={pendingTime} tabs={['Data', 'Model', 'Result']} initPlot={initPlots[taskIds.indexOf(22)]} sliderValues={{'dummy': 50}} sliderVisibilities={{'dummy': true}} inputFieldVisibilities={{'dummy': true}} dropdownVisibilities={{'dummy': true}} checkboxVisibilities={{'dummy': true}} setIsResponding={setIsResponding} isResponding={taskIds.indexOf(22)} apiData={apiData.indexOf(22)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(22)]} img={imgs[taskIds.indexOf(22)]} typ={typ[taskIds.indexOf(22)]}
           />} />
 
-          <Route path={`/exercise${manualRegressionId/10}`} element={
+          <Route path={`/exercise${manualLinRegId/10}`} element={
             <ManualTask
-            type = {'ManualRegression'}
+            type = {'ManualLinReg'}
             host = {window.location.host}
-            customId = {manualRegressionId}
+            customId = {manualLinRegId}
             userId = {getCookie('user_id')}
-            description = {manualRegressionDescription}
+            description = {manualLinRegDescription}
             />
           } />
+
+          <Route path={`/exercise${manualPolyRegId/10}`} element={
+            <ManualTask
+            type = {'ManualPolyReg'}
+            host = {window.location.host}
+            customId = {manualPolyRegId}
+            userId = {getCookie('user_id')}
+            description = {manualPolyRegDescription}
+            />
+          } />
+
+          <Route path={`/exercise${manualMatrixId/10}`} element={
+            <ManualTask
+            type = {'ManualMatrix'}
+            host = {window.location.host}
+            customId = {manualMatrixId}
+            userId = {getCookie('user_id')}
+            description = {manualMatrixDescription}
+            />
+          } />
+
+
 
           {NNTaskIds.map((taskId, NNIndex) => (
             <>

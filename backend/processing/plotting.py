@@ -1,9 +1,10 @@
-
+from communication import send_update
 import sys
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from io import BytesIO  # for saving the images
+from base64 import b64encode  # for encoding the images
 
 
 def tset(sometext):
@@ -11,12 +12,19 @@ def tset(sometext):
     print(sometext[::-1])
 
 
-def create_plot11(x=None, y=None, a=None, b=None):
+xVars = {}
+yVars = {}
+
+def ManualLinReg(a=None, b=None, task_id=None, user_id=None):
     """
     Creates a plot of some datapoints, along with a line ax + b. 
     Limits are -10 and +10 for both x and y. 
     Returns the plot as the value of a BytesIO object.
     """
+
+    global xVars, yVars
+    x = xVars.get(user_id)
+    y = yVars.get(user_id)
     
     fig = mpl.figure.Figure()
     ax = fig.add_subplot(111)
@@ -37,7 +45,11 @@ def create_plot11(x=None, y=None, a=None, b=None):
         mse = np.mean((a*x + b - y)**2)
         r2 = 1 - mse / np.var(y)
 
-        return img.getvalue(), (mse, r2)
+        plot = img.getvalue()
+        plot = b64encode(plot).decode()
+        error = (mse, r2)
+
+        send_update(header='plot', var_names=['plot', 'error'], vars=(plot, error), task_id=task_id, user_id=user_id)
 
     else: 
         # set up the plot
@@ -45,30 +57,43 @@ def create_plot11(x=None, y=None, a=None, b=None):
         b = round(np.random.randint(-5, 6), 3)
         x = np.random.randint(-10, 10, size=(100,))
         y = a*x + b + np.random.randn(0, 1.41, size=(100,))
-        return x, y
-
-
-def main():
-    pass
-
-
-if __name__ == '__main__':
-    # Check if the correct number of arguments were provided
-
-    if len(sys.argv) == 1:
-        # just run the main code
-        main()
     
-    elif len(sys.argv) == 3:
-        # run the function given by argv[1]
-        if sys.argv[1] in globals():
-            globals()[sys.argv[1]](sys.argv[2])
-        else:
-            raise ValueError("Function not found")
-            # TODO: look into error handling
-            sys.exit(1)
+        xVars[user_id] = x
+        yVars[user_id] = y
+        ManualLinReg(a, b, task_id, user_id)
+
+
+def ManualPolyReg(n=None, task_id=None, user_id=None):
+    """
+    Creates a plot of some datapoints along a sine wave, and finds a polynomial fit of order n. 
+    Limits are -10 and +10 for both x and y. 
+    Returns the plot as the value of a BytesIO object.
+    """
+
+    x = np.random.randint(-10, 10, size=(10,))
+    y = np.sin(x) + np.random.randn(0, 0.1, size=(10,))
     
-    else:
-        raise ValueError("Use either no or two arguments")
-        # TODO: look into error handling
-        sys.exit(1)
+    fig = mpl.figure.Figure()
+    ax = fig.add_subplot(111)
+
+    x_s = np.linspace(-10, 10, 200)
+    y_s = np.sin(x_s)
+    ax.plot(x_s, y_s, color=(0/255,0/255,0/255))
+    ax.scatter(x, y, color=(4/255, 151/255, 185/255))
+
+    if n is not None:
+        x_s = np.linspace(-10, 10, 200)
+        y_s = np.polyval(np.polyfit(x, y, n))
+        ax.plot(x_s, y_s, color=(185/255,38/255,4/255))
+    ax.set_xlim(-10, 10)
+    ax.set_ylim(-10, 10)
+
+    img = BytesIO()
+    fig.savefig(img, format='png')
+    img.seek(0)
+    fig.clear()
+
+    plot = img.getvalue()
+    plot = b64encode(plot).decode()
+    
+    send_update(header='plot', var_names=['plot'], vars=(plot,), task_id=task_id, user_id=user_id)
