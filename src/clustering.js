@@ -22,12 +22,27 @@ function applyKMeansClustering(data, numClusters, centroids, setCentroids) {
     return data.map((d, i) => ({ ...d, cluster: KMeans.clusters[i] }));
 }
 
+function generateCentroids(numClusters) {
+    const centroids = [];
+    for (let i = 0; i < numClusters; i++) {
+        const x = Math.random() * 500;
+        const y = Math.random() * 500;
+        centroids.push([x, y]);
+    }
+    return centroids;
+}
+
 function KMeansClusteringVisualization() {
     const svgRef = useRef(null);
     const [data, setData] = useState([]);
     const [numPoints, setNumPoints] = useState(200);
-    const [numClusters, setNumClusters] = useState(4);
-    const [centroids, setCentroids] = useState([]);
+    const [numClusters, setNumClusters] = useState(2);
+    const [centroids, setCentroids] = useState(generateCentroids(numClusters));
+
+    useEffect(() => {
+        // update numClusters when centroids change
+        setNumClusters(centroids.length);
+    }, [centroids]);
 
     useEffect(() => {
         if (data.length === 0) return;
@@ -70,8 +85,7 @@ function KMeansClusteringVisualization() {
         
             // Add a new cluster center at the selected point and regenerate KMeans
             const newCentroids = [...centroids, [dataX, dataY]];
-            const clusteredData = applyKMeansClustering(data, numClusters, newCentroids, setCentroids);
-            setData(clusteredData);
+            setCentroids(newCentroids);
         });
     }, [data]);
 
