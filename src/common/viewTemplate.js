@@ -164,22 +164,22 @@ class Model extends React.Component {
     }
     
     handleStartClick = (() => {
-    console.log("handleStartClick is not implemented in component ", this.props.name)
-    let inThrottle;
-    return (event) => {
-        if (!inThrottle && this.props.taskId !== 0) { 
-        if (this.props.isTraining === 1) {
-            this.props.cancelRequestRef.current(this.props.taskId, this.props.index)
-        } else { 
-            let trainingParams = {
-            // TODO: use props to set the training parameters
+        console.log("handleStartClick is not implemented in component ", this.props.name)
+        let inThrottle;
+        return (event) => {
+            if (!inThrottle && this.props.taskId !== 0) { 
+            if (this.props.isTraining === 1) {
+                this.props.cancelRequestRef.current(this.props.taskId, this.props.index)
+            } else { 
+                let trainingParams = {
+                // TODO: use props to set the training parameters
+                }
+                this.props.startTraining(event, trainingParams);
             }
-            this.props.startTraining(event, trainingParams);
-        }
-        inThrottle=true
-        setTimeout(() => inThrottle = false, 2*this.props.pendingTime);
-        }
-    };
+            inThrottle=true
+            setTimeout(() => inThrottle = false, 2*this.props.pendingTime);
+            }
+        };
     })();
 
     handleCodeClick = (event) => {
