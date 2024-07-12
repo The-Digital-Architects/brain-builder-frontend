@@ -19,7 +19,7 @@ class ManualTask extends Component {
             out2Name: '',
             img: null,
         };
-        this.ws = new WebSocket(`wss://${this.props.host}/custom/${this.props.userId}/${this.props.customId}/`);
+        this.ws = new WebSocket(`wss://${this.props.host}/ws/${this.props.userId}/${this.props.customId}/`);
     }
 
     componentDidMount() {

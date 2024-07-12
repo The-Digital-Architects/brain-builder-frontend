@@ -23,7 +23,8 @@ const prepareTrainingData = ({
   nOfOutputs,
   typ,
   dataset,
-  index
+  index, 
+  globalIndex
 }) => {
 
   /*prepare the training data to be sent to the server*/
@@ -36,7 +37,7 @@ const prepareTrainingData = ({
   let userId = getCookie('user_id');
 
   // State update function that doesn't directly manipulate the state
-  const updateState = (setter, newValue) => {
+  const updateState = (setter, newValue, index) => {
     setter(prev => {
       const updated = Array.isArray(prev) ? [...prev] : {};
       updated[index] = newValue;
@@ -68,9 +69,9 @@ const prepareTrainingData = ({
     dataset,
   };
 
-  updateState(setApiData, trainingData);
-  updateState(setAccuracy, null);
-  updateState(setIsTraining, 1);
+  updateState(setApiData, trainingData, globalIndex);
+  updateState(setAccuracy, null, index);
+  updateState(setIsTraining, 1, globalIndex);
 
   return trainingData;
 }

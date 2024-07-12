@@ -16,7 +16,7 @@ import Tutorial from './tutorial';
 import FeedbackApp from './feedback';
 import LinksPage from './links';
 import NotFound from './common/notFound';
-import DefaultView from './defaultView';
+import ConstructionView from './constructionView';
 import NotebookView from './notebookView';
 import JupyterLite from './jupyterLiteView';
 import StartPage from './startpage/startPage';
@@ -464,7 +464,7 @@ function App() {
 
         // some custom taskIds
         console.log(currentTaskNames) // TODO: remove
-        manualRegressionId = currentTaskNames.findIndex(name => name === 'Linear Regr.')
+        manualRegressionId = Object.keys(taskNames).find(key => taskNames[key] === 'Linear Regr.');
         manualRegressionDescription = currentTaskData.find(task => task.task_id === manualRegressionId).description;
         console.log("manualRegressionId & Description: ", manualRegressionId, manualRegressionDescription); // TODO remove this
 
@@ -544,10 +544,10 @@ function App() {
       // cytoLayers is not empty, proceed as usual
       cytoLayers.forEach((cytoLayer, index) => {
         localStorage.setItem(`cytoLayers${NNTaskIds[index]}`, JSON.stringify(cytoLayer));  // TODO: check if this works
-        if (isTraining[index] !== -1) {
+        if (isTraining[taskIds.indexOf(NNTaskIds[index])] !== -1) {
         setIsTraining(prevIsTraining => {
         const newIsTraining = [...prevIsTraining];
-        newIsTraining[index] = 0;
+        newIsTraining[taskIds.indexOf(NNTaskIds[index])] = 0;
         return newIsTraining;
       });
     }
@@ -556,7 +556,7 @@ function App() {
   }, [cytoLayers, NNTaskIds, nInputs, nOutputs]);
 
   
-  const loadLastCytoLayers = (setCytoLayers, apiData, setApiData, propertyName, taskId, index, nInputs, nOutputs) => {
+  const loadLastCytoLayers = (setCytoLayers, apiData, setApiData, propertyName, taskId, index, NNIndex, nInputs, nOutputs) => {
     // Check localStorage for a saved setting
     const savedSetting = localStorage.getItem(propertyName);
     let goToStep2 = false;
@@ -569,11 +569,11 @@ function App() {
             setCytoLayers(prevCytoLayers => {
               const newCytoLayers = [...prevCytoLayers];
               console.log("setting cytoLayers to saved setting");
-              newCytoLayers[index] = cytoLayersSetting;
+              newCytoLayers[NNIndex] = cytoLayersSetting;
               // console.log("saved setting:", cytoLayersSetting);
               // make the number of nodes in the first and last layer match the number of inputs and outputs
-              newCytoLayers[index][0] = nInputs;  
-              newCytoLayers[index][newCytoLayers[index].length - 1] = nOutputs;
+              newCytoLayers[NNIndex][0] = nInputs;  
+              newCytoLayers[NNIndex][newCytoLayers[NNIndex].length - 1] = nOutputs;
               // console.log("new setting: ", newCytoLayers)  // for debugging
               return newCytoLayers;
             });
@@ -605,10 +605,10 @@ function App() {
             }
             setCytoLayers(prevCytoLayers => {
               const newCytoLayers = [...prevCytoLayers];
-              newCytoLayers[index] = JSON.parse(response.data[0]["in_out"]);
+              newCytoLayers[NNIndex] = JSON.parse(response.data[0]["in_out"]);
               // make the number of nodes in the first and last layer match the number of inputs and outputs
-              newCytoLayers[index][0] = nInputs;
-              newCytoLayers[index][newCytoLayers[index].length - 1] = nOutputs;
+              newCytoLayers[NNIndex][0] = nInputs;
+              newCytoLayers[NNIndex][newCytoLayers[NNIndex].length - 1] = nOutputs;
               return newCytoLayers;
             });
       })
@@ -617,7 +617,7 @@ function App() {
         console.log("setting cytoLayers to default");
             setCytoLayers(prevCytoLayers => {
               const newCytoLayers = [...prevCytoLayers];
-              newCytoLayers[index] = [nInputs, nOutputs];
+              newCytoLayers[NNIndex] = [nInputs, nOutputs];
               return newCytoLayers;
             });
       });
@@ -630,10 +630,10 @@ function App() {
   // Update the state when the dependencies change
   useEffect(() => {
     setCytoElements(NNTaskIds.map((taskId, index) => {
-      return generateCytoElements(cytoLayers[index], apiData[index], isTraining[index], weights[index], biases[index])
+      return generateCytoElements(cytoLayers[index], apiData[index], isTraining[taskIds.indexOf(NNTaskIds[index])], weights[index], biases[index])
       }
     ));
-  }, [NNTaskIds, cytoLayers, apiData, isTraining, weights, biases]);
+  }, [NNTaskIds, cytoLayers, apiData, weights, biases]);
 
   useEffect(() => {
     setCytoStyle(NNTaskIds.map((taskId, index) => 
@@ -649,28 +649,27 @@ function App() {
   // ------- FORMS -------
 
   const handleSubmit = (event, setIsResponding, setApiData, taskId, index) => {
-  event.preventDefault();
-  setIsResponding(prevIsResponding => {
-    const newIsResponding = [...prevIsResponding];
-    newIsResponding[index] = 1;
-    return newIsResponding;
-  });
+    event.preventDefault();
+    setIsResponding(prevIsResponding => {
+      const newIsResponding = [...prevIsResponding];
+      newIsResponding[index] = 1;
+      return newIsResponding;
+    });
 
-  var userId = getCookie('user_id');
-  var csrftoken = getCookie('csrftoken');
+    var userId = getCookie('user_id');
+    var csrftoken = getCookie('csrftoken');
 
-  axios.get(window.location.origin + `/api/backend/?user_id=${userId}&task_id=${taskId}`, {
-    headers: {
-      'X-CSRFToken': csrftoken
-    }
-  })
+    axios.get(window.location.origin + `/api/backend/?user_id=${userId}&task_id=${taskId}`, {
+      headers: {
+        'X-CSRFToken': csrftoken
+      }
+    })
     .then((response) => {
       const networkData = response.data[0];
       const formData = new FormData(event.target);
       const values = Array.from(formData.values()).map((value) => Number(value));
-      networkData.network_input = JSON.stringify(values);
+      networkData.in_out['model_input'] = JSON.stringify(values);
       networkData.action = 2;
-      networkData.games_data = gamesData;
       axios.put(window.location.origin + `/api/backend/${networkData.pk}`, networkData, {
         headers: {
           'X-CSRFToken': csrftoken
@@ -722,7 +721,7 @@ function App() {
         max={maxEpochs[index] ? maxEpochs[index] / 2 : 50}
         step={0.5}
         style={{ width: Math.round(0.19 * (window.innerWidth * 0.97)) }}
-        disabled={isTraining[index] === 1}
+        disabled={isTraining[taskIds.indexOf(taskId)] === 1}
       >
         <Slider.Track className="SliderTrack" style={{ height: 3 }}>
           <Slider.Range className="SliderRange" />
@@ -732,7 +731,7 @@ function App() {
     );
   });
 
-  const learningRateSliders = NNTaskIds.map((challenge, index) => {
+  const learningRateSliders = NNTaskIds.map((taskId, index) => {
     return (
       <Slider.Root
         key={index}
@@ -742,7 +741,7 @@ function App() {
         max={70}
         step={10}
         style={{ width: Math.round(0.19 * (window.innerWidth * 0.97)) }}
-        disabled={isTraining[index] === 1}
+        disabled={isTraining[taskIds.indexOf(taskId)] === 1}
       >
         <Slider.Track className="SliderTrack" style={{ height: 3 }}>
           <Slider.Range className="SliderRange" />
@@ -860,7 +859,7 @@ function App() {
             />
           } />
 
-          {NNTaskIds.map((taskId, index) => (
+          {NNTaskIds.map((taskId, NNIndex) => (
             <>
             <Route
               key={taskId}
@@ -868,53 +867,54 @@ function App() {
               element={
                 <>
                 <BuildView
-                  nOfInputs={nInputs[index]}
-                  nOfOutputs={nOutputs[index]}
-                  nOfObjects={nObjects[index]}
-                  maxLayers={maxLayers[index]}
+                  nOfInputs={nInputs[taskIds.indexOf(taskId)]}
+                  nOfOutputs={nOutputs[taskIds.indexOf(taskId)]}
+                  nOfObjects={nObjects[taskIds.indexOf(taskId)]}
+                  maxLayers={maxLayers[taskIds.indexOf(taskId)]}
                   taskId={taskId}
-                  index={index}
-                  cytoElements={cytoElements[index]}
-                  cytoStyle={cytoStyle[index]}
-                  cytoLayers={cytoLayers[index]}
+                  NNIndex={NNIndex}
+                  index={taskIds.indexOf(taskId)}
+                  cytoElements={cytoElements[NNIndex]}
+                  cytoStyle={cytoStyle[NNIndex]}
+                  cytoLayers={cytoLayers[NNIndex]}
                   setCytoLayers={setCytoLayers}
                   updateCytoLayers={updateCytoLayers}
                   loadLastCytoLayers={loadLastCytoLayers}
-                  iterationsSlider={iterationsSliders[index]}
-                  iterations={iterations[index]}
+                  iterationsSlider={iterationsSliders[NNIndex]}
+                  iterations={iterations[NNIndex]}
                   setIterations={setIterations}
-                  learningRateSlider={learningRateSliders[index]}
-                  learningRate={learningRate[index]}
+                  learningRateSlider={learningRateSliders[NNIndex]}
+                  learningRate={learningRate[NNIndex]}
                   setLearningRate={setLearningRate}
-                  isTraining={isTraining[index]}
+                  isTraining={isTraining[taskIds.indexOf(taskId)]}
                   setIsTraining={setIsTraining}
-                  apiData={apiData[index]}
+                  apiData={apiData[NNIndex]}
                   setApiData={setApiData}
                   taskData={taskData}
                   setTaskData={setTaskData}
                   putRequest={putRequest}
-                  accuracy={accuracy[index]}
+                  accuracy={accuracy[NNIndex]}
                   setAccuracy={setAccuracy}
                   accuracyColor={accuracyColor}
                   handleSubmit={handleSubmit}
-                  isResponding={isResponding[index]}
+                  isResponding={isResponding[NNIndex]}
                   setIsResponding={setIsResponding}
-                  progress={progress[index]}
-                  featureNames={featureNames[index]}
-                  errorList={errorList[index]}
-                  weights={weights[index]}
-                  biases={biases[index]}
-                  imgs={imgs[index]}
-                  initPlot={initPlots[index]}
+                  progress={progress[taskIds.indexOf(taskId)]}
+                  featureNames={featureNames[NNIndex]}
+                  errorList={errorList[NNIndex]}
+                  weights={weights[NNIndex]}
+                  biases={biases[NNIndex]}
+                  imgs={imgs[NNIndex]}
+                  initPlot={initPlots[NNIndex]}
                   loadData={loadData}
                   normalization={false}
-                  normalizationVisibility={normalizationVisibility[index]}
-                  af={afs[index]}
+                  normalizationVisibility={normalizationVisibility[NNIndex]}
+                  af={afs[NNIndex]}
                   setAf={setAf}
-                  afVisibility={afVisibility[index]}
-                  iterationsSliderVisibility={iterationsSliderVisibility[index]}
-                  lrSliderVisibility={lrSliderVisibility[index]}
-                  imageVisibility={imageVisibility[index]}
+                  afVisibility={afVisibility[NNIndex]}
+                  iterationsSliderVisibility={iterationsSliderVisibility[NNIndex]}
+                  lrSliderVisibility={lrSliderVisibility[NNIndex]}
+                  imageVisibility={imageVisibility[NNIndex]}
                   setProgress={setProgress}
                   setErrorList={setErrorList}
                   setWeights={setWeights}
@@ -925,8 +925,8 @@ function App() {
                   setImgs={setImgs}
                   userId={getCookie('user_id')}
                   intervalTimeout={intervalTimeout}
-                  typ={typ[index]}
-                  dataset={dataset[index]}
+                  typ={typ[taskIds.indexOf(taskId)]}
+                  dataset={dataset[taskIds.indexOf(taskId)]}
                 />
                 </>
               }
@@ -996,7 +996,7 @@ function App() {
           } />
 
           <Route path="/exercise/*" element={
-            <DefaultView/>
+            <ConstructionView/>
           } />
 
           <Route path="*" element={<NotFound />} />

@@ -1,4 +1,4 @@
-export default function cancelRequest(index, ws, timeoutId, params) {
+export default function cancelRequest(NNIndex, index, ws, timeoutId, params) {
 
     /*cancel the training process*/
 
@@ -14,7 +14,7 @@ export default function cancelRequest(index, ws, timeoutId, params) {
 
     clearTimeout(timeoutId);
 
-    if (params.progress[index] >= 0.8 && params.isTraining[index] === 1) {
+    if (params.progress[NNIndex] >= 0.8 && params.isTraining[index] === 1) {
             params.setIsTraining(prevIsTraining => {
                 const newIsTraining = [...prevIsTraining];
                 newIsTraining[index] = 2;

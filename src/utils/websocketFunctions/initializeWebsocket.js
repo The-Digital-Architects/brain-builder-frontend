@@ -8,7 +8,7 @@ export default function initializeWebSocket(trainingData, params) {
     const ws = setupWebSocket(trainingData, params);
 
     //partial application of cancelRequest to make it no-argument
-    params.cancelRequestRef.current = () => cancelRequest(params.index, ws, params.timeoutId, params);
+    params.cancelRequestRef.current = () => cancelRequest(params.index, params.globalIndex, ws, params.timeoutId, params);
 
 }
 
@@ -50,7 +50,7 @@ function handleOpen(ws, trainingData, params) {
         ws.close();
         params.setIsTraining(prevIsTraining => {
             const newIsTraining = [...prevIsTraining];
-            newIsTraining[params.index] = 0;
+            newIsTraining[params.globalIndex] = 0;
             return newIsTraining;
         });
         console.log("Training failed")

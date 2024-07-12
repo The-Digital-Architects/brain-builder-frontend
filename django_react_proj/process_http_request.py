@@ -74,17 +74,17 @@ async def process(req):
             nn = pickle.loads(nn)
             data = pickle.loads(data)
 
-            input_vector = json.loads(req['network_input'])
+            input_vector = json.loads(inputs['model_input'])
             if len(input_vector) != data.n_features:
                 print("Wrong Network")
                 output_value = "Wrong Network"
             else:
                 tag = int(req['task_id'])
-                output_value = building.predict(input_vector, nn, tag, data, normalization=bool(req['normalization']), name=True)
+                output_value = building.predict(input_vector, nn, tag, data, normalization=bool(inputs['normalization']), name=True)
         else:
             print("No Network (or no data)")
             output_value = "No Network"
-        req['network_input'] = json.dumps(output_value)
+        req['in_out'] = json.dumps(output_value)
 
     req['action'] = 0
     return req

@@ -126,8 +126,8 @@ class Building extends React.Component {
     }
     else {
     this.props.loadData(this.props.taskId, this.props.index)  // let the backend load the data, then set the images and feature names
-    this.props.loadLastCytoLayers(this.props.setCytoLayers, this.props.apiData, this.props.setApiData, 'cytoLayers' + this.props.taskId, this.props.taskId, this.props.index, this.props.nOfInputs, this.props.nOfOutputs);
-    this.props.updateCytoLayers(this.props.setCytoLayers, this.props.nOfInputs, this.props.nOfOutputs, this.props.index);
+    this.props.loadLastCytoLayers(this.props.setCytoLayers, this.props.apiData, this.props.setApiData, 'cytoLayers' + this.props.taskId, this.props.taskId, this.props.index, this.props.NNIndex, this.props.nOfInputs, this.props.nOfOutputs);
+    this.props.updateCytoLayers(this.props.setCytoLayers, this.props.nOfInputs, this.props.nOfOutputs, this.props.NNIndex);
     }
   }
 
@@ -229,7 +229,7 @@ class Building extends React.Component {
   };
 
   handleAfClick = () => {
-    this.props.setAf(this.props.index, !this.props.af);
+    this.props.setAf(this.props.NNIndex, !this.props.af);
   }
   
   debounce(func, delay) {
@@ -266,7 +266,8 @@ class Building extends React.Component {
             taskId: this.props.taskId,
             nOfInputs: this.props.nOfInputs,
             nOfOutputs: this.props.nOfOutputs,
-            index: this.props.index,
+            index: this.props.NNIndex,
+            globalIndex: this.props.index,
             setProgress: this.props.setProgress,
             setErrorList: this.props.setErrorList,
             setWeights: this.props.setWeights,
@@ -428,12 +429,12 @@ class Building extends React.Component {
                 </Flex>
               )}
 
-              <GenerateFloatingButtons top={window.innerHeight - 223} left={0.1 * (window.innerWidth * 0.97) - 16.5} dist={0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1)} isItPlus={true} nLayers={this.props.cytoLayers.length} cytoLayers={this.props.cytoLayers} setCytoLayers={this.props.setCytoLayers} taskId={this.props.taskId} index={this.props.index} maxNodes={this.props.maxNodes} isTraining={this.props.isTraining}/>                    
-              <GenerateFloatingButtons top={window.innerHeight - 178} left={0.1 * (window.innerWidth * 0.97) - 16.5} dist={0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1)} isItPlus={false} nLayers={this.props.cytoLayers.length} cytoLayers={this.props.cytoLayers} setCytoLayers={this.props.setCytoLayers} taskId={this.props.taskId} index={this.props.index} maxNodes={this.props.maxNodes} isTraining={this.props.isTraining}/>
+              <GenerateFloatingButtons top={window.innerHeight - 223} left={0.1 * (window.innerWidth * 0.97) - 16.5} dist={0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1)} isItPlus={true} nLayers={this.props.cytoLayers.length} cytoLayers={this.props.cytoLayers} setCytoLayers={this.props.setCytoLayers} taskId={this.props.taskId} index={this.props.index} NNIndex={this.props.NNIndex} maxNodes={this.props.maxNodes} isTraining={this.props.isTraining}/>                    
+              <GenerateFloatingButtons top={window.innerHeight - 178} left={0.1 * (window.innerWidth * 0.97) - 16.5} dist={0.4 * (window.innerWidth * 0.97)/Math.max(this.props.cytoLayers.length-1,1)} isItPlus={false} nLayers={this.props.cytoLayers.length} cytoLayers={this.props.cytoLayers} setCytoLayers={this.props.setCytoLayers} taskId={this.props.taskId} index={this.props.index} NNIndex={this.props.NNIndex} maxNodes={this.props.maxNodes} isTraining={this.props.isTraining}/>
              
               
-              <LayerRemoveButton setCytoLayers={this.props.setCytoLayers} index={this.props.index} taskId={this.props.taskId} cytoLayers={this.props.cytoLayers} isTraining={this.props.isTraining}/>
-              <LayerAddButton setCytoLayers={this.props.setCytoLayers} index={this.props.index} taskId={this.props.taskId} cytoLayers={this.props.cytoLayers} nOfOutputs={this.props.nOfOutputs} maxLayers={this.props.maxLayers} isTraining={this.props.isTraining}/>
+              <LayerRemoveButton setCytoLayers={this.props.setCytoLayers} index={this.props.NNIndex} taskId={this.props.taskId} cytoLayers={this.props.cytoLayers} isTraining={this.props.isTraining}/>
+              <LayerAddButton setCytoLayers={this.props.setCytoLayers} index={this.props.NNIndex} taskId={this.props.taskId} cytoLayers={this.props.cytoLayers} nOfOutputs={this.props.nOfOutputs} maxLayers={this.props.maxLayers} isTraining={this.props.isTraining}/>
 
             </Flex>
           </Box>

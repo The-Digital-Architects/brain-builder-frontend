@@ -38,7 +38,7 @@ function resetTimeout(ws, params) {
       ws.close();
       params.setIsTraining(prevIsTraining => {
         const newIsTraining = [...prevIsTraining];
-        newIsTraining[params.index] = 0;
+        newIsTraining[params.globalIndex] = 0;
         return newIsTraining;
       });
       console.log("Training failed")

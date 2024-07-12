@@ -87,7 +87,7 @@ function LayerAddButton({setCytoLayers, index, taskId, cytoLayers, nOfOutputs, m
 }
 
 
-function GenerateFloatingButtons({top, left, dist, isItPlus, nLayers, cytoLayers, setCytoLayers, taskId, index, maxNodes, isTraining}) {
+function GenerateFloatingButtons({top, left, dist, isItPlus, nLayers, cytoLayers, setCytoLayers, taskId, index, NNIndex, maxNodes, isTraining}) {
 
   // function to add a node to a layer
   const addNode = useCallback((column, setCytoLayers, taskId, index, max_nodes) => {
@@ -146,8 +146,8 @@ function GenerateFloatingButtons({top, left, dist, isItPlus, nLayers, cytoLayers
         <div key={i} style={{ top: top, left: left + (i+1) * dist }}>
             <FloatingButton
             variant="outline"
-            disabled={(isItPlus && cytoLayers[i+1] >= maxNodes[index]) || (!isItPlus && cytoLayers[i+1] < 2) || isTraining[index] === 1}
-            onClick = {taskId !== 0 ? (isItPlus ? () => addNode(i+1, setCytoLayers, taskId, index, maxNodes[index]) : () => removeNode(i+1, setCytoLayers, taskId, index)) : () => {}}
+            disabled={(isItPlus && cytoLayers[i+1] >= maxNodes[NNIndex]) || (!isItPlus && cytoLayers[i+1] < 2) || isTraining[index] === 1}
+            onClick = {taskId !== 0 ? (isItPlus ? () => addNode(i+1, setCytoLayers, taskId, index, maxNodes[NNIndex]) : () => removeNode(i+1, setCytoLayers, taskId, NNIndex)) : () => {}}
             style={{ top: top, left: left + (i+1) * dist }}
             >
             {isItPlus ? <PlusIcon /> : <MinusIcon />}
@@ -170,11 +170,11 @@ function GenerateFloatingButtons({top, left, dist, isItPlus, nLayers, cytoLayers
                   color: 'var(--cyan-12)',
                   fontWeight: 'bold'
               }}
-              onBlur={(taskId !== 0 && isTraining[index] !== 1) ? () => setNodes(i+1, cytoLayers, setCytoLayers, taskId, index) : () => {}}
+              onBlur={(taskId !== 0 && isTraining[index] !== 1) ? () => setNodes(i+1, cytoLayers, setCytoLayers, taskId, NNIndex) : () => {}}
               onKeyDown={(event) => {
                   if (event.key === "Enter" && taskId !== 0 && isTraining[index] !== 1) {
                   event.preventDefault();
-                  setNodes(i+1, cytoLayers, setCytoLayers, taskId, index);
+                  setNodes(i+1, cytoLayers, setCytoLayers, taskId, NNIndex);
                   }
               }}
               />

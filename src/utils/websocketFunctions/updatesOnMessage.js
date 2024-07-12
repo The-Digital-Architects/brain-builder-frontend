@@ -19,7 +19,7 @@ function checkTrainingComplete(data, params, ws) {
         clearTimeout(params.timeoutId);
         params.setIsTraining(prevIsTraining => {
           const newIsTraining = [...prevIsTraining];
-          newIsTraining[params.index] = 2;
+          newIsTraining[params.globalIndex] = 2;
           return newIsTraining;
         });
         console.log("Training finished")
