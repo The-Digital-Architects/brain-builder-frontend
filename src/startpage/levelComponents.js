@@ -193,6 +193,7 @@ function ProgressBox({progress}) {
   const handleSubmit = (event) => {
     if (event.key === 'Enter') {
       document.cookie = `user_id=${code}; expires=Thu, 31 Dec 2099 23:59:59 GMT; path=/`;
+      window.location.reload();
     }
   };
 
@@ -213,7 +214,7 @@ function ProgressBox({progress}) {
         </IconButton>
 
         <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Do you already have a code? Enter it below!</label>
-        <Box maxWidth="300px">
+        <Box maxWidth="10vw">
           <TextField.Root size="1">
             <TextField.Input placeholder="Paste and click Enter" onChange={handleCodeChange} onKeyDown={handleSubmit} />
           </TextField.Root>
