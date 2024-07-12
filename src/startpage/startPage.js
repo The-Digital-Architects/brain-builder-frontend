@@ -6,12 +6,6 @@ import '@radix-ui/themes/styles.css';
 import Level from './level';
 import { ProgressBox, GettingStarted, WrappingUp, ReadmeBox } from './levelComponents';
 
-// Function to store progressData in a cookie
-function storeProgress(progressData) {
-    const serializedData = encodeURIComponent(JSON.stringify(progressData));
-    document.cookie = `progressData=${serializedData};path=/;max-age=31536000`; // Expires in 1 year
-}
-
 // Function to retrieve progressData from a cookie
 function getProgress() {
     const cookieValue = document.cookie

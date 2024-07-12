@@ -8,6 +8,7 @@ import * as Progress from '@radix-ui/react-progress';
 import '@radix-ui/themes/styles.css';
 import '../css/App.css';
 import getCookie from '../utils/cookieUtils';
+import isValidUUID from '../utils/userIdUtils';
 
 function ChallengeButton({ link, label, Icon, active, completed }) {
   const buttonStyle = {
@@ -192,8 +193,12 @@ function ProgressBox({progress}) {
 
   const handleSubmit = (event) => {
     if (event.key === 'Enter') {
-      document.cookie = `user_id=${code}; expires=Thu, 31 Dec 2099 23:59:59 GMT; path=/`;
-      window.location.reload();
+      if (!isValidUUID(code)) {
+        alert('Invalid code. Please try again.');
+      } else {
+        document.cookie = `user_id=${code}; expires=Thu, 31 Dec 2099 23:59:59 GMT; path=/`;
+        window.location.reload();
+      }
     }
   };
 
@@ -214,9 +219,9 @@ function ProgressBox({progress}) {
         </IconButton>
 
         <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Do you already have a code? Enter it below!</label>
-        <Box maxWidth="10vw">
+        <Box maxWidth="15vw">
           <TextField.Root size="1">
-            <TextField.Input placeholder="Paste and click Enter" onChange={handleCodeChange} onKeyDown={handleSubmit} />
+            <TextField.Input placeholder="Paste and click Enter..." onChange={handleCodeChange} onKeyDown={handleSubmit} />
           </TextField.Root>
         </Box>
       </Flex>
