@@ -16,7 +16,7 @@ import Tutorial from './tutorial';
 import FeedbackApp from './feedback';
 import LinksPage from './links';
 import NotFound from './common/notFound';
-import DefaultView from './common/viewTemplate';
+import { DefaultView, Model } from './common/viewTemplate';
 import ConstructionView from './constructionView';
 import NotebookView from './notebookView';
 import JupyterLite from './jupyterLiteView';
@@ -250,7 +250,7 @@ function App() {
   const [apiData, setApiData] = useState(defaultTaskIds.map(() => null));
   const [accuracy, setAccuracy] = useState(defaultTaskIds.map(() => 0));
   // setting default values for the network-related states
-  const [progress, setProgress] = useState(defaultTaskIds.map(() => -1));
+  const [NNProgress, setNNProgress] = useState(defaultTaskIds.map(() => -1));
   const [errorList, setErrorList] = useState(defaultTaskIds.map(() => [[], null]));
   const [featureNames, setFeatureNames] = useState(defaultTaskIds.map(() => []));
   const [weights, setWeights] = useState(defaultTaskIds.map(() => []));
@@ -296,8 +296,8 @@ function App() {
 
   // ------- FETCHING TASK DATA -------
 
-  const manualRegressionId = 11
-  const manualRegressionDescription = ''
+  let manualRegressionId = 11
+  let manualRegressionDescription = ''
 
   const currentNInputs = [];
   const currentNOutputs = [];
@@ -462,7 +462,7 @@ function App() {
 
         setCytoLayers(currentNNTaskIds.map(() => []));
         setAccuracy(currentNNTaskIds.map(() => 0));
-        setProgress(currentNNTaskIds.map(() => 0));
+        setNNProgress(currentNNTaskIds.map(() => 0));
         setErrorList(currentNNTaskIds.map(() => [[], null]));
         setBiases(currentNNTaskIds.map(() => []));
 
@@ -470,7 +470,7 @@ function App() {
         // some custom taskIds
         console.log(currentTaskNames) // TODO: remove
         manualRegressionId = Object.keys(taskNames).find(key => taskNames[key] === 'Linear Regr.');
-        manualRegressionDescription = currentTaskData.find(task => task.task_id === manualRegressionId).description;
+        manualRegressionDescription = JSON.parse(currentTaskData.find(task => task.task_id === manualRegressionId).description);
         console.log("manualRegressionId & Description: ", manualRegressionId, manualRegressionDescription); // TODO remove this
 
         setLoadedTasks(true);
@@ -634,10 +634,11 @@ function App() {
 
   // Update the state when the dependencies change
   useEffect(() => {
+    if (Array.isArray(cytoLayers)) {
     setCytoElements(NNTaskIds.map((taskId, index) => {
       return generateCytoElements(cytoLayers[index], apiData[index], isTraining[taskIds.indexOf(NNTaskIds[index])], weights[index], biases[index])
-      }
-    ));
+    }
+    ));}
   }, [NNTaskIds, cytoLayers, apiData, weights, biases]);
 
   useEffect(() => {
@@ -855,7 +856,7 @@ function App() {
           <Route path={`/exercise${customClusteringId/10}`} element={<ClusteringTest />} />
 
           <Route path="/exercise2.2" element={<DefaultView 
-            isTraining={isTraining[22]} taskId={22} cancelRequestRef={cancelRequestRef} index={taskIds.indexOf(22)} name={'Template Test'} startTraining={() => console.log("startTraining placeholder")} pendingTime={pendingTime} tabs={['Data', 'Model', 'Result']} initPlot={initPlots[taskIds.indexOf(22)]} sliderVisibilities={{'dummy': true}} inputFieldVisibilities={{'dummy': true}} dropdownVisibilities={{'dummy': true}} checkboxVisibilities={{'dummy': true}} setIsResponding={setIsResponding} isResponding={taskIds.indexOf(22)} apiData={apiData.indexOf(22)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(22)]} img={imgs[taskIds.indexOf(22)]} typ={typ[taskIds.indexOf(22)]}
+            isTraining={isTraining[22]} taskId={22} cancelRequestRef={cancelRequestRef} index={taskIds.indexOf(22)} name={'Template Test'} startTraining={() => console.log("startTraining placeholder")} pendingTime={pendingTime} tabs={['Data', 'Model', 'Result']} initPlot={initPlots[taskIds.indexOf(22)]} sliderValues={{'dummy': 50}} sliderVisibilities={{'dummy': true}} inputFieldVisibilities={{'dummy': true}} dropdownVisibilities={{'dummy': true}} checkboxVisibilities={{'dummy': true}} setIsResponding={setIsResponding} isResponding={taskIds.indexOf(22)} apiData={apiData.indexOf(22)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(22)]} img={imgs[taskIds.indexOf(22)]} typ={typ[taskIds.indexOf(22)]}
           />} />
 
           <Route path={`/exercise${manualRegressionId/10}`} element={
@@ -908,7 +909,7 @@ function App() {
                   handleSubmit={handleSubmit}
                   isResponding={isResponding[taskIds.indexOf(taskId)]}
                   setIsResponding={setIsResponding}
-                  progress={progress[taskIds.indexOf(taskId)]}
+                  progress={NNProgress[NNIndex]}
                   featureNames={featureNames[taskIds.indexOf(taskId)]}
                   errorList={errorList[NNIndex]}
                   weights={weights[NNIndex]}
@@ -924,7 +925,7 @@ function App() {
                   iterationsSliderVisibility={iterationsSliderVisibility[NNIndex]}
                   lrSliderVisibility={lrSliderVisibility[NNIndex]}
                   imageVisibility={imageVisibility[NNIndex]}
-                  setProgress={setProgress}
+                  setProgress={setNNProgress}
                   setErrorList={setErrorList}
                   setWeights={setWeights}
                   setBiases={setBiases}
@@ -936,6 +937,14 @@ function App() {
                   intervalTimeout={intervalTimeout}
                   typ={typ[taskIds.indexOf(taskId)]}
                   dataset={dataset[taskIds.indexOf(taskId)]}
+                  name={taskNames[taskId]}
+                  startTraining={putRequest}
+                  tabs={['Data', 'Model', 'Result']}
+                  sliderValues={{'Epochs': iterations[NNIndex], 'Learning rate': learningRate[NNIndex]}}
+                  sliderVisibilities={{'Epochs': true, 'Learning rate': true}}
+                  inputFieldVisibilities={{}}
+                  dropdownVisibilities={{}}
+                  checkboxVisibilities={{'Enable activation functions': afVisibility[NNIndex], 'Normalize data': normalizationVisibility[NNIndex]}}
                 />
                 </>
               }

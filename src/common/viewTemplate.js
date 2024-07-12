@@ -25,7 +25,7 @@ class Model extends React.Component {
     // INITIALIZATION
     constructor(props) {
       super(props);
-      // TODO: make sure you pass these props: isTraining, taskId, cancelRequestRef, index, name, startTraining, pendingTime, tabs, initPlot, sliderVisibilities, inputFieldVisibilities, dropdownVisibilities, checkboxVisibilities, setIsResponding, isResponding, apiData, setApiData, handleSubmit, featureNames, img & typ
+      // TODO: make sure you pass these props: isTraining, taskId, cancelRequestRef, index, name, startTraining, pendingTime, tabs, initPlot,sliderValues, sliderVisibilities, inputFieldVisibilities, dropdownVisibilities, checkboxVisibilities, setIsResponding, isResponding, apiData, setApiData, handleSubmit, featureNames, img & typ
 
       this.state = {
         currentSlide: 0,
@@ -36,40 +36,44 @@ class Model extends React.Component {
         // TODO: add all your states here
         dummySliderValue: 50  // remove this
       };
+
+        // TODO: specify which tabs, sliders, input fields, dropdowns, and checkboxes should be included
+
+        this.useCodePreview = true
+
+        this.tabs = [
+            { name: 'Data', value: 'data' },
+            { name: 'Model', value: 'training' },
+            { name: 'Result', value: 'testing' },
+        ]
+
+        this.sliders = {
+            'dummySlider': <Slider min={0} max={100} step={1} onChange={(value) => this.handleSliderChange(value)} disabled={this.props.isTraining===1} />
+        }
+
+        this.inputFields = {
+            'dummyInputField': <input type="number" onChange={(event) => this.handleInputChange(event)} disabled={this.props.isTraining===1} />
+        }
+
+        this.dropdowns = {
+            'dummyDropdown': <Select options={["Option A", "Option B", "Option C"]} onChange={(selectedOption) => this.handleDropdownChange(selectedOption)} placeholder={"Please select an option"} disabled={this.props.isTraining===1} />
+        }
+
+        this.checkboxes = {
+            'dummyCheckbox': <Checkbox disabled={this.props.isTraining===1} onClick={this.handleCheckboxChange} checked={false} />
+        }
+
     };
-
-    // TODO: specify which tabs, sliders, input fields, dropdowns, and checkboxes should be included
-
-    useCodePreview = true
-
-    tabs = [
-        { name: 'Data', value: 'data' },
-        { name: 'Model', value: 'training' },
-        { name: 'Result', value: 'testing' },
-    ]
-
-    sliders = {
-        'dummySlider': <Slider min={0} max={100} step={1} onChange={(value) => this.handleSliderChange(value)} disabled={this.props.isTraining===1} />
-    }
-    sliderValues = {
-        'dummySlider': this.state.dummySliderValue
-    }
-
-    inputFields = {
-        'dummyInputField': <input type="number" onChange={(event) => this.handleInputChange(event)} disabled={this.props.isTraining===1} />
-    }
-
-    dropdowns = {
-        'dummyDropdown': <Select options={["Option A", "Option B", "Option C"]} onChange={(selectedOption) => this.handleDropdownChange(selectedOption)} placeholder={"Please select an option"} disabled={this.props.isTraining===1} />
-    }
-
-    checkboxes = {
-        'dummyCheckbox': <Checkbox disabled={this.props.isTraining===1} onClick={this.handleCheckboxChange} checked={false} />
-    }
 
 
     // DEFAULT FUNCTIONS  // TODO: remove these in your copy
 
+    createClassName = (name) => {
+        return name
+            .toLowerCase()
+            .replace(/[^a-zA-Z0-9]+(.)/g, (match, chr) => chr.toUpperCase());
+    }
+    
     handleTabChange = (value) => {
         this.setState({ activeTab: value });
     };
@@ -91,6 +95,12 @@ class Model extends React.Component {
           this.continueComponentDidMount();
         });
       }
+
+    componentWillUnmount() {
+        if (this.props.isTraining === 1) {
+            this.props.cancelRequest();
+        }
+    }
 
       createDescriptionList = (jsonText) => {
         try {
@@ -150,8 +160,7 @@ class Model extends React.Component {
     }
 
     valuesUndefined = () => {
-        // TODO: add the necessary conditions here to check if any values are undefined
-        return false
+        return Object.values(this.props.sliderVisibilities).includes(null) || Object.values(this.props.sliderValues).includes(null);
     }
     
     handleStartClick = (() => {
@@ -203,6 +212,7 @@ class Model extends React.Component {
 
 
     // FINALLY, THE RENDER
+    // TODO: delete the functions you don't change
 
     // TODO: tune the vertical positioning here
     textHeight = 20
@@ -227,6 +237,10 @@ class Model extends React.Component {
     renderModel = () => {
         // TODO: define the model view here (large box on the left in the training tab)
         console.log("renderModel is not implemented in component ", this.props.name)
+        return (
+        <Box style={{ display: 'flex', flex: 3, height: '100vh' }}>
+            
+        </Box>)
     }
 
     additionalComponents = () => {
@@ -325,9 +339,7 @@ class Model extends React.Component {
 
                 <Tabs.Content value="training">   
                     
-                    <Box style={{ display: 'flex', flex: 3, height: '100vh' }}>
-                        this.renderModel()
-                    </Box>
+                    this.renderModel()
                     
                     <Separator orientation='vertical' style = {{ position:"absolute", top: Math.round(0.03 * (window.innerHeight-140)), left: Math.round(0.67 * (window.innerWidth * 0.97)), height: 0.96 * (window.innerHeight-140) }}/>
 
@@ -335,11 +347,11 @@ class Model extends React.Component {
                         {Object.entries(this.sliders).map(([name, slider], index) => (
                             this.props.sliderVisibilities[name] ?
                             (<Box style={{ position:"absolute", top: this.sliderPosition(index), left: Math.round(0.74 * (window.innerWidth * 0.97)), alignItems: 'start', justifyContent: 'end', fontFamily:'monospace'  }}>
-                                <div className={name + "Slider"}>
+                                <div className={this.createClassName(name) + "Slider"}>
                                     {slider}
                                 </div>
                                 <div style={{ position:"absolute", zIndex: 9999, top: -30, left: 0.095 * (window.innerWidth * 0.97), transform: 'translateX(-50%)', fontSize: '14px', color: 'var(--slate-11)', whiteSpace: 'nowrap' }}>
-                                    {name}: {this.sliderValues[name]}
+                                    {name}: {this.props.sliderValues[name]}
                                 </div>
                             </Box>) : (<div></div>)
                         ))}
@@ -347,7 +359,7 @@ class Model extends React.Component {
                         {Object.entries(this.inputFields).map(([name, inputField], index) => (
                             this.props.inputFieldVisibilities[name] ?
                             (<Box style={{ position:"absolute", top: this.inputFieldPosition(index), left: Math.round(0.74 * (window.innerWidth * 0.97)), alignItems: 'start', justifyContent: 'end', fontFamily:'monospace'  }}>
-                                <div className={name + "InputField"}>
+                                <div className={this.createClassName(name) + "InputField"}>
                                 {name}: {inputField}
                                 </div>
                             </Box>) : (<div></div>)
@@ -356,7 +368,7 @@ class Model extends React.Component {
                         {Object.entries(this.dropdowns).map(([name, dropdown], index) => (
                             this.props.dropdownVisibilities[name] ?
                             (<Box style={{ position:"absolute", top: this.dropdownPosition(index), left: Math.round(0.74 * (window.innerWidth * 0.97)), alignItems: 'start', justifyContent: 'end', fontFamily:'monospace'  }}>
-                                <div className={name + "Dropdown"}>
+                                <div className={this.createClassName(name) + "Dropdown"}>
                                 {name}: {dropdown}
                                 </div>
                             </Box>) : (<div></div>)
@@ -364,7 +376,7 @@ class Model extends React.Component {
                         
                         {Object.entries(this.checkboxes).map(([name, checkbox], index) => (
                             this.props.checkboxVisibilities[name] ?
-                            (<Text className={name} as = "label" size="2">
+                            (<Text className={this.createClassName(name)} as = "label" size="2">
                                 <Flex style={{ position:"absolute", top: this.checkboxPosition(index), left: Math.round(0.7 * (window.innerWidth * 0.97)), width: Math.round(0.27 * (window.innerWidth * 0.97)), justifyContent:"flex-start", alignItems:"flex-start"}} gap="2">          
                                 {checkbox}: {name}
                                 </Flex>
@@ -456,7 +468,7 @@ class Model extends React.Component {
                 </Tabs.Content>
 
 
-                {/* ADD MORE TABS HERE */}
+                {/* ADD MORE TABS IF NECESSARY */}
 
             </Box>
             </Tabs.Root>
@@ -475,4 +487,4 @@ function DefaultView(props) {
     return <Model {...props} navigate={navigate} />;
   }
 
-export default DefaultView;
+export {DefaultView, Model};

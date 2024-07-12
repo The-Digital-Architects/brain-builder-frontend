@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Heading } from '@radix-ui/themes';
-import backgroundImage from '../images/monty-python.jpeg';
+import backgroundImage from '../images/MontyPython404.jpg';
 
 
 /**
