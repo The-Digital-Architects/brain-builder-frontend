@@ -9,10 +9,6 @@ Laurens and Paweł
 - Laurens Ledeganck ([laurens.ledeganck@brain-builder.app](mailto:laurens.ledeganck@brain-builder.app))
 - Paweł Rok ([pawel.rok@brain-builder.app](mailto:pawel.rok@brain-builder.app))
 
-## Contact us
-
-Do you have a question, suggestion or want to report a bug? Send us an email at [info@brain-builder.app](mailto:info@brain-builder.app) and we'll be happy to take a look!
-
 ## Resources Used
 
 This project was made using:
@@ -20,3 +16,7 @@ This project was made using:
 - [Radix UI](https://www.radix-ui.com/)
 - [Cytoscape.js](https://js.cytoscape.org/)
 - [PQINA](https://pqina.nl)
+
+## Contact Us
+
+Do you have a question, suggestion or want to report a bug? Send us an email at [info@brain-builder.app](mailto:info@brain-builder.app) and we'll be happy to take a look!

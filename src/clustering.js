@@ -14,10 +14,11 @@ function generateData(numPoints) {
     return data;
 }
 
-function applyKMeansClustering(data, numClusters) {
+function applyKMeansClustering(data, numClusters, centroids, setCentroids) {
     // Convert your data into a format suitable for the KMeans library
     const points = data.map(d => [d.x, d.y]);
-    const KMeans = new kmeans(points, numClusters);
+    const KMeans = new kmeans(points, numClusters, { initialization: centroids })
+    setCentroids(KMeans.centroids);
     return data.map((d, i) => ({ ...d, cluster: KMeans.clusters[i] }));
 }
 
@@ -26,6 +27,7 @@ function KMeansClusteringVisualization() {
     const [data, setData] = useState([]);
     const [numPoints, setNumPoints] = useState(200);
     const [numClusters, setNumClusters] = useState(4);
+    const [centroids, setCentroids] = useState([]);
 
     useEffect(() => {
         if (data.length === 0) return;
@@ -33,8 +35,8 @@ function KMeansClusteringVisualization() {
         const svg = d3.select(svgRef.current);
         svg.selectAll("*").remove();
 
-        svg.attr('width', '50%')
-           .attr('height', '50%')
+        svg.attr('width', '30%')
+           .attr('height', '30%')
            .attr('viewBox', '0 0 500 500');
 
         const xScale = d3.scaleLinear().domain([0, 500]).range([50, 450]);
@@ -57,22 +59,40 @@ function KMeansClusteringVisualization() {
         svg.append('g')
         .attr('transform', 'translate(50, 0)')
         .call(d3.axisLeft(yScale));
+
+        svg.on('click', function(event) {
+            // Get click coordinates in SVG space
+            const [clickX, clickY] = d3.pointer(event);
+        
+            // Convert click coordinates to data space
+            const dataX = xScale.invert(clickX);
+            const dataY = yScale.invert(clickY);
+        
+            // Add a new cluster center at the selected point and regenerate KMeans
+            const newCentroids = [...centroids, [dataX, dataY]];
+            const clusteredData = applyKMeansClustering(data, numClusters, newCentroids, setCentroids);
+            setData(clusteredData);
+        });
     }, [data]);
 
-    useEffect(() => {
-        const generatedData = generateData(numPoints, numClusters);
-        // Apply KMeans clustering here
-        const clusteredData = applyKMeansClustering(generatedData, numClusters);
-        setData(clusteredData);
-    }, [numPoints, numClusters, applyKMeansClustering]);
+    const handleButtonClick = () => {
 
+        if (numPoints && numClusters && numClusters > 0 && numClusters < numPoints) {
+            const generatedData = generateData(numPoints, numClusters);
+            // Apply KMeans clustering here
+            const clusteredData = applyKMeansClustering(generatedData, numClusters, centroids, setCentroids);
+            setData(clusteredData);
+        } else {
+            alert('Please enter a valid number of clusters and points.');
+        }
+    }
 
     return (
         <Flex direction="column" gap="2">
             <Header showHomeButton={true} />
-            <Flex gap="2">
+            <Flex gap="1">
                 <label>
-                    Number of Points:
+                    Number of Points:{" "}
                     <input
                         type="number"
                         value={numPoints}
@@ -80,14 +100,14 @@ function KMeansClusteringVisualization() {
                     />
                 </label>
                 <label>
-                    Number of Clusters:
+                    Number of Clusters:{" "}
                     <input
                         type="number"
                         value={numClusters}
                         onChange={(e) => setNumClusters(Number(e.target.value))}
                     />
                 </label>
-                <Button onClick={() => setData(generateData(numPoints, numClusters))}>
+                <Button onClick={handleButtonClick}>
                     Generate
                 </Button>
             </Flex>
