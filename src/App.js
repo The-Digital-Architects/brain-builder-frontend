@@ -261,8 +261,6 @@ function App() {
   // this is for the basics tasks
   const [basicsTaskIds, setBasicsIds] = useState([]);
   // TODO
-  const [manualRegressionId, setManualRegressionId] = useState(11); 
-  const [manualRegressionDescription, setManualRegressionDescription] = useState('')
 
   // this is for the clustering tasks
   const [clusteringTaskIds, setClusteringIds] = useState([]);
@@ -294,6 +292,10 @@ function App() {
 
 
   // ------- FETCHING TASK DATA -------
+
+  const manualRegressionId = 11
+  const manualRegressionDescription = ''
+
   const currentNInputs = [];
   const currentNOutputs = [];
   const currentTaskIds = [];
@@ -460,17 +462,17 @@ function App() {
         setImgs(currentTaskIds.map(() => []));
         setInitPlots(currentTaskIds.map(() => []));
 
+        // some custom taskIds
+        console.log(currentTaskNames) // TODO: remove
+        manualRegressionId = Object.keys(currentTaskNames).find(key => currentTaskNames[key] === 'Linear Regr.')
+        manualRegressionDescription = currentTaskData.find(task => task.task_id === manualRegressionId).description;
+        console.log("manualRegressionId & Description: ", manualRegressionId, manualRegressionDescription); // TODO remove this
+
         setLoadedTasks(true);
       })
       .catch(error => {
         console.error('Error fetching tasks:', error);
       });
-    
-    // some custom taskIds
-    console.log(taskNames) // TODO: remove
-    setManualRegressionId(Object.keys(taskNames).find(key => taskNames[key] === 'Linear Regr.') || 11);
-    setManualRegressionDescription(taskData.find(task => task.task_id === manualRegressionId).description);
-    console.log("manualRegressionId & Description: ", manualRegressionId, manualRegressionDescription); // TODO remove this
 
     axios.get('/api/all_quizzes/')
       .then(response => {
