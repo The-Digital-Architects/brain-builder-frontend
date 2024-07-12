@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import Header from './common/header';
-import { Flex } from '@radix-ui/themes';
+import { Flex, Button } from '@radix-ui/themes';
 
 function generateData(numPoints, numClusters) {
     const data = [];
@@ -34,8 +34,8 @@ function KMeansClusteringVisualization() {
         const svg = d3.select(svgRef.current);
         svg.selectAll("*").remove();
 
-        svg.attr('width', '100%')
-           .attr('height', '100%')
+        svg.attr('width', '50%')
+           .attr('height', '50%')
            .attr('viewBox', '0 0 500 500');
 
         const xScale = d3.scaleLinear().domain([0, 500]).range([50, 450]);
@@ -80,9 +80,9 @@ function KMeansClusteringVisualization() {
                         onChange={(e) => setNumClusters(Number(e.target.value))}
                     />
                 </label>
-                <button onClick={() => setData(generateData(numPoints, numClusters))}>
+                <Button onClick={() => setData(generateData(numPoints, numClusters))}>
                     Generate
-                </button>
+                </Button>
             </Flex>
             <svg ref={svgRef}></svg>
         </Flex>
