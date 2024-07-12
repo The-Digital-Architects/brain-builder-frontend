@@ -46,8 +46,9 @@ const prepareTrainingData = ({
   };
 
   // Simplified state updates
-  [setProgress, setWeights, setBiases, setImgs].forEach(setter => updateState(setter, []));
-  updateState(setErrorList, [[], null]); // Specific update for setErrorList
+  [setProgress, setWeights, setBiases].forEach(setter => updateState(setter, [], index));
+  updateState(setImgs, [], globalIndex);
+  updateState(setErrorList, [[], null], index); // Specific update for setErrorList
 
   // Direct manipulation of cytoLayers for clarity
   const updatedCytoLayers = [nOfInputs, ...cytoLayers.slice(1, -1), nOfOutputs];

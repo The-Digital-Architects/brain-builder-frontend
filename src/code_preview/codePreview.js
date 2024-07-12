@@ -14,7 +14,7 @@ import a11yDark from './a11y-dark';
  * @returns {JSX.Element} The JSX element representing the code preview.
  */
 
-function CodePreview({ code, level }) {
+function CodePreview({ code, typ }) {
     const [run, setRun] = useState(false);
     const [steps, setSteps] = useState([
         {
@@ -66,14 +66,14 @@ function CodePreview({ code, level }) {
         // change the loss function in part 4 of the steps based on the level
         setSteps((prevSteps) => {
             const newSteps = [...prevSteps];
-            if (level === 1) {
+            if (typ === 2) {
                 newSteps[2].content = "'SGD' indicates we are using stochastic gradient descent to make the network learn. The 'lr' variable is the learning rate. \nYou can also see the loss function we use - mean squared error, which is built into PyTorch.";
-            } else if (level === 2) {
+            } else if (typ === 1) {
                 newSteps[2].content = "'SGD' indicates we are using stochastic gradient descent to make the network learn. The 'lr' variable is the learning rate. \nYou can also see the loss function we use - negative log likelihood loss, which is built into PyTorch. In its place, you can use another function, such as the cross entropy loss (torch.nn.CrossEntropyLoss).";
             }
             return newSteps;
         });
-    }, [level, steps]);
+    }, [typ, steps]);
 
     // Split the code into parts
     const parts = code.split('\n\n'); // Split by two newlines

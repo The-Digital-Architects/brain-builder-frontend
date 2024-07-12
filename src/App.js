@@ -16,6 +16,7 @@ import Tutorial from './tutorial';
 import FeedbackApp from './feedback';
 import LinksPage from './links';
 import NotFound from './common/notFound';
+import DefaultView from './common/viewTemplate';
 import ConstructionView from './constructionView';
 import NotebookView from './notebookView';
 import JupyterLite from './jupyterLiteView';
@@ -56,6 +57,8 @@ function App() {
   }, []);
 
   const loadData = (taskId, index, normalization) => {
+    // TODO: INDICES !!!
+
     setIsTraining(prevIsTraining => {
       const newIsTraining = [...prevIsTraining];
       newIsTraining[index] = -1;
@@ -450,17 +453,19 @@ function App() {
         // Initialise the rest of the states 
         setTyp(currentTyp);
         setDataset(currentDataset);
-        setCytoLayers(currentTaskIds.map(() => []));
         setIsTraining(currentTaskIds.map(() => 0));
         setApiData(currentTaskIds.map(() => null));
-        setAccuracy(currentTaskIds.map(() => 0));
         setIsResponding(currentTaskIds.map(() => false));
-        setProgress(currentTaskIds.map(() => 0));
-        setErrorList(currentTaskIds.map(() => [[], null]));
         setFeatureNames(currentTaskIds.map(() => []));  // TODO: load these somewhere else
-        setBiases(currentTaskIds.map(() => []));
         setImgs(currentTaskIds.map(() => []));
         setInitPlots(currentTaskIds.map(() => []));
+
+        setCytoLayers(currentNNTaskIds.map(() => []));
+        setAccuracy(currentNNTaskIds.map(() => 0));
+        setProgress(currentNNTaskIds.map(() => 0));
+        setErrorList(currentNNTaskIds.map(() => [[], null]));
+        setBiases(currentNNTaskIds.map(() => []));
+
 
         // some custom taskIds
         console.log(currentTaskNames) // TODO: remove
@@ -849,6 +854,10 @@ function App() {
 
           <Route path={`/exercise${customClusteringId/10}`} element={<ClusteringTest />} />
 
+          <Route path="/exercise2.2" element={<DefaultView 
+            isTraining={isTraining[22]} taskId={22} cancelRequestRef={cancelRequestRef} index={taskIds.indexOf(22)} name={'Template Test'} startTraining={() => console.log("startTraining placeholder")} pendingTime={pendingTime} tabs={['Data', 'Model', 'Result']} initPlot={initPlots[taskIds.indexOf(22)]} sliderVisibilities={{'dummy': true}} inputFieldVisibilities={{'dummy': true}} dropdownVisibilities={{'dummy': true}} checkboxVisibilities={{'dummy': true}} setIsResponding={setIsResponding} isResponding={taskIds.indexOf(22)} apiData={apiData.indexOf(22)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(22)]} img={imgs[taskIds.indexOf(22)]} typ={typ[taskIds.indexOf(22)]}
+          />} />
+
           <Route path={`/exercise${manualRegressionId/10}`} element={
             <ManualTask
             type = {'ManualRegression'}
@@ -888,7 +897,7 @@ function App() {
                   setLearningRate={setLearningRate}
                   isTraining={isTraining[taskIds.indexOf(taskId)]}
                   setIsTraining={setIsTraining}
-                  apiData={apiData[NNIndex]}
+                  apiData={apiData[taskIds.indexOf(taskId)]}
                   setApiData={setApiData}
                   taskData={taskData}
                   setTaskData={setTaskData}
@@ -897,15 +906,15 @@ function App() {
                   setAccuracy={setAccuracy}
                   accuracyColor={accuracyColor}
                   handleSubmit={handleSubmit}
-                  isResponding={isResponding[NNIndex]}
+                  isResponding={isResponding[taskIds.indexOf(taskId)]}
                   setIsResponding={setIsResponding}
                   progress={progress[taskIds.indexOf(taskId)]}
-                  featureNames={featureNames[NNIndex]}
+                  featureNames={featureNames[taskIds.indexOf(taskId)]}
                   errorList={errorList[NNIndex]}
                   weights={weights[NNIndex]}
                   biases={biases[NNIndex]}
-                  imgs={imgs[NNIndex]}
-                  initPlot={initPlots[NNIndex]}
+                  img={imgs[taskIds.indexOf(taskId)]}
+                  initPlot={initPlots[taskIds.indexOf(taskId)]}
                   loadData={loadData}
                   normalization={false}
                   normalizationVisibility={normalizationVisibility[NNIndex]}
@@ -995,7 +1004,7 @@ function App() {
             <LinksPage/>
           } />
 
-          <Route path="/exercise/*" element={
+          <Route path="/:ex" element={
             <ConstructionView/>
           } />
 

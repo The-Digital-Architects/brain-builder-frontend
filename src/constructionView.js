@@ -1,9 +1,14 @@
 import React from "react";
+import {useParams, Navigate} from 'react-router-dom';
 import Header from "./common/header";
 import underConstructionImage from "./images/under_construction_by_freepik.jpg";
 
-class ConstructionView extends React.Component {
-    render() {
+function ConstructionView() {
+    let { ex } = useParams();
+
+    if (!ex.startsWith("exercise")) {  // if the URL does not start with "exercise", redirect to the not found page
+        return <Navigate to="/notfound" replace />;
+    } else {
         return (
             <div>
                 <Header showHomeButton={true} />

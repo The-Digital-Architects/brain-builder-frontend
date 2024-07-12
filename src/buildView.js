@@ -282,7 +282,7 @@ class Building extends React.Component {
             errorList: this.props.errorList,
             weights: this.props.weights,
             biases: this.props.biases,
-            imgs: this.props.imgs,
+            img: this.props.img,
             isTraining: this.props.isTraining,
             af: this.props.af,
             cancelRequestRef: this.props.cancelRequestRef,
@@ -298,7 +298,6 @@ class Building extends React.Component {
   })();
 
   render() {
-    let level = Number(String(this.props.taskId)[0]);
 
     return(
     <div className='buildBody'>
@@ -531,7 +530,7 @@ class Building extends React.Component {
             </IconButton>
           </Flex>
           </Box>
-          {this.state.showCode && <CodePreview code={this.state.code} level={level} /> }
+          {this.state.showCode && <CodePreview code={this.state.code} typ={this.props.typ} /> }
         </Tabs.Content>
       
         <Tabs.Content value="stuff">

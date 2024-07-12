@@ -89,7 +89,7 @@ function updateImagesIfNeeded(data, params) {
           const blob = new Blob([bytes.buffer], { type: 'image/jpeg' });
           const url = URL.createObjectURL(blob);
           // now images can be accessed with <img src={url} />
-          newImgs[params.index] = url
+          newImgs[params.globalIndex] = url
           return newImgs;
         });
       }

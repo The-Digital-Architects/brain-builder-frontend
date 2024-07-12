@@ -1,14 +1,16 @@
 import React from 'react'
-import './css/App.css';
+import '../css/App.css';
 import { Theme, Flex, Box, Tabs, Heading, IconButton, Separator, Checkbox, Text, Label, Select } from '@radix-ui/themes';
-import CodePreview from './code_preview/codePreview';
-import layersToCode from './code_preview/codeExplainTools';
-import Header from './common/header';
+import { PlayIcon, ChevronLeftIcon, ChevronRightIcon, CodeIcon } from '@radix-ui/react-icons';
+import CodePreview from '../code_preview/codePreview';
+import layersToCode from '../code_preview/codeExplainTools';
+import Header from '../common/header';
 import { useNavigate } from 'react-router-dom';
 import Slider from 'react-animated-slider';
 import * as Form from '@radix-ui/react-form';
-import horizontalCss from './css/horizontalSlides.css';
+import horizontalCss from '../css/horizontalSlides.css';
 import '@radix-ui/themes/styles.css';
+import axios from 'axios';
 
 
 // This is a template for creating a new view in the application, similar to buildView. 
@@ -23,7 +25,7 @@ class Model extends React.Component {
     // INITIALIZATION
     constructor(props) {
       super(props);
-      // TODO: make sure you pass these props: isTraining, taskId, cancelRequestRef, index, name, startTraining, pendingTime, tabs, initPlot, sliderVisibilities, inputFieldVisibilities, dropdownVisibilities, checkboxVisibilities, setIsResponding, isResponding, apiData, setApiData, handleSubmit, featureNames, img,
+      // TODO: make sure you pass these props: isTraining, taskId, cancelRequestRef, index, name, startTraining, pendingTime, tabs, initPlot, sliderVisibilities, inputFieldVisibilities, dropdownVisibilities, checkboxVisibilities, setIsResponding, isResponding, apiData, setApiData, handleSubmit, featureNames, img & typ
 
       this.state = {
         currentSlide: 0,
@@ -211,15 +213,15 @@ class Model extends React.Component {
     }
 
     inputFieldPosition = (index) => {
-        return (0.14 + 0.12*Object.keys(this.sliders).length)*(window.innerHeight-140) + textHeight*index
+        return (0.14 + 0.12*Object.keys(this.sliders).length)*(window.innerHeight-140) + this.textHeight*index
     }
 
     dropdownPosition = (index) => {
-        return 0.4 * (window.innerHeight-140) + textHeight*index
+        return 0.4 * (window.innerHeight-140) + this.textHeight*index
     }
 
     checkboxPosition = (index) => {
-        return this.dropdownPosition(Object.keys(this.dropdowns).length) + textHeight*index
+        return this.dropdownPosition(Object.keys(this.dropdowns).length) + this.textHeight*index
     }
 
     renderModel = () => {
@@ -387,7 +389,7 @@ class Model extends React.Component {
                             </IconButton>}
                         </Flex>
                     </Box>
-                    {this.state.showCode && <CodePreview code={this.state.code} level={level} /> }
+                    {this.state.showCode && <CodePreview code={this.state.code} typ={this.props.typ} /> }
                 </Tabs.Content>
 
 
@@ -467,10 +469,10 @@ class Model extends React.Component {
 
 // INLCUDE THIS AT THE END OF YOUR NEW FILE
 
-function ModelWrapper(props) {
+function DefaultView(props) {
     const navigate = useNavigate();
   
     return <Model {...props} navigate={navigate} />;
   }
 
-export default ModelWrapper;
+export default DefaultView;
