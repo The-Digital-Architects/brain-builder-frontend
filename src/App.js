@@ -460,17 +460,17 @@ function App() {
         setImgs(currentTaskIds.map(() => []));
         setInitPlots(currentTaskIds.map(() => []));
 
-          // some custom taskIds
-        console.log(taskNames) // TODO: remove
-        setManualRegressionId(Object.keys(taskNames).find(key => taskNames[key] === 'Linear Regr.'));
-        setManualRegressionDescription(taskData.find(task => task.task_id === manualRegressionId).description);
-        console.log("manualRegressionId & Description: ", manualRegressionId, manualRegressionDescription); // TODO remove this
-
         setLoadedTasks(true);
       })
       .catch(error => {
         console.error('Error fetching tasks:', error);
       });
+    
+    // some custom taskIds
+    console.log(taskNames) // TODO: remove
+    setManualRegressionId(Object.keys(taskNames).find(key => taskNames[key] === 'Linear Regr.') || 11);
+    setManualRegressionDescription(taskData.find(task => task.task_id === manualRegressionId).description);
+    console.log("manualRegressionId & Description: ", manualRegressionId, manualRegressionDescription); // TODO remove this
 
     axios.get('/api/all_quizzes/')
       .then(response => {
@@ -993,7 +993,7 @@ function App() {
             <LinksPage/>
           } />
 
-          <Route path="/exercise:id" element={
+          <Route path="/exercise/*" element={
             <DefaultView/>
           } />
 
