@@ -4,7 +4,7 @@ import Header from './common/header';
 import { Flex, Button } from '@radix-ui/themes';
 import { init, step, restart } from './utils/clusteringUtils';
 
-function draw(lineg, dotg, centerg, groups, dots) {
+function draw(svg, lineg, dotg, centerg, groups, dots) {
     let circles = dotg.selectAll('circle')
       .data(dots);
     circles.enter()
@@ -47,7 +47,7 @@ function draw(lineg, dotg, centerg, groups, dots) {
     c.exit().remove();
     updateCenters(c.enter()
       .append('path')
-      .attr('d', d3.svg.symbol().type('cross'))
+      .attr('d', svg.symbol().type('cross'))
       .attr('stroke', '#aabbcc'));
     updateCenters(c
       .transition()
@@ -105,7 +105,7 @@ function KMeansClusteringVisualization() {
     const handleReset = () => {
         // Use refs to access SVG and groups
         init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height);
-        draw(linegRef.current, dotgRef.current, centergRef.current, groups, dots);
+        draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
     };
 
     const handleStep = () => {
@@ -114,7 +114,7 @@ function KMeansClusteringVisualization() {
     
     const handleRestart = () => {
         restart(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
-        draw(linegRef.current, dotgRef.current, centergRef.current, groups, dots);
+        draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
     };
 
     return (
