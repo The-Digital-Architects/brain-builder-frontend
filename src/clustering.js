@@ -18,7 +18,7 @@ function draw(lineg, dotg, centerg, groups, dots) {
       .attr('fill', function(d) { return d.group ? d.group.color : '#ffffff'; })
       .attr('r', 5);
   
-    if (dots[0].group) {
+    if (dots[0]?.group) {
       let l = lineg.selectAll('line')
         .data(dots);
       const updateLine = function(lines) {
