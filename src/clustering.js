@@ -1,90 +1,154 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import Header from './common/header';
 import { Flex, Button } from '@radix-ui/themes';
+import { init, step, restart } from './utils/clusteringUtils';
 
-function generateData(numPoints, numClusters) {
-    const data = [];
-    for (let i = 0; i < numClusters; i++) {
-        const centerX = Math.random() * 500;
-        const centerY = Math.random() * 500;
-        for (let j = 0; j < numPoints / numClusters; j++) {
-            const x = centerX + Math.random() * 50 - 25;
-            const y = centerY + Math.random() * 50 - 25;
-            data.push({ x, y, cluster: i });
-        }
+function draw(lineg, dotg, centerg, groups, dots) {
+    let circles = dotg.selectAll('circle')
+      .data(dots);
+    circles.enter()
+      .append('circle');
+    circles.exit().remove();
+    circles
+      .transition()
+      .duration(500)
+      .attr('cx', function(d) { return d.x; })
+      .attr('cy', function(d) { return d.y; })
+      .attr('fill', function(d) { return d.group ? d.group.color : '#ffffff'; })
+      .attr('r', 5);
+  
+    if (dots[0].group) {
+      let l = lineg.selectAll('line')
+        .data(dots);
+      const updateLine = function(lines) {
+        lines
+          .attr('x1', function(d) { return d.x; })
+          .attr('y1', function(d) { return d.y; })
+          .attr('x2', function(d) { return d.group.center.x; })
+          .attr('y2', function(d) { return d.group.center.y; })
+          .attr('stroke', function(d) { return d.group.color; });
+      };
+      updateLine(l.enter().append('line'));
+      updateLine(l.transition().duration(500));
+      l.exit().remove();
+    } else {
+      lineg.selectAll('line').remove();
     }
-    return data;
+  
+    let c = centerg.selectAll('path')
+      .data(groups);
+    const updateCenters = function(centers) {
+      centers
+        .attr('transform', function(d) { return "translate(" + d.center.x + "," + d.center.y + ") rotate(45)";})
+        .attr('fill', function(d,i) { return d.color; })
+        .attr('stroke', '#aabbcc');
+    };
+    c.exit().remove();
+    updateCenters(c.enter()
+      .append('path')
+      .attr('d', d3.svg.symbol().type('cross'))
+      .attr('stroke', '#aabbcc'));
+    updateCenters(c
+      .transition()
+      .duration(500));
 }
 
 function KMeansClusteringVisualization() {
-    const svgRef = useRef(null);
-    const [data, setData] = useState([]);
     const [numPoints, setNumPoints] = useState(200);
-    const [numClusters, setNumClusters] = useState(4);
+    const [numClusters, setNumClusters] = useState(2);
+    const [isRestartDisabled, setIsRestartDisabled] = useState(true);
+    const [flag, setFlag] = useState(false);
+    const [groups, setGroups] = useState([]);
+    const [dots, setDots] = useState([]);
+    const [width, setWidth] = useState(500);
+    const [height, setHeight] = useState(500);
+
+    // Refs for SVG and D3 groups
+    const svgRef = useRef(null);
+    const linegRef = useRef(null);
+    const dotgRef = useRef(null);
+    const centergRef = useRef(null);
 
     useEffect(() => {
-        const generatedData = generateData(numPoints, numClusters);
-        setData(generatedData);
-    }, [numPoints, numClusters]);
+        if (!svgRef.current) {
+            // Initialize SVG and groups if not already initialized
+            const svg = d3.select("#kmeans").append("svg")
+                .attr('width', width)
+                .attr('height', height)
+                .style('padding', '10px')
+                .style('background', '#223344')
+                .style('cursor', 'pointer')
+                .style('user-select', 'none')
+                .on('click', function(event) {
+                    event.preventDefault();
+                    handleStep();
+                });
+            svgRef.current = svg;
 
-    useEffect(() => {
-        if (data.length === 0) return;
+            // Initialize groups
+            linegRef.current = svg.append('g');
+            dotgRef.current = svg.append('g');
+            centergRef.current = svg.append('g');
+        }
 
-        const svg = d3.select(svgRef.current);
-        svg.selectAll("*").remove();
+        handleReset();
 
-        svg.attr('width', '50%')
-           .attr('height', '50%')
-           .attr('viewBox', '0 0 500 500');
+        // Cleanup function
+        return () => {
+            if (svgRef.current) {
+                svgRef.current.on('click', null); // Remove click event listener
+            }
+        };
+    }, []); // this runs only once on mount
+    
+    const handleReset = () => {
+        // Use refs to access SVG and groups
+        init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height);
+        draw(linegRef.current, dotgRef.current, centergRef.current, groups, dots);
+    };
 
-        const xScale = d3.scaleLinear().domain([0, 500]).range([50, 450]);
-        const yScale = d3.scaleLinear().domain([0, 500]).range([450, 50]);
-        const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-
-        svg.selectAll('circle')
-        .data(data)
-        .join('circle')
-        .attr('cx', d => xScale(d.x))
-        .attr('cy', d => yScale(d.y))
-        .attr('r', 5)
-        .attr('fill', d => colorScale(d.cluster))
-        .attr('aria-label', d => `Cluster ${d.cluster}: (${d.x.toFixed(2)}, ${d.y.toFixed(2)})`);
-
-        svg.append('g')
-        .attr('transform', 'translate(0, 450)')
-        .call(d3.axisBottom(xScale));
-
-        svg.append('g')
-        .attr('transform', 'translate(50, 0)')
-        .call(d3.axisLeft(yScale));
-    }, [data]);
+    const handleStep = () => {
+        step(setIsRestartDisabled, flag, setFlag, draw);
+    };
+    
+    const handleRestart = () => {
+        restart(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
+        draw(linegRef.current, dotgRef.current, centergRef.current, groups, dots);
+    };
 
     return (
         <Flex direction="column" gap="2">
             <Header showHomeButton={true} />
-            <Flex gap="2">
-                <label>
-                    Number of Points:
-                    <input
-                        type="number"
-                        value={numPoints}
-                        onChange={(e) => setNumPoints(Number(e.target.value))}
-                    />
-                </label>
-                <label>
-                    Number of Clusters:
-                    <input
-                        type="number"
-                        value={numClusters}
-                        onChange={(e) => setNumClusters(Number(e.target.value))}
-                    />
-                </label>
-                <Button onClick={() => setData(generateData(numPoints, numClusters))}>
-                    Generate
-                </Button>
-            </Flex>
-            <svg ref={svgRef}></svg>
+            <div id="kmeans">
+                <Flex gap="1">
+                    <label>
+                        Number of Points:{" "}
+                        <input
+                            type="number"
+                            value={numPoints}
+                            onChange={(e) => setNumPoints(Number(e.target.value))}
+                        />
+                    </label>
+                    <label>
+                        Number of Clusters:{" "}
+                        <input
+                            type="number"
+                            value={numClusters}
+                            onChange={(e) => setNumClusters(Number(e.target.value))}
+                        />
+                    </label>
+                    <Button id="run" onClick={handleReset}>
+                        Reset
+                    </Button>
+                    <Button id="step" onClick={handleStep}>
+                        Step
+                    </Button>
+                    <Button id="restart" onClick={handleRestart} disabled={isRestartDisabled}>
+                        Restart
+                    </Button>
+                </Flex>
+            </div>
         </Flex>
     );
 }
