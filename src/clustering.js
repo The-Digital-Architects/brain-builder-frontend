@@ -1,131 +1,154 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import Header from './common/header';
 import { Flex, Button } from '@radix-ui/themes';
-const { kmeans } = require('ml-kmeans');
+import { init, step, restart } from './utils/clusteringUtils';
 
-function generateData(numPoints) {
-    const data = [];
-    for (let i = 0; i < numPoints; i++) {
-        const x = Math.random() * 500;
-        const y = Math.random() * 500;
-        data.push({ x, y });
+function draw(lineg, dotg, centerg, groups, dots) {
+    let circles = dotg.selectAll('circle')
+      .data(dots);
+    circles.enter()
+      .append('circle');
+    circles.exit().remove();
+    circles
+      .transition()
+      .duration(500)
+      .attr('cx', function(d) { return d.x; })
+      .attr('cy', function(d) { return d.y; })
+      .attr('fill', function(d) { return d.group ? d.group.color : '#ffffff'; })
+      .attr('r', 5);
+  
+    if (dots[0].group) {
+      let l = lineg.selectAll('line')
+        .data(dots);
+      const updateLine = function(lines) {
+        lines
+          .attr('x1', function(d) { return d.x; })
+          .attr('y1', function(d) { return d.y; })
+          .attr('x2', function(d) { return d.group.center.x; })
+          .attr('y2', function(d) { return d.group.center.y; })
+          .attr('stroke', function(d) { return d.group.color; });
+      };
+      updateLine(l.enter().append('line'));
+      updateLine(l.transition().duration(500));
+      l.exit().remove();
+    } else {
+      lineg.selectAll('line').remove();
     }
-    return data;
-}
-
-function applyKMeansClustering(data, numClusters, centroids, setCentroids) {
-    // Convert your data into a format suitable for the KMeans library
-    const points = data.map(d => [d.x, d.y]);
-    const KMeans = new kmeans(points, numClusters, { initialization: centroids })
-    setCentroids(KMeans.centroids);
-    return data.map((d, i) => ({ ...d, cluster: KMeans.clusters[i] }));
-}
-
-function generateCentroids(numClusters) {
-    const centroids = [];
-    for (let i = 0; i < numClusters; i++) {
-        const x = Math.random() * 500;
-        const y = Math.random() * 500;
-        centroids.push([x, y]);
-    }
-    return centroids;
+  
+    let c = centerg.selectAll('path')
+      .data(groups);
+    const updateCenters = function(centers) {
+      centers
+        .attr('transform', function(d) { return "translate(" + d.center.x + "," + d.center.y + ") rotate(45)";})
+        .attr('fill', function(d,i) { return d.color; })
+        .attr('stroke', '#aabbcc');
+    };
+    c.exit().remove();
+    updateCenters(c.enter()
+      .append('path')
+      .attr('d', d3.svg.symbol().type('cross'))
+      .attr('stroke', '#aabbcc'));
+    updateCenters(c
+      .transition()
+      .duration(500));
 }
 
 function KMeansClusteringVisualization() {
-    const svgRef = useRef(null);
-    const [data, setData] = useState([]);
     const [numPoints, setNumPoints] = useState(200);
     const [numClusters, setNumClusters] = useState(2);
-    const [centroids, setCentroids] = useState(generateCentroids(numClusters));
+    const [isRestartDisabled, setIsRestartDisabled] = useState(true);
+    const [flag, setFlag] = useState(false);
+    const [groups, setGroups] = useState([]);
+    const [dots, setDots] = useState([]);
+    const [width, setWidth] = useState(500);
+    const [height, setHeight] = useState(500);
+
+    // Refs for SVG and D3 groups
+    const svgRef = useRef(null);
+    const linegRef = useRef(null);
+    const dotgRef = useRef(null);
+    const centergRef = useRef(null);
 
     useEffect(() => {
-        // update numClusters when centroids change
-        setNumClusters(centroids.length);
-    }, [centroids]);
+        if (!svgRef.current) {
+            // Initialize SVG and groups if not already initialized
+            const svg = d3.select("#kmeans").append("svg")
+                .attr('width', width)
+                .attr('height', height)
+                .style('padding', '10px')
+                .style('background', '#223344')
+                .style('cursor', 'pointer')
+                .style('user-select', 'none')
+                .on('click', function(event) {
+                    event.preventDefault();
+                    handleStep();
+                });
+            svgRef.current = svg;
 
-    useEffect(() => {
-        if (data.length === 0) return;
-
-        const svg = d3.select(svgRef.current);
-        svg.selectAll("*").remove();
-
-        svg.attr('width', '30%')
-           .attr('height', '30%')
-           .attr('viewBox', '0 0 500 500');
-
-        const xScale = d3.scaleLinear().domain([0, 500]).range([50, 450]);
-        const yScale = d3.scaleLinear().domain([0, 500]).range([450, 50]);
-        const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-
-        svg.selectAll('circle')
-        .data(data)
-        .join('circle')
-        .attr('cx', d => xScale(d.x))
-        .attr('cy', d => yScale(d.y))
-        .attr('r', 5)
-        .attr('fill', d => colorScale(d.cluster))
-        .attr('aria-label', d => `Cluster ${d.cluster}: (${d.x.toFixed(2)}, ${d.y.toFixed(2)})`);
-
-        svg.append('g')
-        .attr('transform', 'translate(0, 450)')
-        .call(d3.axisBottom(xScale));
-
-        svg.append('g')
-        .attr('transform', 'translate(50, 0)')
-        .call(d3.axisLeft(yScale));
-
-        svg.on('click', function(event) {
-            // Get click coordinates in SVG space
-            const [clickX, clickY] = d3.pointer(event);
-        
-            // Convert click coordinates to data space
-            const dataX = xScale.invert(clickX);
-            const dataY = yScale.invert(clickY);
-        
-            // Add a new cluster center at the selected point and regenerate KMeans
-            const newCentroids = [...centroids, [dataX, dataY]];
-            setCentroids(newCentroids);
-        });
-    }, [data]);
-
-    const handleButtonClick = () => {
-
-        if (numPoints && numClusters && numClusters > 0 && numClusters < numPoints) {
-            const generatedData = generateData(numPoints, numClusters);
-            // Apply KMeans clustering here
-            const clusteredData = applyKMeansClustering(generatedData, numClusters, centroids, setCentroids);
-            setData(clusteredData);
-        } else {
-            alert('Please enter a valid number of clusters and points.');
+            // Initialize groups
+            linegRef.current = svg.append('g');
+            dotgRef.current = svg.append('g');
+            centergRef.current = svg.append('g');
         }
-    }
+
+        handleReset();
+
+        // Cleanup function
+        return () => {
+            if (svgRef.current) {
+                svgRef.current.on('click', null); // Remove click event listener
+            }
+        };
+    }, []); // this runs only once on mount
+    
+    const handleReset = () => {
+        // Use refs to access SVG and groups
+        init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height);
+        draw(linegRef.current, dotgRef.current, centergRef.current, groups, dots);
+    };
+
+    const handleStep = () => {
+        step(setIsRestartDisabled, flag, setFlag, draw);
+    };
+    
+    const handleRestart = () => {
+        restart(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
+        draw(linegRef.current, dotgRef.current, centergRef.current, groups, dots);
+    };
 
     return (
         <Flex direction="column" gap="2">
             <Header showHomeButton={true} />
-            <Flex gap="1">
-                <label>
-                    Number of Points:{" "}
-                    <input
-                        type="number"
-                        value={numPoints}
-                        onChange={(e) => setNumPoints(Number(e.target.value))}
-                    />
-                </label>
-                <label>
-                    Number of Clusters:{" "}
-                    <input
-                        type="number"
-                        value={numClusters}
-                        onChange={(e) => setNumClusters(Number(e.target.value))}
-                    />
-                </label>
-                <Button onClick={handleButtonClick}>
-                    Generate
-                </Button>
-            </Flex>
-            <svg ref={svgRef}></svg>
+            <div id="kmeans">
+                <Flex gap="1">
+                    <label>
+                        Number of Points:{" "}
+                        <input
+                            type="number"
+                            value={numPoints}
+                            onChange={(e) => setNumPoints(Number(e.target.value))}
+                        />
+                    </label>
+                    <label>
+                        Number of Clusters:{" "}
+                        <input
+                            type="number"
+                            value={numClusters}
+                            onChange={(e) => setNumClusters(Number(e.target.value))}
+                        />
+                    </label>
+                    <Button id="run" onClick={handleReset}>
+                        Reset
+                    </Button>
+                    <Button id="step" onClick={handleStep}>
+                        Step
+                    </Button>
+                    <Button id="restart" onClick={handleRestart} disabled={isRestartDisabled}>
+                        Restart
+                    </Button>
+                </Flex>
+            </div>
         </Flex>
     );
 }
