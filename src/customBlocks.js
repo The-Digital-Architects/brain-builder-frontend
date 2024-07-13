@@ -136,7 +136,8 @@ class ManualTask extends Component {
             <Box style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', fontFamily: 'monospace', height: window.innerHeight-52, width:'100vw' }}>
                 <Flex direction='row' gap="0" style={{ height: window.innerHeight-52, width:'100vw', alignItems: 'center', justifyContent: 'center' }}>
                     <Box style={{ flex:1, display: 'flex', flexDirection: 'column', textAlign:'justify', alignItems: 'flex-start', justifyContent: 'center', height: window.innerHeight-52, padding:'30px 50px' }}>
-                        {this.props.description.map(([subtitle, text], index) => (
+                        {console.log(this.props.description)}
+                        {Array.isArray(this.props.description) && this.props.description.map(([subtitle, text], index) => (
                             <div key={index}>
                             <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7 }}>&gt;_{subtitle} </Heading>
                             <p>{text}</p>
