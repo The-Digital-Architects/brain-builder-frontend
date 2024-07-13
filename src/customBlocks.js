@@ -9,7 +9,7 @@ class ManualTask extends Component {
     constructor(props) {
         let inVals = {'ManualLinReg': [1, 0], 'ManualPolyReg': [1], 'ManualMatrix': [5, 3]}
         let inNames = {'ManualLinReg': ['Weight', 'Bias'], 'ManualPolyReg': ['Order of the polynomial'], 'ManualMatrix': ['Number of objects', 'Number of features']}
-        let outNames = {'ManualLinReg': ['Error']}
+        let outNames = {'ManualLinReg': ['Error'], 'ManualPolyReg': [], 'ManualMatrix': []}
         super(props);
         this.state = {
             in1: inVals[this.props.type][0] || 0,

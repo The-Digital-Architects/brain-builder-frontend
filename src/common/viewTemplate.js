@@ -341,7 +341,7 @@ class Model extends React.Component {
 
                 <Tabs.Content value="training">   
                     
-                    this.renderModel()
+                    {this.renderModel()}
                     
                     <Separator orientation='vertical' style = {{ position:"absolute", top: Math.round(0.03 * (window.innerHeight-140)), left: Math.round(0.67 * (window.innerWidth * 0.97)), height: 0.96 * (window.innerHeight-140) }}/>
 
@@ -385,7 +385,7 @@ class Model extends React.Component {
                             </Text>) : (<div></div>)
                         ))}
 
-                        this.additionalComponents()
+                        {this.additionalComponents()}
 
                         <Flex direction="row" gap="3" style={{ position: 'absolute', transform: 'translateX(-50%)', top: this.buttonPosition, left: Math.round(0.835 * (window.innerWidth * 0.97)), fontFamily:'monospace' }}>
                             <IconButton onClick={this.handleStartClick} variant="solid" color="cyan" style={{ borderRadius: 'var(--radius-3)', width: Math.round(0.12 * (window.innerWidth * 0.97)), height: 36, fontSize: 'var(--font-size-2)', fontWeight: "500" }} 
