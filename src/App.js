@@ -219,7 +219,7 @@ function App() {
   let accuracyColor = 'var(--slate-11)';
 
   // this is for all the tasks
-  const defaultTaskIds = [11, 12];
+  const defaultTaskIds = [11, 12, 21, 22];
   const [taskData, setTaskData] = useState([]);
   const [taskNames, setTaskNames] = useState({})
   const [taskIds, setTaskIds] = useState(defaultTaskIds);
@@ -864,7 +864,7 @@ function App() {
           <Route path={`/exercise${customClusteringId/10}`} element={<ClusteringTest />} />
 
           <Route path="/exercise2.2" element={<DefaultView 
-            isTraining={isTraining[22]} taskId={22} cancelRequestRef={cancelRequestRef} index={taskIds.indexOf(22)} name={'Template Test'} startTraining={() => console.log("startTraining placeholder")} pendingTime={pendingTime} tabs={['Data', 'Model', 'Result']} initPlot={initPlots[taskIds.indexOf(22)]} sliderValues={{'dummy': 50}} sliderVisibilities={{'dummy': true}} inputFieldVisibilities={{'dummy': false}} dropdownVisibilities={{'dummy': false}} checkboxVisibilities={{'dummy': false}} setIsResponding={setIsResponding} isResponding={taskIds.indexOf(22)} apiData={apiData.indexOf(22)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(22)]} img={imgs[taskIds.indexOf(22)]} typ={typ[taskIds.indexOf(22)]}
+            isTraining={isTraining[22]} taskId={22} cancelRequestRef={cancelRequestRef} index={taskIds.indexOf(22)} name={'Template Test'} startTraining={() => console.log("startTraining placeholder")} pendingTime={pendingTime} tabs={['Data', 'Model', 'Result']} initPlot={initPlots[taskIds.indexOf(22)]} sliderValues={{'dummySlider': 50}} sliderVisibilities={{'dummySlider': true}} inputFieldVisibilities={{'dummyInputField': true}} dropdownVisibilities={{'dummyDropdown': true}} checkboxVisibilities={{'dummyCheckbox': true}} setIsResponding={setIsResponding} isResponding={taskIds.indexOf(22)} apiData={apiData.indexOf(22)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(22)]} img={imgs[taskIds.indexOf(22)]} typ={typ[taskIds.indexOf(22)]}
           />} />
 
           <Route path={`/exercise${manualLinRegId/10}`} element={

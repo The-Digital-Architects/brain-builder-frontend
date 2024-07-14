@@ -66,8 +66,8 @@ class Building extends Model {
         ]
 
         this.sliders = {
-            'Epochs': this.props.iterationsSlider,
-            'Learning rate': this.props.learningRateSlider,
+            'Epochs': this.iterationsSlider,
+            'Learning rate': this.learningRateSlider,
         }
 
         this.inputFields = {
@@ -86,7 +86,6 @@ class Building extends Model {
 
     // CUSTOMIZABLE FUNCTIONS
 
-    
     continueComponentDidMount = () => {
         if (this.props.taskId === 0) {
           this.setState({ runTutorial: true }, () => {
@@ -231,6 +230,56 @@ class Building extends Model {
 
 
     // FINALLY, THE RENDER
+
+    iterationsSlider = (
+      <Slider.Root
+        key={index}
+        className="SliderRoot"
+        defaultValue={[null]} //maxEpochs[index] ? maxEpochs[index] / 4 : 25
+        onValueChange={(value) => this.handleIterationChange(index, value)}
+        max={maxEpochs[index] ? maxEpochs[index] / 2 : 50}
+        step={0.5}
+        style={{ width: Math.round(0.19 * (window.innerWidth * 0.97)) }}
+        disabled={isTraining[taskIds.indexOf(taskId)] === 1}
+      >
+        <Slider.Track className="SliderTrack" style={{ height: 3 }}>
+          <Slider.Range className="SliderRange" />
+        </Slider.Track>
+        <Slider.Thumb className="SliderThumb" aria-label="Iterations" />
+      </Slider.Root>
+    )
+    handleIterationChange = (index, value) => {
+        setIterations(prev => {
+          const newIterations = [...prev];
+          newIterations[index] = value[0] * 2;
+          return newIterations;
+        });
+      };
+
+    learningRateSlider = (
+        <Slider.Root
+        key={index}
+        className="SliderRoot"
+        defaultValue={[null]} //40
+        onValueChange={(value) => this.handleLearningRateChange(index, value)}
+        max={70}
+        step={10}
+        style={{ width: Math.round(0.19 * (window.innerWidth * 0.97)) }}
+        disabled={isTraining[taskIds.indexOf(taskId)] === 1}
+      >
+        <Slider.Track className="SliderTrack" style={{ height: 3 }}>
+          <Slider.Range className="SliderRange" />
+        </Slider.Track>
+        <Slider.Thumb className="SliderThumb" aria-label="Learning Rate" />
+      </Slider.Root>
+    );
+    handleLearningRateChange = (index, value) => {
+        setLearningRate(prev => {
+          const newLearningRates = [...prev];
+          newLearningRates[index] = (10 ** ((value[0]/-20)-0.33)).toFixed(Math.round((value[0]+10) / 20));
+          return newLearningRates;
+        });
+      };
 
     renderModel = () => {
         return (
