@@ -61,18 +61,14 @@ class Transceiver(AsyncWebsocketConsumer):
             nb_id = instructions['notebook_id']
             communication.cancel_vars[(self.user_id, nb_id)] = False
             await processes.execute_code(instructions['code'], self.user_id, nb_id, send_fn=self.send)
-
-
-        elif task_type == 'initialize_custom':
-            communication.send_fn_vars[(str(self.user_id), str(task_id))] = self.async_send
-            processes.run(file_name='plotting', function_name=instructions['task_name'], args=instructions)
-
         
         elif task_type.endswith('_change'):
             task_type = task_type[:-7]
             instructions['user_id'] = self.user_id
             communication.send_fn_vars[(str(self.user_id), str(task_id))] = self.async_send
-            processes.run(file_name='plotting', function_name=instructions['task_name'], args=instructions)
+
+            self.secondary_thread = threading.Thread(target=partial(processes.run, 'plotting', instructions['task_name'], instructions))
+            self.secondary_thread.start()
 
         
         
