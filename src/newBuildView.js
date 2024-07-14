@@ -6,6 +6,7 @@ import { Flex, Box, Checkbox } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import color_scale_pic from "./images/color_scale_2.png";
 import CytoscapeComponent from 'react-cytoscapejs';
+import * as Slider from '@radix-ui/react-slider';
 import { useNavigate } from 'react-router-dom';
 import layersToCode from './code_preview/codeExplainTools';
 import {GenerateFloatingButtons, LayerRemoveButton, LayerAddButton} from './common/floatingButtons';
@@ -36,6 +37,8 @@ class Building extends Model {
         code: '',
         description: '',
 
+        iterations: 100,
+        learningRate: 0.01,
         runTutorial: false,
         steps: [
             {
@@ -65,9 +68,16 @@ class Building extends Model {
             { name: 'Result', value: 'testing' },
         ]
 
+        this.inputNames = {
+            'EpochSlider': 'Epochs',
+            'LRSlider': 'Learning rate',
+            'normCheckbox': 'Normalize data',
+            'AFCHeckbox': 'Enable activation functions'
+        }
+
         this.sliders = {
-            'Epochs': this.iterationsSlider,
-            'Learning rate': this.learningRateSlider,
+            'EpochSlider': this.iterationsSlider,
+            'LRSlider': this.learningRateSlider,
         }
 
         this.inputFields = {
@@ -77,8 +87,8 @@ class Building extends Model {
         }
 
         this.checkboxes = {
-            'Normalize data': <Checkbox disabled = { this.props.isTraining===1 } />,
-            'Enable activation functions': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleAfClick()} checked={this.props.af} />,
+            'NormCheckbox': <Checkbox disabled = { this.props.isTraining===1 } />,
+            'AFCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleAfClick()} checked={this.props.af} />,
         }
 
     };
@@ -167,7 +177,7 @@ class Building extends Model {
     }
 
     valuesUndefined = () => {
-        return Object.values(this.props.sliderVisibilities).includes(null) || Object.values(this.props.sliderValues).includes(null);
+        return Object.values(this.props.sliderVisibilities).includes(null) || Object.values(this.state).includes(null);
     }
     
     handleStartClick = (() => {
@@ -233,14 +243,14 @@ class Building extends Model {
 
     iterationsSlider = (
       <Slider.Root
-        key={index}
+        key={this.props.NNIndex}
         className="SliderRoot"
         defaultValue={[null]} //maxEpochs[index] ? maxEpochs[index] / 4 : 25
-        onValueChange={(value) => this.handleIterationChange(index, value)}
-        max={maxEpochs[index] ? maxEpochs[index] / 2 : 50}
+        onValueChange={(value) => this.handleIterationChange(value)}
+        max={this.props.maxEpochs ? this.props.maxEpochs / 2 : 50}
         step={0.5}
         style={{ width: Math.round(0.19 * (window.innerWidth * 0.97)) }}
-        disabled={isTraining[taskIds.indexOf(taskId)] === 1}
+        disabled={this.props.isTraining[this.props.index] === 1}
       >
         <Slider.Track className="SliderTrack" style={{ height: 3 }}>
           <Slider.Range className="SliderRange" />
@@ -248,24 +258,20 @@ class Building extends Model {
         <Slider.Thumb className="SliderThumb" aria-label="Iterations" />
       </Slider.Root>
     )
-    handleIterationChange = (index, value) => {
-        setIterations(prev => {
-          const newIterations = [...prev];
-          newIterations[index] = value[0] * 2;
-          return newIterations;
-        });
+    handleIterationChange = (value) => {
+        this.setState({ iterations: value[0] });
       };
 
     learningRateSlider = (
         <Slider.Root
-        key={index}
+        key={this.props.NNIndex}
         className="SliderRoot"
         defaultValue={[null]} //40
-        onValueChange={(value) => this.handleLearningRateChange(index, value)}
+        onValueChange={(value) => this.handleLearningRateChange(value)}
         max={70}
         step={10}
         style={{ width: Math.round(0.19 * (window.innerWidth * 0.97)) }}
-        disabled={isTraining[taskIds.indexOf(taskId)] === 1}
+        disabled={this.props.isTraining[this.props.index] === 1}
       >
         <Slider.Track className="SliderTrack" style={{ height: 3 }}>
           <Slider.Range className="SliderRange" />
@@ -274,11 +280,7 @@ class Building extends Model {
       </Slider.Root>
     );
     handleLearningRateChange = (index, value) => {
-        setLearningRate(prev => {
-          const newLearningRates = [...prev];
-          newLearningRates[index] = (10 ** ((value[0]/-20)-0.33)).toFixed(Math.round((value[0]+10) / 20));
-          return newLearningRates;
-        });
+        this.setState({ learningRate: (10 ** ((value[0]/-20)-0.33)).toFixed(Math.round((value[0]+10) / 20)) });
       };
 
     renderModel = () => {

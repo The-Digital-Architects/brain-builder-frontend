@@ -8,7 +8,7 @@ import tu_delft_pic from './images/tud_black_new.png';
 import { Link, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { HomeIcon, Link2Icon } from '@radix-ui/react-icons';
 import axios from 'axios';
-import BuildView from './buildView';
+import BuildView from './newBuildView';
 import Introduction from './introduction';
 import QuizApp from './quiz';
 import ManualTask from './customBlocks';
@@ -219,11 +219,10 @@ function App() {
   let accuracyColor = 'var(--slate-11)';
 
   // this is for all the tasks
-  const defaultTaskIds = [11, 12, 21, 22];
+  const defaultTaskIds = [11, 12, 13, 21, 22];
   const [taskData, setTaskData] = useState([]);
   const [taskNames, setTaskNames] = useState({})
   const [taskIds, setTaskIds] = useState(defaultTaskIds);
-  const [NNTaskIds, setNNTaskIds] = useState(defaultTaskIds);
   const [taskIcons, setTaskIcons] = useState(defaultTaskIds.map(() => null));
   const [gamesData, setGamesData] = useState(JSON.stringify([{task_id: 11, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'Clas2.csv'}, {task_id: 12, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'load_iris()'}]));
   const [typ, setTyp] = useState(defaultTaskIds.map(() => 1));
@@ -235,6 +234,7 @@ function App() {
   const [isResponding, setIsResponding] = useState(defaultTaskIds.map(() => 0));
 
   // this is for the neural network tasks
+  const [NNTaskIds, setNNTaskIds] = useState(defaultTaskIds);
   const [maxEpochs, setMaxEpochs] = useState(defaultTaskIds.map(() => 200));
   const [maxLayers, setMaxLayers] = useState(defaultTaskIds.map(() => 10));
   const [maxNodes, setMaxNodes] = useState(defaultTaskIds.map(() => 16));
@@ -962,6 +962,7 @@ function App() {
                   pendingTime={pendingTime}
                   cancelRequestRef={cancelRequestRef}
                   maxNodes={maxNodes}
+                  maxEpochs={maxEpochs[NNIndex]}
                   setImgs={setImgs}
                   userId={getCookie('user_id')}
                   intervalTimeout={intervalTimeout}
@@ -970,11 +971,11 @@ function App() {
                   name={taskNames[taskId]}
                   startTraining={putRequest}
                   tabs={['Data', 'Model', 'Result']}
-                  sliderValues={{'Epochs': iterations[NNIndex], 'Learning rate': learningRate[NNIndex]}}
-                  sliderVisibilities={{'Epochs': true, 'Learning rate': true}}
+                  sliderValues={{'EpochSlider': iterations[NNIndex], 'LRSlider': learningRate[NNIndex]}}
+                  sliderVisibilities={{'EpochSlider': true, 'LRSlider': true}}
                   inputFieldVisibilities={{}}
                   dropdownVisibilities={{}}
-                  checkboxVisibilities={{'Enable activation functions': afVisibility[NNIndex], 'Normalize data': normalizationVisibility[NNIndex]}}
+                  checkboxVisibilities={{'AFCheckbox': afVisibility[NNIndex], 'NormCheckbox': normalizationVisibility[NNIndex]}}
                 />
                 </>
               }

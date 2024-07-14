@@ -45,6 +45,8 @@ class ManualTask extends Component {
                 this.ws.send(JSON.stringify({ header: 'initial_change', task_name: this.props.type, task_id: this.props.customId, a: 1, b: 0 }));
             } else if (this.props.type === 'ManualPolyReg') {
                 this.ws.send(JSON.stringify({ header: 'initial_change', task_name: this.props.type, task_id: this.props.customId, n: 1 }));
+            } else if (this.props.type === 'ManualMatrix') {
+                this.setState({ view: renderMatrix(5, 3) });
             }
         }
 
@@ -90,10 +92,10 @@ class ManualTask extends Component {
     handleMatrixChange = (value, whichIn) => {
         if (whichIn === 1) {
             this.setState({ in1: value[0] });
-            this.setState({ img: renderMatrix(value[0], this.state.in2) })
+            this.setState({ view: renderMatrix(value[0], this.state.in2) })
         } else {
             this.setState({ in2: value[0] });
-            this.setState({ img: renderMatrix(this.state.in1, value[0]) })
+            this.setState({ view: renderMatrix(this.state.in1, value[0]) })
         }
     }
 
@@ -246,7 +248,7 @@ class ManualTask extends Component {
         );
 
         return (
-            <Box style={{ flex:1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: window.innerHeight-52, padding:'30px 50px' }}>
+            <Box style={{ flex:1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: window.innerHeight-52, padding:'30px 50px',  }}>
                 <Flex direction='column' gap="0" style={{ alignItems: 'center', justifyContent: 'center' }}>
                 
                 <div>{this.state.in1Name}: {this.state.in1}</div>
@@ -270,7 +272,7 @@ class ManualTask extends Component {
                 )}
                 
                 {
-                this.state.img ? <img src={this.state.img} alt="No plot available" style={{ height: window.innerHeight*0.55, marginBottom:10 }}/>
+                this.state.ws ? <img src={this.state.img} alt="No plot available" style={{ height: window.innerHeight*0.55, marginBottom:10 }}/>
                 : this.state.view ?
                 <Box style={{ height: window.innerHeight*0.55, marginBottom:10 }}>
                     {this.state.view}

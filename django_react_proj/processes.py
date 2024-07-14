@@ -192,9 +192,10 @@ def is_suspicious(code):
 
 
 if __name__ == '__main__':
+    def custom_print(sometext, wait=False): print(sometext)
     user_id = 'laurens'
     task_id = 11
-    communication.send_fn_vars[user_id, str(task_id)] = print
+    communication.send_fn_vars[user_id, str(task_id)] = custom_print
     run(file_name='plotting', function_name='ManualLinReg', args={
         'a': 1,
         'b': 0,

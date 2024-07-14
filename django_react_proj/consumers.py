@@ -1,3 +1,7 @@
+if __name__ == '__main__':
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from channels.generic.websocket import AsyncWebsocketConsumer
 import asyncio
 import threading
@@ -68,7 +72,7 @@ class Transceiver(AsyncWebsocketConsumer):
             task_type = task_type[:-7]
             instructions['user_id'] = self.user_id
             communication.send_fn_vars[(str(self.user_id), str(task_id))] = self.async_send
-            processes.run(file_name='plotting.py', function_name=instructions['task_name'], args=instructions)
+            processes.run(file_name='plotting', function_name=instructions['task_name'], args=instructions)
 
         
         
