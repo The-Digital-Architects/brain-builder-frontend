@@ -31,7 +31,7 @@ class Model extends React.Component {
 
       this.state = {
         currentSlide: 0,
-        activeTab: 'building',
+        activeTab: 'training',
         showCode: false,
         code: '',
         description: [],

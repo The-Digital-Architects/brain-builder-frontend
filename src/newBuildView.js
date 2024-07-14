@@ -291,6 +291,7 @@ class Building extends Model {
     };
 
     renderModel = () => {
+        console.log('rendering model')  // for debugging, TODO remove
         return (
         <Box style={{ display: 'flex', flex: 3, height: '100vh' }}>
         <div className='cytoscape'style={{top: 5, left: 3, position: 'absolute', width: window.innerWidth*0.65, height: window.innerHeight-130}}></div>
@@ -341,7 +342,7 @@ class Building extends Model {
                 <Flex direction= 'column'>
                   <div style={{ fontFamily:'monospace' }}><b>Training... </b></div>
                   <div style={{ fontFamily:'monospace' }}><b>Progress: {Math.round((parseFloat(this.props.progress))*100)}%</b></div>
-                  <canvas ref={this.chartRef} id="myChart" style={{ display: this.state.activeTab === 'building' ? 'block' : 'none', width: Math.round(0.27 * (window.innerWidth * 0.97)), height: Math.round(0.35 * (window.innerHeight-140)), marginTop:10 }}></canvas>
+                  <canvas ref={this.chartRef} id="myChart" style={{ display: this.state.activeTab === 'training' ? 'block' : 'none', width: Math.round(0.27 * (window.innerWidth * 0.97)), height: Math.round(0.35 * (window.innerHeight-140)), marginTop:10 }}></canvas>
                 </Flex>
               ) : (
                 <div style={{ textAlign:'justify', width: Math.round(0.27 * (window.innerWidth * 0.97)), fontFamily:'monospace' }}>
