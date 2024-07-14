@@ -42,9 +42,9 @@ class ManualTask extends Component {
             console.log('WebSocket connection opened');
             if (this.props.type === 'ManualLinReg') {
                 // send a message to the websocket to create a baseline plot
-                this.ws.send(JSON.stringify({ header: 'initialize', task_name: this.props.type, task_id: this.props.customId, a: 1, b: 0 }));
+                this.ws.send(JSON.stringify({ header: 'initial_change', task_name: this.props.type, task_id: this.props.customId, a: 1, b: 0 }));
             } else if (this.props.type === 'ManualPolyReg') {
-                // TODO
+                this.ws.send(JSON.stringify({ header: 'initial_change', task_name: this.props.type, task_id: this.props.customId, n: 1 }));
             }
         }
 
@@ -71,7 +71,9 @@ class ManualTask extends Component {
     }
 
     componentWillUnmount() {
+        if (this.ws !== null) {
         this.ws.close();
+        }
     }
 
     throttle(func, limit) {
@@ -140,7 +142,6 @@ class ManualTask extends Component {
             <Box style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', fontFamily: 'monospace', height: window.innerHeight-52, width:'100vw' }}>
                 <Flex direction='row' gap="0" style={{ height: window.innerHeight-52, width:'100vw', alignItems: 'center', justifyContent: 'center' }}>
                     <Box style={{ flex:1, display: 'flex', flexDirection: 'column', textAlign:'justify', alignItems: 'flex-start', justifyContent: 'center', height: window.innerHeight-52, padding:'30px 50px' }}>
-                        {console.log(this.props.description)}
                         {Array.isArray(this.props.description) && this.props.description.map(([subtitle, text], index) => (
                             <div key={index}>
                             <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7 }}>&gt;_{subtitle} </Heading>
@@ -167,7 +168,7 @@ class ManualTask extends Component {
               min={-85}
               max={85}
               step={1}
-              style={{ width: Math.round(0.16 * (window.innerWidth * 0.97)) }}
+              style={{ width: Math.round(0.16 * (window.innerWidth * 0.97)), margin: 10 }}
             >
               <Slider.Track className="SliderTrack" style={{ height: 3 }}>
                 <Slider.Range className="SliderRange" />
@@ -184,7 +185,7 @@ class ManualTask extends Component {
               min={-5}
               max={5}
               step={0.01}
-              style={{ width: Math.round(0.16 * (window.innerWidth * 0.97)) }}
+              style={{ width: Math.round(0.16 * (window.innerWidth * 0.97)), margin: 10 }}
             >
               <Slider.Track className="SliderTrack" style={{ height: 3 }}>
                 <Slider.Range className="SliderRange" />
@@ -201,7 +202,7 @@ class ManualTask extends Component {
                 min={1}
                 max={10}
                 step={1}
-                style={{ width: Math.round(0.16 * (window.innerWidth * 0.97)) }}
+                style={{ width: Math.round(0.16 * (window.innerWidth * 0.97)), margin: 10 }}
             >
             <Slider.Track className="SliderTrack" style={{ height: 3 }}>
                 <Slider.Range className="SliderRange" />
@@ -214,11 +215,11 @@ class ManualTask extends Component {
             <Slider.Root
                 className="SliderRoot"
                 defaultValue={[5]}
-                onValueChange={(value) => this.handleRegularChange(value, 1)}
+                onValueChange={(value) => this.handleMatrixChange(value, 1)}
                 min={2}
                 max={20}
                 step={1}
-                style={{ width: Math.round(0.16 * (window.innerWidth * 0.97)) }}
+                style={{ width: Math.round(0.16 * (window.innerWidth * 0.97)), margin: 10 }}
             >
             <Slider.Track className="SliderTrack" style={{ height: 3 }}>
                 <Slider.Range className="SliderRange" />
@@ -231,11 +232,11 @@ class ManualTask extends Component {
             <Slider.Root
                 className="SliderRoot"
                 defaultValue={[3]}
-                onValueChange={(value) => this.handleRegularChange(value, 2)}
+                onValueChange={(value) => this.handleMatrixChange(value, 2)}
                 min={1}
                 max={10}
                 step={1}
-                style={{ width: Math.round(0.16 * (window.innerWidth * 0.97)) }}
+                style={{ width: Math.round(0.16 * (window.innerWidth * 0.97)), margin: 10 }}
             >
             <Slider.Track className="SliderTrack" style={{ height: 3 }}>
                 <Slider.Range className="SliderRange" />
@@ -248,22 +249,23 @@ class ManualTask extends Component {
             <Box style={{ flex:1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: window.innerHeight-52, padding:'30px 50px' }}>
                 <Flex direction='column' gap="0" style={{ alignItems: 'center', justifyContent: 'center' }}>
                 
-                <div className="slider" style={{ marginTop:50 }}>
+                <div>{this.state.in1Name}: {this.state.in1}</div>
+                <div className="slider" style={{ marginTop:10, height:50 }}>
                     {
                     this.props.type === 'ManualLinReg' ? weightSlider
                     : this.props.type === 'ManualPolyReg' ? orderSlider 
                     : this.props.type === 'ManualMatrix' ? nObjectsSlider
                     : null}
                 </div>
-                <div>{this.state.in1Name}: {this.state.in1}</div>
-                {this.state.in2 !== null && (
+
+                {this.state.in2Name !== null && (
                 <>
-                <div className="slider" style={{ marginTop:25 }}>
+                <div>{this.state.in2Name}: {this.state.in2}</div>
+                <div className="slider" style={{ marginTop:10   , height:50 }}>
                     {this.props.type === 'ManualLinReg' ? biasSlider
                     : this.props.type === 'ManualMatrix' ? nFeaturesSlider
                     : null}
                 </div>
-                <div>{this.state.in2Name}: {this.state.in2}</div>
                 </>
                 )}
                 
@@ -276,17 +278,18 @@ class ManualTask extends Component {
                 : null
                 }
                 
+                {this.state.out1Name !== null && (
                 <div>
                     {/* Drag the sliders to change the weight and bias of the perceptron. Try to minimize the error. */}
                     Current {this.state.out1Name}: {this.state.out1}
-                </div>
-                {this.state.in2 !== null && (
+                </div>)}
+                
+                {this.state.out2Name !== null && (
                 <>
                 <div>
                     Current {this.state.out2Name}: {this.state.out2}
                 </div>
-                </>
-                )}
+                </>)}
                 </Flex>
             </Box>
         );

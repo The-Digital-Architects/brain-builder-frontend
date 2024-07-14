@@ -1,4 +1,4 @@
-from communication import send_update
+from backend.processing.communication import send_update
 import sys
 import numpy as np
 import matplotlib as mpl
@@ -56,7 +56,7 @@ def ManualLinReg(a=None, b=None, task_id=None, user_id=None):
         a = round(np.tan((np.random.random()/3)*np.pi), 3)
         b = round(np.random.randint(-5, 6), 3)
         x = np.random.randint(-10, 10, size=(100,))
-        y = a*x + b + np.random.randn(0, 1.41, size=(100,))
+        y = a*x + b + np.random.normal(0, 1.41, size=(100,))
     
         xVars[user_id] = x
         yVars[user_id] = y
@@ -71,7 +71,7 @@ def ManualPolyReg(n=None, task_id=None, user_id=None):
     """
 
     x = np.random.randint(-10, 10, size=(10,))
-    y = np.sin(x) + np.random.randn(0, 0.1, size=(10,))
+    y = np.sin(x) + np.random.normal(0, 0.1, size=(10,))
     
     fig = mpl.figure.Figure()
     ax = fig.add_subplot(111)
