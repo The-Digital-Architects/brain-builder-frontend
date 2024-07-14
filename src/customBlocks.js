@@ -26,11 +26,14 @@ class ManualTask extends Component {
         if (this.props.type === 'ManualLinReg' || this.props.type === 'ManualPolyReg') {
             this.ws = new WebSocket(`wss://${this.props.host}/ws/${this.props.userId}/`);
         } else if (this.props.type === 'ManualMatrix') {
+            this.ws = null;
             this.setState({ view: renderMatrix(5, 3) });
         }
     }
 
     componentDidMount() {
+        if (this.ws !== null) {
+
         this.ws.onclose = () => {
             console.log('WebSocket connection closed');
         };
@@ -63,6 +66,7 @@ class ManualTask extends Component {
                 this.setState({ img: url });
                 this.setState({ out1: data.error[0] });
             }
+        }
         }
     }
 

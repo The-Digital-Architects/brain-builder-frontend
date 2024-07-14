@@ -282,6 +282,13 @@ function App() {
   const [introIds, setIntroIds] = useState([]);
   const [introData, setIntroData] = useState([]);
 
+  const [manualLinRegDescription, setManualLinRegDescription] = useState(''); 
+  const [manualLinRegId, setManualLinRegId] = useState(11); 
+  const [manualPolyRegDescription, setManualPolyRegDescription] = useState(''); 
+  const [manualPolyRegId, setManualPolyRegId] = useState(12);
+  const [manualMatrixDescription, setManualMatrixDescription] = useState('');
+  const [manualMatrixId, setManualMatrixId] = useState(13);
+
 
   function setAf(index, value) {
     setAfs(prevAfs => {
@@ -295,10 +302,6 @@ function App() {
 
 
   // ------- FETCHING TASK DATA -------
-
-  let manualLinRegDescription = '', manualLinRegId = 11
-  let manualPolyRegDescription = '', manualPolyRegId = 12
-  let manualMatrixDescription = '', manualMatrixId = 13
 
   const currentNInputs = [];
   const currentNOutputs = [];
@@ -470,13 +473,13 @@ function App() {
 
         // some custom taskIds
         console.log(currentTaskNames) // TODO: remove
-        manualLinRegId = parseInt(Object.keys(currentTaskNames).find(key => currentTaskNames[key] === 'Linear Regr.'));
-        manualLinRegDescription = JSON.parse(currentTaskData.find(task => task.task_id === manualLinRegId).description);
+        setManualLinRegId( parseInt(Object.keys(currentTaskNames).find(key => currentTaskNames[key] === 'Linear Regr.')) );
+        setManualLinRegDescription( JSON.parse(currentTaskData.find(task => task.task_id === manualLinRegId).description) );
         console.log("manualLinRegId & Description: ", manualLinRegId, manualLinRegDescription); // TODO remove this
-        manualPolyRegId = parseInt(Object.keys(currentTaskNames).find(key => currentTaskNames[key] === 'Polynomial Regr.'));
-        manualPolyRegDescription = JSON.parse(currentTaskData.find(task => task.task_id === manualPolyRegId).description);
-        manualMatrixId = parseInt(Object.keys(currentTaskNames).find(key => currentTaskNames[key] === 'Data Matrix'));
-        manualMatrixDescription = JSON.parse(currentTaskData.find(task => task.task_id === manualMatrixId).description);
+        setManualPolyRegId( parseInt(Object.keys(currentTaskNames).find(key => currentTaskNames[key] === 'Polynomial Regr.')) );
+        setManualPolyRegDescription( JSON.parse(currentTaskData.find(task => task.task_id === manualPolyRegId).description) );
+        setManualMatrixId( parseInt(Object.keys(currentTaskNames).find(key => currentTaskNames[key] === 'Data Matrix')) );
+        setManualMatrixDescription( JSON.parse(currentTaskData.find(task => task.task_id === manualMatrixId).description) );
 
         setLoadedTasks(true);
       })
