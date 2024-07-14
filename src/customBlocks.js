@@ -119,7 +119,7 @@ class ManualTask extends Component {
     handleOrderChange = this.throttle((value) => {
         this.setState({ in1: value[0] });
         // Send a message through the WebSocket
-        const message = JSON.stringify({ header: 'order_change', task_name: this.props.type, task_id: this.props.customIds, n: value[0] });
+        const message = JSON.stringify({ header: 'order_change', task_name: this.props.type, task_id: this.props.customId, n: value[0] });
         this.ws.send(message);
     }, 100)
 

@@ -32,13 +32,12 @@ class Building extends Model {
 
         this.state = {
         currentSlide: 0,
-        activeTab: 'building',
+        activeTab: 'training',
         showCode: false,
         code: '',
         description: '',
 
-        iterations: 100,
-        learningRate: 0.01,
+        sliderValues: {'EpochSlider': 100, 'LRSlider': 0.01},
         runTutorial: false,
         steps: [
             {
@@ -259,8 +258,12 @@ class Building extends Model {
       </Slider.Root>
     )
     handleIterationChange = (value) => {
-        this.setState({ iterations: value[0] });
-      };
+        this.setState( prev => {
+            const newSliderValues = {...prev.sliderValues};
+            newSliderValues['EpochSlider'] = value[0]*2; 
+            return {sliderValues: newSliderValues};
+        });
+    };
 
     learningRateSlider = (
         <Slider.Root
@@ -279,9 +282,13 @@ class Building extends Model {
         <Slider.Thumb className="SliderThumb" aria-label="Learning Rate" />
       </Slider.Root>
     );
-    handleLearningRateChange = (index, value) => {
-        this.setState({ learningRate: (10 ** ((value[0]/-20)-0.33)).toFixed(Math.round((value[0]+10) / 20)) });
-      };
+    handleLearningRateChange = (value) => {
+        this.setState( prev => {
+            const newSliderValues = {...prev.sliderValues};
+            newSliderValues['LRSlider'] = (10 ** ((value[0]/-20)-0.33)).toFixed(Math.round((value[0]+10) / 20));
+            return {sliderValues: newSliderValues};
+        });
+    };
 
     renderModel = () => {
         return (

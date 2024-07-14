@@ -226,7 +226,7 @@ class Model extends React.Component {
     }
 
     valuesUndefined = () => {
-        return Object.values(this.props.sliderVisibilities).includes(null) || Object.values(this.props.sliderValues).includes(null);
+        return Object.values(this.props.sliderVisibilities).includes(null) || Object.values(this.state.sliderValues).includes(null);
     }
     
     handleStartClick = (() => {
@@ -416,7 +416,7 @@ class Model extends React.Component {
                             this.props.sliderVisibilities[name] ?
                             (<Box style={{ position:"absolute", top: this.sliderPosition(index), left: Math.round(0.74 * (window.innerWidth * 0.97)), alignItems: 'start', justifyContent: 'end', fontFamily:'monospace'  }}>
                                 <div style={{ position:"absolute", zIndex: 9999, top: -30, left: 0.095 * (window.innerWidth * 0.97), transform: 'translateX(-50%)', fontSize: '14px', color: 'var(--slate-11)', whiteSpace: 'nowrap' }}>
-                                    {this.inputNames[name]}: {this.props.sliderValues[name]}
+                                    {this.inputNames[name]}: {this.state.sliderValues[name]}
                                 </div>
                                 <div className={name}>
                                     {slider}
