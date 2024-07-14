@@ -61,7 +61,7 @@ class Transceiver(AsyncWebsocketConsumer):
 
         elif task_type == 'initialize_custom':
             communication.send_fn_vars[(str(self.user_id), str(task_id))] = self.async_send
-            processes.run(file_name='plotting.py', function_name=instructions['task_name'], args=instructions)
+            processes.run(file_name='plotting', function_name=instructions['task_name'], args=instructions)
 
         
         elif task_type.endswith('_change'):
