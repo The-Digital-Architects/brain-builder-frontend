@@ -349,11 +349,12 @@ function App() {
     currentTyp.push(entry.type);
     currentDataset.push(entry.dataset);
 
-    // set NeuralNetworkDescription states
     if (entry.other_task) {
       currentOtherTasks[entry.task_id] = entry.other_task;
       currentOtherDescriptions[entry.task_id] = JSON.parse(entry.description);
     } else {
+
+      // set NN states
       let nnDescription = entry.neural_network_description;
       if (nnDescription) {
         currentNNTaskIds.push(entry.task_id);

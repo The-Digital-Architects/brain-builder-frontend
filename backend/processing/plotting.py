@@ -49,7 +49,7 @@ def ManualLinReg(a=None, b=None, task_id=None, user_id=None):
         plot = b64encode(plot).decode()
         error = (mse, r2)
 
-        send_update(header='plot', var_names=['plot', 'out1', 'out2'], vars=(plot, error[0], error[2]), task_id=task_id, user_id=user_id)
+        send_update(header='plot', var_names=['plot', 'out1', 'out2'], vars=(plot, error[0], error[1]), task_id=task_id, user_id=user_id)
 
     else: 
         # set up the plot
@@ -135,7 +135,7 @@ def ManualPolyReg(n=None, task_id=None, user_id=None):
 
     if n is not None:
         x_s = np.linspace(-10, 10, 200)
-        y_s = np.polyval(np.polyfit(x, y, n))
+        y_s = np.polyval(np.polyfit(x, y, n), x_s)
         ax.plot(x_s, y_s, color=(185/255,38/255,4/255))
     ax.set_xlim(-10, 10)
     ax.set_ylim(-10, 10)

@@ -260,7 +260,7 @@ class OtherTask extends Component {
                 <div>{this.state.in1Name}: {this.state.in1}</div>
                 <div className="slider" style={{ marginTop:10, height:50 }}>
                     {
-                    this.props.type === 'ManualLinReg' ? weightSlider
+                    (this.props.type === 'ManualLinReg' || this.props.type === 'ManualPCA') ? weightSlider
                     : this.props.type === 'ManualPolyReg' ? orderSlider 
                     : this.props.type === 'ManualMatrix' ? nObjectsSlider
                     : null}
