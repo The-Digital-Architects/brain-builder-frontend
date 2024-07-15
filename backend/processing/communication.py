@@ -33,7 +33,9 @@ def is_cancelled(user_id, task_id):
     Function that checks if the process has been cancelled by the frontend. 
     If your process is expected to take long (> 10 seconds), you should periodically check this.
     """
-    return cancel_vars.get((str(user_id), str(task_id)), False)
+    result = cancel_vars.get((str(user_id), str(task_id)), False)
+    if result: print("Secondary thread cancelled")
+    return result
 
 
 def send_update(var_names, vars, task_id, user_id, header=None):

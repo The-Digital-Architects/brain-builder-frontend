@@ -8,7 +8,18 @@ export default function handleMessage(event, ws, params) {
 
     const data = JSON.parse(event.data);
     console.log("Message received with header: ", data.header)  // for debugging
-    if (data.header === 'update') {  // every 1%; includes params.progress, error_list, network_weights and network_biases, sometimes also plots
+    if (data.header === 'SVM') {  // SVM training is completed, includes plot and f1score
+        
+        params.setF1Score(data.f1_score);
+        params.setImgs(prevImgs => {
+          const newImgs = [...prevImgs];
+          newImgs[params.index] = data.plot;
+          return newImgs;
+        });
+        
+    }
+
+    else if (data.header === 'update') {  // every 1%; includes params.progress, error_list, network_weights and network_biases, sometimes also plots
 
       if (JSON.stringify(data.progress) !== JSON.stringify(params.progress[params.index])) {
 

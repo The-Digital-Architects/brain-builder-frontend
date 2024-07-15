@@ -2,6 +2,8 @@
 # - make superclass CustomDataloader()
 # - debugging
 
+# TODO: implement testing and cross-validation
+
 import os
 from io import BytesIO  # for saving the images
 
@@ -17,7 +19,7 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
 
-def get_data(dataset, typ:int=None, normalization=False, test_size=None, val_size=None, data=None):  # TODO: test this
+def get_data(dataset, typ:int=None, normalization=False, test_size=None, data=None):  # TODO: test this
     magic_box = {'datasets': datasets, 'normalization': normalization, 'DataFromSklearn1': DataFromSklearn1, 'DataFromSklearn2': DataFromSklearn2}
     
     # if the dataset has been passed on, just use that
@@ -55,7 +57,7 @@ def get_data(dataset, typ:int=None, normalization=False, test_size=None, val_siz
     # else: 
     #     return data
     
-    train, test = train_test_split(data, test_size=0.1)
+    train, test = train_test_split(data, test_size=test_size)
     return data, (train, test)
 
 

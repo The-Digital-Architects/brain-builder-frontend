@@ -50,7 +50,9 @@ def build_nn(structure, learning_rate, epochs, norma, dataset, typ, dat=None):
 
     # get the data and separate into training and testing data:
     batch_size = 1  # feed small amounts of data to adjust gradient with, usually between 8 and 64
-    data, (training_set, test_set) = df.get_data(dataset, typ, norma, data=dat)
+    test_size = 0.1  # 10% of the data is used for testing
+
+    data, (training_set, test_set) = df.get_data(dataset, typ, norma, data=dat, test_size=test_size)
     training_set = torch.utils.data.DataLoader(training_set, batch_size=batch_size, shuffle=True)
     test_set = torch.utils.data.DataLoader(test_set, batch_size=batch_size, shuffle=True)
     # shuffle: always turn on if dataset is ordered!

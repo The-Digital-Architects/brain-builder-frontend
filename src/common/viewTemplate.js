@@ -36,7 +36,7 @@ class Model extends React.Component {
         code: '',
         description: [],
         // TODO: add all your states here
-        dummySliderValue: 50  // remove this
+        sliderValues: {'dummySlider': 50},
       };
 
         // TODO: specify which tabs, sliders, input fields, dropdowns, and checkboxes should be included
@@ -546,7 +546,7 @@ class Model extends React.Component {
 }
 
 
-// INLCUDE THIS AT THE END OF YOUR NEW FILE
+// INCLUDE THIS AT THE END OF YOUR NEW FILE
 
 function DefaultView(props) {
     const navigate = useNavigate();

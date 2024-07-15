@@ -17,6 +17,7 @@ import FeedbackApp from './feedback';
 import LinksPage from './links';
 import NotFound from './common/notFound';
 import { DefaultView, Model } from './common/viewTemplate';
+import svmView from './svmView';
 import ConstructionView from './constructionView';
 import NotebookView from './notebookView';
 import JupyterLite from './jupyterLiteView';
@@ -227,6 +228,7 @@ function App() {
   const [gamesData, setGamesData] = useState(JSON.stringify([{task_id: 11, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'Clas2.csv'}, {task_id: 12, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'load_iris()'}]));
   const [typ, setTyp] = useState(defaultTaskIds.map(() => 1));
   const [dataset, setDataset] = useState(defaultTaskIds.map(() => 'Clas2.csv'));
+  const [featureNames, setFeatureNames] = useState(defaultTaskIds.map(() => []));
   const [initPlots, setInitPlots] = useState(defaultTaskIds.map(() => []));
   const [nInputs, setNInputs] = useState(defaultTaskIds.map(() => 4));
   const [nOutputs, setNOutputs] = useState(defaultTaskIds.map(() => 3));
@@ -252,13 +254,15 @@ function App() {
   // setting default values for the network-related states
   const [NNProgress, setNNProgress] = useState(defaultTaskIds.map(() => -1));
   const [errorList, setErrorList] = useState(defaultTaskIds.map(() => [[], null]));
-  const [featureNames, setFeatureNames] = useState(defaultTaskIds.map(() => []));
   const [weights, setWeights] = useState(defaultTaskIds.map(() => []));
   const [biases, setBiases] = useState(defaultTaskIds.map(() => []));
   const [imgs, setImgs] = useState(defaultTaskIds.map(() => []));
 
   // this is for the SVM tasks
   const [svmTaskIds, setSvmTaskIds] = useState([]);
+  const [cSliderVisibility, setCSliderVisibility] = useState([]);
+  const [gammaSliderVisibility, setGammaSliderVisibility] = useState([]);
+  const [rbfVisibility, setRbfVisibility] = useState([]);
   // TODO
 
   // this is for the basics tasks
@@ -320,6 +324,9 @@ function App() {
   const currentWeights = [];
 
   const currentSVMTaskIds = [];
+  const currentCSliderVisibility = [];
+  const currentGammaSliderVisibility = [];
+  const currentRbfVisibility = [];
   // TODO
 
   const currentBasicsTaskIds = [];
@@ -373,6 +380,9 @@ function App() {
         let svmDescription = entry.svm_description;
         if (svmDescription) {
           currentSVMTaskIds.push(entry.task_id);
+          currentCSliderVisibility.push(svmDescription.c_slider_visibility);
+          currentGammaSliderVisibility.push(svmDescription.gamma_slider_visibility);
+          currentRbfVisibility.push(svmDescription.rbf_visibility);
           // TODO
           currentIcons.push(null);
         } else {
@@ -399,7 +409,7 @@ function App() {
               currentLinks.push(entry.external_link.url)
               currentIcons.push(Link2Icon);
               } else {
-                currentConstructionTaskIds.push(entry.task_id);
+                if (!entry.task_id === 22) {currentConstructionTaskIds.push(entry.task_id)};
                 currentIcons.push(null);
                 console.log("Task " + entry.task_id + " is not implemented in the frontend.")
               }
@@ -448,6 +458,9 @@ function App() {
 
         // Set svm states
         setSvmTaskIds(currentSVMTaskIds);
+        setCSliderVisibility(currentCSliderVisibility);
+        setGammaSliderVisibility(currentGammaSliderVisibility);
+        setRbfVisibility(currentRbfVisibility);
         // TODO
 
         // Set basics states
@@ -944,6 +957,8 @@ function App() {
                   setBiases={setBiases}
                   pendingTime={pendingTime}
                   cancelRequestRef={cancelRequestRef}
+                  fileName={'building'}
+                  functionName={'main'}
                   maxNodes={maxNodes}
                   maxEpochs={maxEpochs[NNIndex]}
                   setImgs={setImgs}
@@ -965,6 +980,24 @@ function App() {
             />
             </>
           ))}
+
+          {svmTaskIds.map((taskId, SVMIndex) => (
+            <>
+            <Route
+              key={taskId}
+              path={`/exercise${taskId/10}`}
+              element={
+                <>
+                <svmView 
+                isTraining={isTraining[taskIds.indexOf(taskId)]} taskId={taskId} cancelRequestRef={cancelRequestRef} SVMIndex={SVMIndex} index={taskIds.indexOf(taskId)} name={taskNames[taskId]} pendingTime={pendingTime} initPlot={initPlots[taskIds.indexOf(22)]} isResponding={taskIds.indexOf(22)} apiData={apiData.indexOf(22)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(22)]} img={imgs[taskIds.indexOf(22)]} typ={typ[taskIds.indexOf(22)]} loadData={loadData} normalization={false} dataset={dataset[taskIds.indexOf(taskId)]}
+                startTraining={putRequest} tabs={['Data', 'Model', 'Result']} sliderValues={{'CSlider': 10, 'GammaSlider': 0.1}} sliderVisibilities={{'CSlider': cSliderVisibility[SVMIndex], 'GammaSlider': gammaSliderVisibility[SVMIndex] }} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'KernelCheckbox': true}} setIsResponding={setIsResponding} 
+                />
+                </>
+              }
+            />
+            </>
+          ))}
+
           {quizIds.map((quizId, index) => (
             <>
             { quizData[index].visibility &&

@@ -38,6 +38,7 @@ class Building extends Model {
         description: '',
 
         sliderValues: {'EpochSlider': 100, 'LRSlider': 0.01},
+        checkboxValues: {'NormCheckbox': false, 'AFCheckbox': true},
         runTutorial: false,
         steps: [
             {
@@ -86,8 +87,8 @@ class Building extends Model {
         }
 
         this.checkboxes = {
-            'NormCheckbox': <Checkbox disabled = { this.props.isTraining===1 } />,
-            'AFCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleAfClick()} checked={this.props.af} />,
+            'NormCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleNormClick()} checked={this.state.checkboxValues['Normcheckbox']} />,
+            'AFCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleAfClick()} checked={this.state.checkboxValues['AFCheckbox']} />,
         }
 
     };
@@ -215,8 +216,10 @@ class Building extends Model {
                 cancelRequestRef: this.props.cancelRequestRef,
                 typ: this.props.typ,
                 dataset: this.props.dataset,
+                fileName: this.props.fileName,
+                functionName: this.props.functionName,
             }
-            this.props.startTraining(event, trainingParams);
+            this.props.startTraining(event, trainingParams, 'NN');
         }
         inThrottle=true
         setTimeout(() => inThrottle = false, 2*this.props.pendingTime);
@@ -233,7 +236,19 @@ class Building extends Model {
     }
 
     handleAfClick = () => {
-        this.props.setAf(this.props.NNIndex, !this.props.af);
+        this.setState( prev => {
+            const newCheckboxValues = {...prev.checkboxValues};
+            newCheckboxValues['AFCheckbox'] = !prev.checkboxValues['AFCheckbox'];
+            return {checkboxValues: newCheckboxValues};
+        });
+    }
+
+    handleNormClick = () => {
+        this.setState( prev => {
+            const newCheckboxValues = {...prev.checkboxValues};
+            newCheckboxValues['NormCheckbox'] = !prev.checkboxValues['NormCheckbox'];
+            return {checkboxValues: newCheckboxValues};
+        });
     }
 
 

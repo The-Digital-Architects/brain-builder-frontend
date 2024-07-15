@@ -60,6 +60,7 @@ class OtherTask extends Component {
 
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
+            console.log('Received message: ', data);  // TODO remove
             if (data.header === 'plot') {
                 const binaryString = atob(data.plot);  // decode from base64 to binary string
                 const bytes = new Uint8Array(binaryString.length);  // convert from binary string to byte array

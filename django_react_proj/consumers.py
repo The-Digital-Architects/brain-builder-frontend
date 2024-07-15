@@ -20,6 +20,8 @@ class Transceiver(AsyncWebsocketConsumer):
         Transceiver.connections[self.user_id] = self
         print("Transceiver connected")
         self.main_loop = asyncio.get_event_loop()  # get the main loop
+        self.secondary_thread = None
+        self.secondary_thread_is_running = False
         #self.secondary_loop = asyncio.new_event_loop()
         #self.secondary_thread = threading.Thread(target=self.secondary_loop.run_forever)
         #self.secondary_thread.start()
@@ -31,10 +33,10 @@ class Transceiver(AsyncWebsocketConsumer):
             if key[0] == self.user_id:
                 communication.cancel_vars[key] = True
             #self.secondary_thread.join()
-        print("Cancelling enabled for secondary thread")
     
         #self.secondary_loop.stop()
-        del Transceiver.connections[self.user_id]
+        if self.user_id in Transceiver.connections:
+            del Transceiver.connections[self.user_id]
         print("Main thread disconnected")
         
     # Receive message from WebSocket
@@ -47,11 +49,15 @@ class Transceiver(AsyncWebsocketConsumer):
         if task_type == 'start':
             # start the process
             communication.cancel_vars[(self.user_id, task_id)] = False
-
             communication.send_fn_vars[(str(self.user_id), str(task_id))] = self.async_send
+            self.secondary_thread_is_running = True
+
+            def target_fn():
+                processes.run(file_name=instructions['file_name'], function_name=instructions['function_name'], args=instructions)
+                self.secondary_thread_is_running = False
 
             #processes.run(file_name=instructions['file_name'], function_name=instructions['function_name'], args=instructions)
-            self.secondary_thread = threading.Thread(target=partial(processes.run, instructions['file_name'], instructions['function_name'], instructions))
+            self.secondary_thread = threading.Thread(target=target_fn)
             self.secondary_thread.start()
         
         elif task_type == 'cancel':
@@ -66,8 +72,13 @@ class Transceiver(AsyncWebsocketConsumer):
             task_type = task_type[:-7]
             instructions['user_id'] = self.user_id
             communication.send_fn_vars[(str(self.user_id), str(task_id))] = self.async_send
+            self.secondary_thread_is_running = True
 
-            self.secondary_thread = threading.Thread(target=partial(processes.run, 'plotting', instructions['task_name'], instructions))
+            def target_fn():
+                processes.run(file_name='plotting', function_name=instructions['task_name'], args=instructions)
+                self.secondary_thread_is_running = False
+
+            self.secondary_thread = threading.Thread(target=target_fn)
             self.secondary_thread.start()
 
         

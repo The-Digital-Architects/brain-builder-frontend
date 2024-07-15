@@ -23,8 +23,8 @@ def ManualLinReg(a=None, b=None, task_id=None, user_id=None):
     """
 
     global xVars, yVars
-    x = xVars.get(user_id, 'LinReg')
-    y = yVars.get(user_id, 'LinReg')
+    x = xVars.get((user_id, 'LinReg'))
+    y = yVars.get((user_id, 'LinReg'))
     
     fig = mpl.figure.Figure()
     ax = fig.add_subplot(111)
@@ -71,8 +71,8 @@ def ManualPCA(a=None, task_id=None, user_id=None):
     """
 
     global xVars, yVars
-    x = xVars.get(user_id, 'PCA')
-    y = yVars.get(user_id, 'PCA')
+    x = xVars.get((user_id, 'PCA'))
+    y = yVars.get((user_id, 'PCA'))
     
     fig = mpl.figure.Figure()
     ax = fig.add_subplot(111)

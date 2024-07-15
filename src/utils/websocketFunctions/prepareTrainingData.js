@@ -6,7 +6,16 @@ const getTaskConfiguration = (taskId) => ({
   12: { normalization: false, activationFunctionsEnabled: false }
 }[taskId] || {});
 
-const prepareTrainingData = ({
+// State update function that doesn't directly manipulate the state
+const updateState = (setter, newValue, index) => {
+  setter(prev => {
+    const updated = Array.isArray(prev) ? [...prev] : {};
+    updated[index] = newValue;
+    return updated;
+  });
+};
+
+const prepareNNTrainingData = ({
   learningRate = 0.01,
   iterations = 50,
   taskId,
@@ -23,6 +32,8 @@ const prepareTrainingData = ({
   nOfOutputs,
   typ,
   dataset,
+  fileName,
+  functionName,
   index, 
   globalIndex
 }) => {
@@ -36,15 +47,6 @@ const prepareTrainingData = ({
 
   let userId = getCookie('user_id');
 
-  // State update function that doesn't directly manipulate the state
-  const updateState = (setter, newValue, index) => {
-    setter(prev => {
-      const updated = Array.isArray(prev) ? [...prev] : {};
-      updated[index] = newValue;
-      return updated;
-    });
-  };
-
   // Simplified state updates
   [setProgress, setWeights, setBiases].forEach(setter => updateState(setter, [], index));
   updateState(setImgs, [], globalIndex);
@@ -55,8 +57,8 @@ const prepareTrainingData = ({
 
   const trainingData = {
     header: 'start',
-    file_name: 'building',
-    function_name: 'main',
+    file_name: fileName,
+    function_name: functionName,
     user_id: userId,
     task_id: taskId,
     learning_rate: parseFloat(finalLearningRate),
@@ -77,4 +79,49 @@ const prepareTrainingData = ({
   return trainingData;
 }
 
-export default prepareTrainingData;
+
+const prepareSVMTrainingData = ({
+  taskId,
+  fileName,
+  functionName,
+  dataset,
+  normalization,
+  cValue,
+  gammaValue,
+  kernelValue,
+  linearlySeparable,
+  setF1Score,
+  setApiData,
+  setImgs,
+  setIsTraining,
+  index, 
+  globalIndex
+}) => {
+  /*prepare the training data to be sent to the server*/
+
+  let userId = getCookie('user_id');
+
+  const trainingData = {
+    header: 'start',
+    file_name: fileName,
+    function_name: functionName,
+    user_id: userId,
+    task_id: taskId,
+    c: cValue,
+    gamma: gammaValue,
+    kernel: kernelValue,
+    linearly_separable: linearlySeparable,
+    normalization: normalization,
+    dataset: dataset,
+  };
+
+  updateState(setApiData, trainingData, globalIndex);
+  updateState(setIsTraining, 1, globalIndex);
+  updateState(setImgs, [], globalIndex);
+  updateState(setF1Score, null, index);
+
+  return trainingData;
+}
+
+
+export {prepareNNTrainingData, prepareSVMTrainingData};

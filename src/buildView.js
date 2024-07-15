@@ -288,8 +288,10 @@ class Building extends React.Component {
             cancelRequestRef: this.props.cancelRequestRef,
             typ: this.props.typ,
             dataset: this.props.dataset,
+            fileName: this.props.fileName,
+            functionName: this.props.functionName,
           }
-          this.props.putRequest(event, putRequestParams);
+          this.props.putRequest(event, putRequestParams, 'NN');
         }
         inThrottle=true
         setTimeout(() => inThrottle = false, 2*this.props.pendingTime);
