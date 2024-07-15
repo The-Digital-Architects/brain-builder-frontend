@@ -23,8 +23,8 @@ def ManualLinReg(a=None, b=None, task_id=None, user_id=None):
     """
 
     global xVars, yVars
-    x = xVars.get(user_id)
-    y = yVars.get(user_id)
+    x = xVars.get(user_id, 'LinReg')
+    y = yVars.get(user_id, 'LinReg')
     
     fig = mpl.figure.Figure()
     ax = fig.add_subplot(111)
@@ -63,7 +63,7 @@ def ManualLinReg(a=None, b=None, task_id=None, user_id=None):
         ManualLinReg(a, b, task_id, user_id)
 
 
-def ManualPCA(a=None, b=None, task_id=None, user_id=None):
+def ManualPCA(a=None, task_id=None, user_id=None):
     """
     Creates a plot of some datapoints, along with a line ax + b. 
     Limits are -10 and +10 for both x and y. 
@@ -71,8 +71,8 @@ def ManualPCA(a=None, b=None, task_id=None, user_id=None):
     """
 
     global xVars, yVars
-    x = xVars.get(user_id)
-    y = yVars.get(user_id)
+    x = xVars.get(user_id, 'PCA')
+    y = yVars.get(user_id, 'PCA')
     
     fig = mpl.figure.Figure()
     ax = fig.add_subplot(111)
@@ -80,7 +80,7 @@ def ManualPCA(a=None, b=None, task_id=None, user_id=None):
         ax.scatter(x, y, color=(4/255, 151/255, 185/255))
         if a is not None and b is not None:
             x_s = np.linspace(-10, 10, 200)
-            y_s = a*x_s + b
+            y_s = a*x_s
             ax.plot(x_s, y_s, color=(185/255,38/255,4/255))
         ax.set_xlim(-10, 10)
         ax.set_ylim(-10, 10)
@@ -96,7 +96,7 @@ def ManualPCA(a=None, b=None, task_id=None, user_id=None):
         # calculate the absolute variance and the explained variance of the projection on the line
         var = np.var((a*x + b) / np.sqrt(a**2 + 1))
         total_var = np.cov(x, y)[0, 0] + np.cov(x, y)[1, 1]
-        explained_var = np.var(a*x + b) / total_var
+        explained_var = np.var(a*x) / total_var
 
         plot = img.getvalue()
         plot = b64encode(plot).decode()
@@ -106,7 +106,7 @@ def ManualPCA(a=None, b=None, task_id=None, user_id=None):
     else: 
         # set up the plot
         a = round(np.tan((np.random.random()/3)*np.pi), 3)
-        b = round(np.random.randint(-5, 6), 3)
+        b = 0
         x = np.random.randint(-10, 10, size=(100,))
         y = a*x + b + np.random.normal(0, 1.41, size=(100,))
     
