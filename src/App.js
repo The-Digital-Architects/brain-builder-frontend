@@ -283,7 +283,7 @@ function App() {
   const [introData, setIntroData] = useState([]);
 
   const [otherTasks, setOtherTasks] = useState({11: 'ManualLinReg', 12: 'ManualPolyReg', 13: 'ManualMatrix', 51: 'ManualPCA'});	
-  const [otherDescriptions, setOtherDescriptions] = useState({11: JSON.stringify('ManualLinRegDescription'), 12: JSON.stringify('ManualPolyRegDescription'), 13: JSON.stringify('ManualMatrixDescription'), 51: JSON.stringify('ManualPCADescription')});
+  const [otherDescriptions, setOtherDescriptions] = useState({11: 'ManualLinRegDescription', 12: 'ManualPolyRegDescription', 13: 'ManualMatrixDescription', 51: 'ManualPCADescription'});
   const [constructionTaskIds, setConstructionTaskIds] = useState([23]);
 
 
@@ -352,7 +352,7 @@ function App() {
     // set NeuralNetworkDescription states
     if (entry.other_task) {
       currentOtherTasks[entry.task_id] = entry.other_task;
-      currentOtherDescriptions[entry.task_id] = entry.description;
+      currentOtherDescriptions[entry.task_id] = JSON.parse(entry.description);
     } else {
       let nnDescription = entry.neural_network_description;
       if (nnDescription) {
@@ -876,7 +876,7 @@ function App() {
               host = {window.location.host}
               customId = {parseInt(taskId)}
               userId = {getCookie('user_id')}
-              description = {JSON.parse(otherDescriptions[taskId])}
+              description = {otherDescriptions[taskId]}
             />} />
             </>
           ))}
