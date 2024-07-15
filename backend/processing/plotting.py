@@ -58,8 +58,8 @@ def ManualLinReg(a=None, b=None, task_id=None, user_id=None):
         x = np.random.randint(-10, 10, size=(100,))
         y = a*x + b + np.random.normal(0, 1.41, size=(100,))
     
-        xVars[user_id] = x
-        yVars[user_id] = y
+        xVars[(user_id, 'LinReg')] = x
+        yVars[(user_id, 'LinReg')] = y
         ManualLinReg(a, b, task_id, user_id)
 
 
@@ -110,8 +110,8 @@ def ManualPCA(a=None, task_id=None, user_id=None):
         x = np.random.randint(-10, 10, size=(100,))
         y = a*x + b + np.random.normal(0, 1.41, size=(100,))
     
-        xVars[user_id] = x
-        yVars[user_id] = y
+        xVars[(user_id, 'PCA')] = x
+        yVars[(user_id, 'PCA')] = y
         ManualPCA(a, b, task_id, user_id)
 
 

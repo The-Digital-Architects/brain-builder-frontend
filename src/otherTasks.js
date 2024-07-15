@@ -277,9 +277,12 @@ class OtherTask extends Component {
                 </div>
                 </>
                 )}
+
+                {console.log(this.state.img)  // TODO remove
+                }
                 
                 {
-                this.state.ws ? <img src={this.state.img} alt="No plot available" style={{ height: window.innerHeight*0.55, marginBottom:10 }}/>
+                this.state.img ? <img src={this.state.img} alt="No plot available" style={{ height: window.innerHeight*0.55, marginBottom:10 }}/>
                 : this.state.view ?
                 <Box style={{ height: window.innerHeight*0.55, marginBottom:10 }}>
                     {this.state.view}
@@ -427,7 +430,7 @@ function renderEmissions( writing=true ) {
     let result = calculateWritingEmissions( words, own_time, proofread_time );
     return (
         <>
-        {renderText( texts['Writing'], inputs )}
+        {renderText( texts, inputs )}
             <p> Emissions from writing yourself: {result[0]} </p>
             <p> Emissions from writing with ChatGPT: {result[1]} </p>
         </>

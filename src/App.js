@@ -259,7 +259,7 @@ function App() {
   const [imgs, setImgs] = useState(defaultTaskIds.map(() => []));
 
   // this is for the SVM tasks
-  const [svmTaskIds, setSvmTaskIds] = useState([]);
+  const [SVMTaskIds, setSVMTaskIds] = useState([]);
   const [cSliderVisibility, setCSliderVisibility] = useState([]);
   const [gammaSliderVisibility, setGammaSliderVisibility] = useState([]);
   const [rbfVisibility, setRbfVisibility] = useState([]);
@@ -457,7 +457,7 @@ function App() {
         setImageVisibility(currentImageVisibility);
 
         // Set svm states
-        setSvmTaskIds(currentSVMTaskIds);
+        setSVMTaskIds(currentSVMTaskIds);
         setCSliderVisibility(currentCSliderVisibility);
         setGammaSliderVisibility(currentGammaSliderVisibility);
         setRbfVisibility(currentRbfVisibility);
@@ -981,7 +981,9 @@ function App() {
             </>
           ))}
 
-          {svmTaskIds.map((taskId, SVMIndex) => (
+          {console.log("SVMTaskIds: ", SVMTaskIds)  // TODO remove
+          }
+          {SVMTaskIds.map((taskId, SVMIndex) => (
             <>
             <Route
               key={taskId}
