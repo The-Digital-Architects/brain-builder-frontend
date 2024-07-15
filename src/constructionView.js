@@ -4,11 +4,13 @@ import Header from "./common/header";
 import underConstructionImage from "./images/under_construction_by_freepik.jpg";
 import NotFound from "./common/notFound";
 
-function ConstructionView() {
+function ConstructionView( params ) {
     let { ex } = useParams();
 
     if (!ex.startsWith("exercise")) {  // if the URL does not start with "exercise", redirect to the not found page
         return <NotFound />;
+    } else if (!params['taskIds'].includes(parseInt(parseFloat(ex.slice(-3))*10))) {
+        return <></>;
     } else {
         return (
             <div>

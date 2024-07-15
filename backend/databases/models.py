@@ -38,6 +38,7 @@ class TaskDescription(models.Model):
     n_outputs = models.IntegerField(null=True, blank=True)
     file_name = models.TextField(max_length=50, null=True, blank=True)
     function_name = models.TextField(max_length=50, null=True, blank=True)
+    other_task = models.TextField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return str(self.task_id) + " - " + str(self.name)

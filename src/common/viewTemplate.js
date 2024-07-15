@@ -102,7 +102,6 @@ class Model extends React.Component {
                 </Select.Content>
               </Select.Portal>
             </Select.Root>
-
         );
           
         this.sliders = {

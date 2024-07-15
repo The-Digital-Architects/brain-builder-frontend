@@ -180,7 +180,6 @@ class Building extends Model {
     }
     
     handleStartClick = (() => {
-    console.log("handleStartClick is not implemented in component ", this.props.name)
     let inThrottle;
     return (event) => {
         if (!inThrottle && this.props.taskId !== 0) { 

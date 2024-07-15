@@ -11,7 +11,7 @@ import axios from 'axios';
 import BuildView from './newBuildView';
 import Introduction from './introduction';
 import QuizApp from './quiz';
-import ManualTask from './customBlocks';
+import OtherTask from './otherTasks';
 import Tutorial from './tutorial';
 import FeedbackApp from './feedback';
 import LinksPage from './links';
@@ -282,12 +282,9 @@ function App() {
   const [introIds, setIntroIds] = useState([]);
   const [introData, setIntroData] = useState([]);
 
-  const [manualLinRegDescription, setManualLinRegDescription] = useState(''); 
-  const [manualLinRegId, setManualLinRegId] = useState(11); 
-  const [manualPolyRegDescription, setManualPolyRegDescription] = useState(''); 
-  const [manualPolyRegId, setManualPolyRegId] = useState(12);
-  const [manualMatrixDescription, setManualMatrixDescription] = useState('');
-  const [manualMatrixId, setManualMatrixId] = useState(13);
+  const [otherTasks, setOtherTasks] = useState({11: 'ManualLinReg', 12: 'ManualPolyReg', 13: 'ManualMatrix', 51: 'ManualPCA'});	
+  const [otherDescriptions, setOtherDescriptions] = useState({11: JSON.stringify('ManualLinRegDescription'), 12: JSON.stringify('ManualPolyRegDescription'), 13: JSON.stringify('ManualMatrixDescription'), 51: JSON.stringify('ManualPCADescription')});
+  const [constructionTaskIds, setConstructionTaskIds] = useState([23]);
 
 
   function setAf(index, value) {
@@ -334,6 +331,10 @@ function App() {
   const currentLinkIds = [];
   const currentLinks = [];
 
+  const currentOtherTasks = {};
+  const currentOtherDescriptions = {};
+  const currentConstructionTaskIds = [];
+
   function readTaskEntry(entry) {
     if (!entry.visibility) {
       console.log("Skipping task " + entry.task_id)
@@ -349,52 +350,58 @@ function App() {
     currentDataset.push(entry.dataset);
 
     // set NeuralNetworkDescription states
-    let nnDescription = entry.neural_network_description;
-    if (nnDescription) {
-      currentNNTaskIds.push(entry.task_id);
-      currentMaxEpochs.push(nnDescription.max_epochs);
-      currentMaxLayers.push(nnDescription.max_layers);
-      currentMaxNodes.push(nnDescription.max_nodes);
-      currentNormalizationVisibility.push(nnDescription.normalization_visibility);
-      currentAfVisibility.push(nnDescription.af_visibility);
-      currentIterationsSliderVisibility.push(nnDescription.iterations_slider_visibility);
-      currentLRSliderVisibility.push(nnDescription.lr_slider_visibility);
-      currentImageVisibility.push(nnDescription.decision_boundary_visibility);
-      currentIcons.push(null);
+    if (entry.other_task) {
+      currentOtherTasks[entry.task_id] = entry.other_task;
+      currentOtherDescriptions[entry.task_id] = entry.description;
     } else {
-
-      // set svm states
-      let svmDescription = entry.svm_description;
-      if (svmDescription) {
-        currentSVMTaskIds.push(entry.task_id);
-        // TODO
+      let nnDescription = entry.neural_network_description;
+      if (nnDescription) {
+        currentNNTaskIds.push(entry.task_id);
+        currentMaxEpochs.push(nnDescription.max_epochs);
+        currentMaxLayers.push(nnDescription.max_layers);
+        currentMaxNodes.push(nnDescription.max_nodes);
+        currentNormalizationVisibility.push(nnDescription.normalization_visibility);
+        currentAfVisibility.push(nnDescription.af_visibility);
+        currentIterationsSliderVisibility.push(nnDescription.iterations_slider_visibility);
+        currentLRSliderVisibility.push(nnDescription.lr_slider_visibility);
+        currentImageVisibility.push(nnDescription.decision_boundary_visibility);
         currentIcons.push(null);
       } else {
 
-        // set basics states
-        let basicsDescription = entry.basics_description;
-        if (basicsDescription) {
-          currentBasicsTaskIds.push(entry.task_id);
+        // set svm states
+        let svmDescription = entry.svm_description;
+        if (svmDescription) {
+          currentSVMTaskIds.push(entry.task_id);
           // TODO
           currentIcons.push(null);
         } else {
 
-          // set clustering states
-          let clusteringDescription = entry.clustering_description;
-          if (clusteringDescription) {
-            currentClusteringTaskIds.push(entry.task_id);
+          // set basics states
+          let basicsDescription = entry.basics_description;
+          if (basicsDescription) {
+            currentBasicsTaskIds.push(entry.task_id);
             // TODO
             currentIcons.push(null);
           } else {
 
-            // set external link states
-            if (entry.external_link) {
-            currentLinkIds.push(entry.task_id)
-            currentLinks.push(entry.external_link.url)
-            currentIcons.push(Link2Icon);
-            } else {
+            // set clustering states
+            let clusteringDescription = entry.clustering_description;
+            if (clusteringDescription) {
+              currentClusteringTaskIds.push(entry.task_id);
+              // TODO
               currentIcons.push(null);
-              console.log("Task " + entry.task_id + " is not implemented in the frontend.")
+            } else {
+
+              // set external link states
+              if (entry.external_link) {
+              currentLinkIds.push(entry.task_id)
+              currentLinks.push(entry.external_link.url)
+              currentIcons.push(Link2Icon);
+              } else {
+                currentConstructionTaskIds.push(entry.task_id);
+                currentIcons.push(null);
+                console.log("Task " + entry.task_id + " is not implemented in the frontend.")
+              }
             }
           }
         }
@@ -472,14 +479,9 @@ function App() {
 
 
         // some custom taskIds
-        console.log(currentTaskNames) // TODO: remove
-        setManualLinRegId( parseInt(Object.keys(currentTaskNames).find(key => currentTaskNames[key] === 'Linear Regr.')) );
-        setManualLinRegDescription( JSON.parse(currentTaskData.find(task => task.task_id === manualLinRegId).description) );
-        console.log("manualLinRegId & Description: ", manualLinRegId, manualLinRegDescription); // TODO remove this
-        setManualPolyRegId( parseInt(Object.keys(currentTaskNames).find(key => currentTaskNames[key] === 'Polynomial Regr.')) );
-        setManualPolyRegDescription( JSON.parse(currentTaskData.find(task => task.task_id === manualPolyRegId).description) );
-        setManualMatrixId( parseInt(Object.keys(currentTaskNames).find(key => currentTaskNames[key] === 'Data Matrix')) );
-        setManualMatrixDescription( JSON.parse(currentTaskData.find(task => task.task_id === manualMatrixId).description) );
+        setOtherTasks(currentOtherTasks);
+        setOtherDescriptions(currentOtherDescriptions);
+        setConstructionTaskIds(currentConstructionTaskIds);
 
         setLoadedTasks(true);
       })
@@ -867,37 +869,17 @@ function App() {
             isTraining={isTraining[22]} taskId={22} cancelRequestRef={cancelRequestRef} index={taskIds.indexOf(22)} name={'Template Test'} startTraining={() => console.log("startTraining placeholder")} pendingTime={pendingTime} tabs={['Data', 'Model', 'Result']} initPlot={initPlots[taskIds.indexOf(22)]} sliderValues={{'dummySlider': 50}} sliderVisibilities={{'dummySlider': true}} inputFieldVisibilities={{'dummyInputField': true}} dropdownVisibilities={{'dummyDropdown': true}} checkboxVisibilities={{'dummyCheckbox': true}} setIsResponding={setIsResponding} isResponding={taskIds.indexOf(22)} apiData={apiData.indexOf(22)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(22)]} img={imgs[taskIds.indexOf(22)]} typ={typ[taskIds.indexOf(22)]}
           />} />
 
-          <Route path={`/exercise${manualLinRegId/10}`} element={
-            <ManualTask
-            type = {'ManualLinReg'}
-            host = {window.location.host}
-            customId = {manualLinRegId}
-            userId = {getCookie('user_id')}
-            description = {manualLinRegDescription}
-            />
-          } />
-
-          <Route path={`/exercise${manualPolyRegId/10}`} element={
-            <ManualTask
-            type = {'ManualPolyReg'}
-            host = {window.location.host}
-            customId = {manualPolyRegId}
-            userId = {getCookie('user_id')}
-            description = {manualPolyRegDescription}
-            />
-          } />
-
-          <Route path={`/exercise${manualMatrixId/10}`} element={
-            <ManualTask
-            type = {'ManualMatrix'}
-            host = {window.location.host}
-            customId = {manualMatrixId}
-            userId = {getCookie('user_id')}
-            description = {manualMatrixDescription}
-            />
-          } />
-
-
+          {Object.entries(otherTasks).map(([taskId, taskName], index) => (
+            <>
+            <Route key={taskId} path={`/exercise${taskId/10}`} element={<OtherTask
+              type = {taskName}
+              host = {window.location.host}
+              customId = {parseInt(taskId)}
+              userId = {getCookie('user_id')}
+              description = {JSON.parse(otherDescriptions[taskId])}
+            />} />
+            </>
+          ))}
 
           {NNTaskIds.map((taskId, NNIndex) => (
             <>
@@ -1045,7 +1027,7 @@ function App() {
           } />
 
           <Route path="/:ex" element={
-            <ConstructionView/>
+            <ConstructionView taskIds={constructionTaskIds} />
           } />
 
           <Route path="*" element={<NotFound />} />

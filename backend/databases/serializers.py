@@ -46,7 +46,7 @@ class TaskDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaskDescription
         fields = ('pk', 'visibility', 'task_id', 'name', 'short_name', 'short_description', 'description', 'type', 'dataset', 'n_inputs', 'n_outputs', 'file_name', 'function_name',
-                  'external_link', 'basics_description', 'svm_description', 'neural_network_description', 'clustering_description')
+                  'other_task', 'external_link', 'basics_description', 'svm_description', 'neural_network_description', 'clustering_description')
 
 class IntroSerializer(serializers.ModelSerializer):
     class Meta:
