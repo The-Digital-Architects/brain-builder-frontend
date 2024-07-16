@@ -47,7 +47,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
     c.exit().remove();
     updateCenters(c.enter()
       .append('path')
-      .attr('d', d3.symbol().type('cross'))
+      .attr('d', d3.symbol().type(d3.symbolCross))
       .attr('stroke', '#aabbcc'));
     updateCenters(c
       .transition()

@@ -18,7 +18,7 @@ import LinksPage from './links';
 import NotFound from './common/notFound';
 import { DefaultView } from './common/viewTemplate';
 import SvmView from './svmView';
-import ConstructionView from './constructionView';
+import ConstructionView from './common/constructionView';
 import NotebookView from './notebookView';
 import JupyterLite from './jupyterLiteView';
 import StartPage from './startpage/startPage';

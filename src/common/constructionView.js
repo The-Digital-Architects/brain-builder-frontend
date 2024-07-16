@@ -1,8 +1,8 @@
 import React from "react";
 import {useParams, Navigate} from 'react-router-dom';
-import Header from "./common/header";
-import underConstructionImage from "./images/under_construction_by_freepik.jpg";
-import NotFound from "./common/notFound";
+import Header from "./header";
+import underConstructionImage from "../images/under_construction_by_freepik.jpg";
+import NotFound from "./notFound";
 
 function ConstructionView( params ) {
     let { ex } = useParams();
