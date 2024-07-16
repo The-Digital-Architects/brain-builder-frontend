@@ -895,8 +895,6 @@ function App() {
             </>
           ))}
 
-          {console.log("SVMTaskIds: ", SVMTaskIds)  // TODO remove
-          }
           {SVMTaskIds.map((taskId, SVMIndex) => (
             <>
             <Route

@@ -147,7 +147,7 @@ class SvmView extends Model {
         max={3.5}
         step={0.5}
         style={{ width: Math.round(0.19 * (window.innerWidth * 0.97)) }}
-        disabled={this.props.isTraining[this.props.index] === 1 || !this.state.checkboxValues['KernelCheckbox']}
+        disabled={this.props.isTraining[this.props.index] === 1}
       >
         <Slider.Track className="SliderTrack" style={{ height: 3 }}>
           <Slider.Range className="SliderRange" />
