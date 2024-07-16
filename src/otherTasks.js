@@ -341,7 +341,7 @@ function renderMatrix(nObjects, nFeatures) {
 }
 
 
-const Dropdown = ({ label, options, onChange, placeholder, disabled }) => (
+const Dropdown = ({ label, options, onChange, placeholder, disabled=false }) => (
     <Select.Root onValueChange={onChange} disabled={disabled} >
     <Select.Trigger className="SelectTrigger" aria-label={label}>
         <Select.Value placeholder={placeholder} />

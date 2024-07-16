@@ -56,7 +56,8 @@ class SvmView extends Model {
     // CUSTOMIZABLE FUNCTIONS
 
     continueComponentDidMount = () => {
-        this.props.loadData(this.props.taskId, this.props.index)  // let the backend load the data, then set the images and feature names
+        this.props.loadData(this.props.taskId, this.props.index)  // let the backend load the data  // TODO
+        console.log("SVM mounted")
     }
 
     valuesUndefined = () => {
@@ -64,7 +65,6 @@ class SvmView extends Model {
     }
     
     handleStartClick = (() => {
-        console.log("handleStartClick is not implemented in component ", this.props.name)
         let inThrottle;
         return (event) => {
             if (!inThrottle && this.props.taskId !== 0) { 
