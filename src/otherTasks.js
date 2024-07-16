@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import * as Slider from '@radix-ui/react-slider';
-import { ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
-import { Select } from '@radix-ui/react-select';
+import { ChevronDownIcon, ChevronUpIcon, PlayIcon } from '@radix-ui/react-icons';
+import * as Select  from '@radix-ui/react-select';
 import './css/App.css';
-import { Flex, Theme, Box, Heading, Separator } from '@radix-ui/themes';
+import { Flex, Theme, Box, Heading, Separator, IconButton } from '@radix-ui/themes';
 import Header from './common/header';
 
 
@@ -29,9 +29,11 @@ class OtherTask extends Component {
         };
         if (this.props.type === 'ManualLinReg' || this.props.type === 'ManualPolyReg' || this.props.type === 'ManualPCA') {
             this.ws = new WebSocket(`wss://${this.props.host}/ws/${this.props.userId}/`);
-        } else if (this.props.type === 'ManualMatrix') {
+        } else {
             this.ws = null;
+            if (this.props.type === 'ManualMatrix') {
             this.setState({ view: renderMatrix(5, 3) });
+            }
         }
     }
 
@@ -130,6 +132,24 @@ class OtherTask extends Component {
         this.ws.send(message);
     }, 100)
 
+    setResult = (value) => {
+        this.setState({ out1: value[0], out2: value[1] });
+    }
+
+    updateWords= (value) => {
+        if (value === 'a sentence (~30 words)') {
+            this.setState({ in1: 30 });
+        } else if (value === 'a paragraph (~100 words)') {
+            this.setState({ in1: 100 });
+        } else if (value === 'a page (~400 words)') {
+            this.setState({ in1: 400 });
+        }
+    }
+
+    updateTime = (value1, value2) => {
+        this.setState({ in2: [value1, value2] });
+    }
+
     render() {
         const texts = {
             "Perceptron": [
@@ -159,7 +179,7 @@ class OtherTask extends Component {
                         ))}
                     </Box>
                     <Separator orientation='vertical' style = {{ height: window.innerHeight-110 }}/>
-                    {this.props.type === 'ManualEmissions' ? renderEmissions() : this.animation()}
+                    {this.props.type === 'ManualEmissions' ? renderEmissions( [this.state.out1, this.state.out2], this.setResult, [this.state.in1, this.state.in2], this.updateTime, this.updateWords ) : this.animation()}
                 </Flex>
             </Box>
             </Flex>
@@ -277,9 +297,6 @@ class OtherTask extends Component {
                 </div>
                 </>
                 )}
-
-                {console.log(this.state.img)  // TODO remove
-                }
                 
                 {
                 this.state.img ? <img src={this.state.img} alt="No plot available" style={{ height: window.innerHeight*0.55, marginBottom:10 }}/>
@@ -388,7 +405,9 @@ const AIP = 400;  // W, power consumption of an A100 GPU in an Azure datacenter 
 const AIM = 1.84+0.03; // gCO2e/query, the share of emissions from training the model + operating the server (source: https://www.nature.com/articles/s41598-024-54271-x)
 const GE = 0.2; // gCO2e/Wh, carbon intensity of a Google search (source: https://googleblog.blogspot.com/2009/01/powering-google-search.html)
 function calculateWritingEmissions( n_words, own_time_mins, proofread_time_mins ) {
-    return ((own_time_mins+proofread_time_mins)/60*CP*EI, AIM + n_words*T*AIP*EI + proofread_time_mins/60*CP*EI);  // own emissions (in gCO2e), emissions for AI
+    let own_emissions = (own_time_mins+proofread_time_mins)/60*CP*EI;  // in gCO2e
+    let AI_emissions = AIM + n_words*T*AIP*EI + proofread_time_mins/60*CP*EI;  // in gCO2e
+    return [own_emissions, AI_emissions]; 
 }
 function calculateSearchingEmissions( n_searches, n_pages, mins_per_page, short=false ) {
     if (short) {
@@ -404,36 +423,33 @@ function calculateSearchingEmissions( n_searches, n_pages, mins_per_page, short=
 // note: in general, this is a rough estimate, but at least it gives people an idea
 // for more details on emissions calculation, see this blog post: https://medium.com/@chrispointon/the-carbon-footprint-of-chatgpt-e1bc14e4cc2a
 
-function renderEmissions( writing=true ) {
+function renderEmissions( result, setResult, ins, updateTime, updateWords, writing=true ) {
     
     if (writing) {
-    let words = 30;
-    let own_time = 1;
-    let proofread_time = 5;
-    function updateWords(value) {
-        if (value === 'A sentence (~30 words)') {
-            words = 30;
-        } else if (value === 'A paragraph (~100 words)') {
-            words = 100;
-        } else if (value === 'A page (~400 words)') {
-            words = 400;
-        }
-    }
+    if (ins[1] === null) {ins[1] = [null, null]};
+
     const inputs = [
         <Dropdown label="TextType" options={['a sentence (~30 words)', 'a paragraph (~100 words)', 'a page (~400 words)']} onChange={(value) => updateWords(value)} placeholder="Select an amount of words" />,
-        <input type="number" />,
-        <input type="number" />,
+        <input type="number" onChange={(event) => updateTime(event.target.value, ins[1][1])} />,
+        <input type="number" onChange={(event) => updateTime(ins[1][0], event.target.value)} />,
     ]
     const texts = [
         "Writing an initial draft of ", "takes me about ", " minutes, and proofreading it takes me about ", " minutes. ",
     ]
-    let result = calculateWritingEmissions( words, own_time, proofread_time );
     return (
-        <>
-        {renderText( texts, inputs )}
-            <p> Emissions from writing yourself: {result[0]} </p>
-            <p> Emissions from writing with ChatGPT: {result[1]} </p>
-        </>
+        <Flex direction='column' gap="0" style={{ alignItems: 'center', justifyContent: 'center' }}>
+            {renderText( texts, inputs )}
+            <IconButton onClick={
+                () => setResult(calculateWritingEmissions(ins[0], parseInt(ins[1][0]), parseInt(ins[1][1])))
+            } variant="solid" color="cyan" style={{ borderRadius: 'var(--radius-3)', width: 70, height: 35, fontSize: 'var(--font-size-2)', fontWeight: "500" }} >
+                <PlayIcon />
+            </IconButton>
+            {(result[0] !== null  && result[1] !== null) ?
+            <div style={{ marginTop:20 }}>
+            <p> Emissions from writing yourself: {Math.round(result[0], 0.1)} g CO2e </p>
+            <p> Emissions from writing with ChatGPT: {Math.round(result[1], 0.1)} g CO2e </p>
+            </div> : null}
+        </Flex>
     );
     }
 

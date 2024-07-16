@@ -41,8 +41,8 @@ async def process(req):
         tag = int(req['task_id'])
         gd = json.loads(inputs['games_data'])
         gd = pd.DataFrame(gd).set_index('task_id')
+        print(gd)  # TODO remove
         dataset = gd.loc[tag, 'dataset']
-        #print(dataset)
         normalization = bool(inputs['normalization'])
 
         data, (training_set, test_set) = df.get_data(dataset=dataset, normalization=normalization, typ=gd.loc[tag, 'type'])

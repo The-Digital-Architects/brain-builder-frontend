@@ -16,8 +16,8 @@ import Tutorial from './tutorial';
 import FeedbackApp from './feedback';
 import LinksPage from './links';
 import NotFound from './common/notFound';
-import { DefaultView, Model } from './common/viewTemplate';
-import svmView from './svmView';
+import { DefaultView } from './common/viewTemplate';
+import SvmView from './svmView';
 import ConstructionView from './constructionView';
 import NotebookView from './notebookView';
 import JupyterLite from './jupyterLiteView';
@@ -220,7 +220,7 @@ function App() {
   let accuracyColor = 'var(--slate-11)';
 
   // this is for all the tasks
-  const defaultTaskIds = [11, 12, 13, 21, 22];
+  const defaultTaskIds = [11, 12, 13, 21, 22, 61];
   const [taskData, setTaskData] = useState([]);
   const [taskNames, setTaskNames] = useState({})
   const [taskIds, setTaskIds] = useState(defaultTaskIds);
@@ -286,8 +286,8 @@ function App() {
   const [introIds, setIntroIds] = useState([]);
   const [introData, setIntroData] = useState([]);
 
-  const [otherTasks, setOtherTasks] = useState({11: 'ManualLinReg', 12: 'ManualPolyReg', 13: 'ManualMatrix', 51: 'ManualPCA'});	
-  const [otherDescriptions, setOtherDescriptions] = useState({11: 'ManualLinRegDescription', 12: 'ManualPolyRegDescription', 13: 'ManualMatrixDescription', 51: 'ManualPCADescription'});
+  const [otherTasks, setOtherTasks] = useState({11: 'ManualLinReg', 12: 'ManualPolyReg', 13: 'ManualMatrix', 51: 'ManualPCA', 61: 'ManualEmissions'});	
+  const [otherDescriptions, setOtherDescriptions] = useState({11: 'ManualLinRegDescription', 12: 'ManualPolyRegDescription', 13: 'ManualMatrixDescription', 51: 'ManualPCADescription', 61: [["ManualEmissionsDescription", null]]});
   const [constructionTaskIds, setConstructionTaskIds] = useState([23]);
 
 
@@ -582,7 +582,7 @@ function App() {
     }
     });
     }
-  }, [cytoLayers, NNTaskIds, nInputs, nOutputs]);
+  }, [cytoLayers, NNTaskIds, nInputs, nOutputs, taskIds, isTraining]);
 
   
   const loadLastCytoLayers = (setCytoLayers, apiData, setApiData, propertyName, taskId, index, NNIndex, nInputs, nOutputs) => {
@@ -663,7 +663,7 @@ function App() {
       return generateCytoElements(cytoLayers[index], apiData[index], isTraining[taskIds.indexOf(NNTaskIds[index])], weights[index], biases[index])
     }
     ));}
-  }, [NNTaskIds, cytoLayers, apiData, weights, biases]);
+  }, [NNTaskIds, cytoLayers, apiData, weights, biases, isTraining, taskIds]);
 
   useEffect(() => {
     setCytoStyle(NNTaskIds.map((taskId, index) => 
@@ -895,6 +895,25 @@ function App() {
             </>
           ))}
 
+          {console.log("SVMTaskIds: ", SVMTaskIds)  // TODO remove
+          }
+          {SVMTaskIds.map((taskId, SVMIndex) => (
+            <>
+            <Route
+              key={taskId}
+              path={`/exercise${taskId/10}`}
+              element={
+                <>
+                <SvmView 
+                isTraining={isTraining[taskIds.indexOf(taskId)]} taskId={taskId} cancelRequestRef={cancelRequestRef} SVMIndex={SVMIndex} index={taskIds.indexOf(taskId)} name={taskNames[taskId]} pendingTime={pendingTime} initPlot={initPlots[taskIds.indexOf(22)]} isResponding={taskIds.indexOf(22)} apiData={apiData.indexOf(22)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(22)]} img={imgs[taskIds.indexOf(22)]} typ={typ[taskIds.indexOf(22)]} loadData={loadData} normalization={false} dataset={dataset[taskIds.indexOf(taskId)]}
+                startTraining={putRequest} tabs={['Data', 'Model', 'Result']} sliderValues={{'CSlider': 10, 'GammaSlider': 0.1}} sliderVisibilities={{'CSlider': cSliderVisibility[SVMIndex], 'GammaSlider': gammaSliderVisibility[SVMIndex] }} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'KernelCheckbox': rbfVisibility[SVMIndex] }} setIsResponding={setIsResponding} 
+                />
+                </>
+              }
+            />
+            </>
+          ))}
+
           {NNTaskIds.map((taskId, NNIndex) => (
             <>
             <Route
@@ -974,25 +993,6 @@ function App() {
                   inputFieldVisibilities={{}}
                   dropdownVisibilities={{}}
                   checkboxVisibilities={{'AFCheckbox': afVisibility[NNIndex], 'NormCheckbox': normalizationVisibility[NNIndex]}}
-                />
-                </>
-              }
-            />
-            </>
-          ))}
-
-          {console.log("SVMTaskIds: ", SVMTaskIds)  // TODO remove
-          }
-          {SVMTaskIds.map((taskId, SVMIndex) => (
-            <>
-            <Route
-              key={taskId}
-              path={`/exercise${taskId/10}`}
-              element={
-                <>
-                <svmView 
-                isTraining={isTraining[taskIds.indexOf(taskId)]} taskId={taskId} cancelRequestRef={cancelRequestRef} SVMIndex={SVMIndex} index={taskIds.indexOf(taskId)} name={taskNames[taskId]} pendingTime={pendingTime} initPlot={initPlots[taskIds.indexOf(22)]} isResponding={taskIds.indexOf(22)} apiData={apiData.indexOf(22)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(22)]} img={imgs[taskIds.indexOf(22)]} typ={typ[taskIds.indexOf(22)]} loadData={loadData} normalization={false} dataset={dataset[taskIds.indexOf(taskId)]}
-                startTraining={putRequest} tabs={['Data', 'Model', 'Result']} sliderValues={{'CSlider': 10, 'GammaSlider': 0.1}} sliderVisibilities={{'CSlider': cSliderVisibility[SVMIndex], 'GammaSlider': gammaSliderVisibility[SVMIndex] }} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'KernelCheckbox': true}} setIsResponding={setIsResponding} 
                 />
                 </>
               }

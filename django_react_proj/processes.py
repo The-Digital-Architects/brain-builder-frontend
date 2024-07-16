@@ -27,7 +27,7 @@ from backend.processing import communication
 
 
 # function to start subprocesses
-def run(file_name, function_name, args=None):  
+def run(file_name, function_name, args=None, thread=None):  
     magic_box = {'required_parameters': None, 'inspect': inspect, 'fn': None}
     #fl, fn = find_file(process_code)  # find the file and function corresponding to the process code
     
@@ -61,6 +61,8 @@ def run(file_name, function_name, args=None):
     # execute the function
     print('Executing: ', execution_string)
     exec(execution_string, magic_box)
+
+    print('Secondary thread done')
     
 
 '''

@@ -21,7 +21,7 @@ import {
   Tooltip, 
   Legend 
 } from 'chart.js';
-import { DefaultView, Model } from './common/viewTemplate';
+import { Model } from './common/viewTemplate';
 
 
 class Building extends Model {

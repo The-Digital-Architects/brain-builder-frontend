@@ -116,7 +116,7 @@ def ManualPCA(a=None, task_id=None, user_id=None):
         plot = img.getvalue()
         plot = b64encode(plot).decode()
 
-        #send_update(header='plot', var_names=['plot', 'out1', 'out2'], vars=(plot, explained_var, None), task_id=task_id, user_id=user_id)
+        send_update(header='plot', var_names=['plot', 'out1', 'out2'], vars=(plot, explained_var, None), task_id=task_id, user_id=user_id)
 
     else: 
         # set up the plot
@@ -170,12 +170,9 @@ def ManualPolyReg(n=None, task_id=None, user_id=None):
         send_update(header='plot', var_names=['plot', 'out1', 'out2'], vars=(plot, None, None), task_id=task_id, user_id=user_id)
 
     else: 
-        x = np.random.rand(limits[0], limits[1], size=(10,))
+        x = np.random.rand(10) * (limits[1] - limits[0]) + limits[0]
         y = np.sin(x) + np.random.normal(0, 0.1, size=(10,))
 
         xVars[(user_id, 'PolyReg')] = x
         yVars[(user_id, 'PolyReg')] = y
         ManualPolyReg(n, task_id, user_id)
-
-if __name__ == '__main__':
-    ManualPCA(a=0)

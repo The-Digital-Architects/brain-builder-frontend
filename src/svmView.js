@@ -4,7 +4,7 @@ import * as SliderSlider from '@radix-ui/react-slider';
 import { useNavigate } from 'react-router-dom';
 import Slider from 'react-animated-slider';
 import '@radix-ui/themes/styles.css';
-import { DefaultView, Model } from './common/viewTemplate';
+import { Model } from './common/viewTemplate';
 
 
 // This is a template for creating a new view in the application, similar to buildView. 

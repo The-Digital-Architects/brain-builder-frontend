@@ -259,7 +259,7 @@ class Model extends React.Component {
     // TODO: implement the necessary handle...Change functions
 
     handleSliderChange = (value) => {
-        this.state.dummySliderValue = value;
+        this.setState({ dummySliderValue: value });
         console.log("handleSliderChange is not implemented in component ", this.props.name)
     }
     
