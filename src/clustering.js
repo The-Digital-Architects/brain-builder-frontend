@@ -109,7 +109,7 @@ function KMeansClusteringVisualization() {
     };
 
     const handleStep = () => {
-        step(setIsRestartDisabled, flag, setFlag, draw);
+        step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots);
     };
     
     const handleRestart = () => {

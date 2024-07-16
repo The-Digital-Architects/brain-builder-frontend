@@ -44,14 +44,14 @@ function init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, 
     }
 }
 
-function step(setIsRestartDisabled, flag, setFlag, draw) {
+function step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots) {
   setIsRestartDisabled(false);
   if (flag) {
-    moveCenter();
-    draw();
+    moveCenter(groups, setGroups);
+    draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
   } else {
-    updateGroups();
-    draw();
+    updateGroups(dots, setDots, groups, setGroups);
+    draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
   }
   setFlag(!flag);
 }
