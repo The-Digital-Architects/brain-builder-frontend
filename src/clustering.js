@@ -5,6 +5,8 @@ import { Flex, Button } from '@radix-ui/themes';
 import { init, step, restart } from './utils/clusteringUtils';
 
 function draw(svg, lineg, dotg, centerg, groups, dots) {
+    console.log("draw");
+
     let circles = dotg.selectAll('circle')
       .data(dots);
     circles.enter()
@@ -71,6 +73,8 @@ function KMeansClusteringVisualization() {
     const centergRef = useRef(null);
 
     useEffect(() => {
+        console.log("useEffect (initialization");
+
         if (!svgRef.current) {
             // Initialize SVG and groups if not already initialized
             const svg = d3.select("#kmeans").append("svg")
@@ -100,55 +104,69 @@ function KMeansClusteringVisualization() {
                 svgRef.current.on('click', null); // Remove click event listener
             }
         };
+
+        console.log("initialization completed")
     }, []); // this runs only once on mount
     
     const handleReset = () => {
+        console.log("handleReset");
+
         // Use refs to access SVG and groups
         init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height);
         draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
     };
 
     const handleStep = () => {
+        console.log("handleStep");
+
         step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots);
     };
     
     const handleRestart = () => {
+        console.log("handleRestart");
+
         restart(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
         draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
     };
 
     return (
         <Flex direction="column" gap="2">
+
             <Header showHomeButton={true} />
-            <div id="kmeans">
-                <Flex gap="1">
-                    <label>
-                        Number of Points:{" "}
-                        <input
-                            type="number"
-                            value={numPoints}
-                            onChange={(e) => setNumPoints(Number(e.target.value))}
-                        />
-                    </label>
-                    <label>
-                        Number of Clusters:{" "}
-                        <input
-                            type="number"
-                            value={numClusters}
-                            onChange={(e) => setNumClusters(Number(e.target.value))}
-                        />
-                    </label>
-                    <Button id="run" onClick={handleReset}>
-                        Reset
-                    </Button>
-                    <Button id="step" onClick={handleStep}>
-                        Step
-                    </Button>
-                    <Button id="restart" onClick={handleRestart} disabled={isRestartDisabled}>
-                        Restart
-                    </Button>
-                </Flex>
-            </div>
+
+            <Flex gap="1">
+                <label>
+                    Number of Points:{" "}
+                    <input
+                        type="number"
+                        value={numPoints}
+                        onChange={(e) => setNumPoints(Number(e.target.value))}
+                    />
+                </label>
+                <label>
+                    Number of Clusters:{" "}
+                    <input
+                        type="number"
+                        value={numClusters}
+                        onChange={(e) => setNumClusters(Number(e.target.value))}
+                    />
+                </label>
+            </Flex>
+
+            <div id="kmeans"/>
+
+            <Flex gap="1">
+                <Button id="run" onClick={handleReset}>
+                    Reset
+                </Button>
+                <Button id="step" onClick={handleStep}>
+                    Step
+                </Button>
+                <Button id="restart" onClick={handleRestart} disabled={isRestartDisabled}>
+                    Restart
+                </Button>
+            </Flex>
+
         </Flex>
     );
 }

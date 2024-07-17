@@ -1,5 +1,6 @@
 function init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height) {
-    setIsRestartDisabled(false);
+  console.log("init");  
+  setIsRestartDisabled(false);
 
     const N = numPoints;
     const K = numClusters;
@@ -45,6 +46,7 @@ function init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, 
 }
 
 function step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots) {
+  console.log("step");
   setIsRestartDisabled(false);
   if (flag) {
     moveCenter(groups, setGroups);
@@ -57,6 +59,7 @@ function step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgR
 }
 
 function restart(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled) {
+    console.log("restart");
     setFlag(false);
     setIsRestartDisabled(true);
   
@@ -79,6 +82,7 @@ function restart(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled
 }
 
 function moveCenter(groups, setGroups) {
+  console.log("moveCenter");
 
   const newGroups = groups.map(group => {
     if (group.dots.length === 0) return { ...group };
@@ -103,6 +107,8 @@ function moveCenter(groups, setGroups) {
 }
 
 function updateGroups(dots, setDots, groups, setGroups) {
+  console.log("updateGroups");
+  
   setGroups(groups.map(g => ({ ...g, dots: [] })));
 
   const newDots = dots.map(dot => ({ ...dot }));
