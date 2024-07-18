@@ -21,6 +21,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
       .attr('r', 5);
   
     if (dots[0]?.group) {
+      console.log("draw lines");
       let l = lineg.selectAll('line')
         .data(dots);
       const updateLine = function(lines) {
@@ -35,6 +36,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
       updateLine(l.transition().duration(500));
       l.exit().remove();
     } else {
+      console.log("remove lines");
       lineg.selectAll('line').remove();
     }
   
@@ -73,7 +75,7 @@ function KMeansClusteringVisualization() {
     const centergRef = useRef(null);
 
     useEffect(() => {
-        console.log("useEffect (initialization");
+        console.log("useEffect (initialization)");
 
         if (!svgRef.current) {
             // Initialize SVG and groups if not already initialized
