@@ -903,8 +903,8 @@ function App() {
               element={
                 <>
                 <SvmView 
-                isTraining={isTraining[taskIds.indexOf(taskId)]} taskId={taskId} cancelRequestRef={cancelRequestRef} SVMIndex={SVMIndex} index={taskIds.indexOf(taskId)} name={taskNames[taskId]} pendingTime={pendingTime} initPlot={initPlots[taskIds.indexOf(22)]} isResponding={taskIds.indexOf(22)} apiData={apiData.indexOf(22)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(22)]} img={imgs[taskIds.indexOf(22)]} typ={typ[taskIds.indexOf(22)]} loadData={loadData} normalization={false} dataset={dataset[taskIds.indexOf(taskId)]}
-                startTraining={putRequest} tabs={['Data', 'Model', 'Result']} sliderValues={{'CSlider': 10, 'GammaSlider': 0.1}} sliderVisibilities={{'CSlider': cSliderVisibility[SVMIndex], 'GammaSlider': gammaSliderVisibility[SVMIndex] }} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'KernelCheckbox': rbfVisibility[SVMIndex] }} setIsResponding={setIsResponding} 
+                isTraining={isTraining[taskIds.indexOf(taskId)]} taskId={taskId} cancelRequestRef={cancelRequestRef} SVMIndex={SVMIndex} index={taskIds.indexOf(taskId)} name={taskNames[taskId]} pendingTime={pendingTime} initPlot={initPlots[taskIds.indexOf(taskId)]} isResponding={taskIds.indexOf(taskId)} apiData={apiData.indexOf(taskId)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(taskId)]} img={imgs[taskIds.indexOf(taskId)]} typ={typ[taskIds.indexOf(taskId)]} loadData={loadData} normalization={false} dataset={dataset[taskIds.indexOf(taskId)]}
+                startTraining={putRequest} tabs={['Data', 'Model']} sliderValues={{'CSlider': 10, 'GammaSlider': 0.1}} sliderVisibilities={{'CSlider': cSliderVisibility[SVMIndex], 'GammaSlider': gammaSliderVisibility[SVMIndex] }} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'KernelCheckbox': rbfVisibility[SVMIndex] }} setIsResponding={setIsResponding} 
                 />
                 </>
               }

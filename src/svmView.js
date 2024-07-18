@@ -57,7 +57,7 @@ class SvmView extends Model {
 
     continueComponentDidMount = () => {
         this.props.loadData(this.props.taskId, this.props.index)  // let the backend load the data  // TODO
-        console.log("SVM mounted")
+        console.log("SVM mounted: ", this.props.sliderVisibilities, this.props.checkboxVisibilities)
     }
 
     valuesUndefined = () => {
@@ -184,8 +184,8 @@ class SvmView extends Model {
             <div style={{ textAlign:'justify', width: Math.round(0.27 * (window.innerWidth * 0.97)), fontFamily:'monospace' }}>
                 {this.shortDescription}
             </div>
-            {this.props.isTraining === 1 || this.props.isTraining === 2} ? 
-            <div style={{ textAlign:'justify', width: Math.round(0.27 * (window.innerWidth * 0.97)), fontFamily:'monospace' }}>F1-score:{this.state.F1Score} </div> : <div/>
+            {this.props.isTraining === 1 || this.props.isTraining === 2 ? 
+            <div style={{ textAlign:'justify', width: Math.round(0.27 * (window.innerWidth * 0.97)), fontFamily:'monospace' }}>F1-score: {this.state.F1Score} </div> : <div/>}
         </Box>
     )}
 
