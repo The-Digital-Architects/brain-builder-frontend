@@ -46,13 +46,17 @@ function init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, 
 }
 
 function step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots) {
-  console.log("step");
+  console.log(`step, flag: ${flag} which means we are ${flag ? "moving the center" : "updating the groups"}`);
   setIsRestartDisabled(false);
   if (flag) {
+    console.log("groups before moveCenter", groups);
     moveCenter(groups, setGroups);
+    console.log("groups after moveCenter", groups);
     draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
   } else {
+    console.log("groups before updateGroups", groups);
     updateGroups(dots, setDots, groups, setGroups);
+    console.log("groups after updateGroups", groups);
     draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
   }
   setFlag(!flag);
@@ -109,28 +113,43 @@ function moveCenter(groups, setGroups) {
 function updateGroups(dots, setDots, groups, setGroups) {
   console.log("updateGroups");
   
-  setGroups(groups.map(g => ({ ...g, dots: [] })));
+  // Step 1: Reset the dots array in groups
+  const resetGroups = groups.map(g => ({ ...g, dots: [] }));
 
+  // Step 2: Copy dots
   const newDots = dots.map(dot => ({ ...dot }));
 
+  // Step 3: Assign dots to groups
+  const groupAssignments = new Map();
   newDots.forEach(function(dot) {
     // find the nearest group
     let min = Infinity;
-    let group;
-    groups.forEach(function(g) {
+    let nearestGroupIndex = null;
+    resetGroups.forEach((g, index) => {
       let d = Math.pow(g.center.x - dot.x, 2) + Math.pow(g.center.y - dot.y, 2);
       if (d < min) {
         min = d;
-        group = g;
+        nearestGroupIndex = index;
       }
     });
 
     // update group
-    group.dots.push(dot);
-    dot.group = group;
+    if (!groupAssignments.has(nearestGroupIndex)) {
+      groupAssignments.set(nearestGroupIndex, []);
+    }
+    groupAssignments.get(nearestGroupIndex).push(dot);
+    dot.group = resetGroups[nearestGroupIndex];
   });
 
+  // Step 4: Update groups with new dots
+  const updatedGroups = resetGroups.map((group, index) => ({
+    ...group,
+    dots: groupAssignments.get(index) || []
+  }));
+
+  // Step 5: Update the states
   setDots(newDots);
+  setGroups(updatedGroups);
 }
 
 export { init, step, restart };
