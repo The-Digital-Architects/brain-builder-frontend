@@ -51,6 +51,8 @@ class SvmView extends Model {
             'KernelCheckbox': <Checkbox disabled={this.props.isTraining===1} onClick={this.handleCheckboxChange} checked={false} />
         }
 
+        this.inputFields = {};
+        this.dropdowns = {};
     };
     
     // CUSTOMIZABLE FUNCTIONS
@@ -79,7 +81,7 @@ class SvmView extends Model {
                     cValue: this.state.sliderValues['CSlider'],
                     gammaValue: this.state.sliderValues['GammaSlider'],
                     kernelValue: this.state.checkboxValues['KernelCheckbox'] ? 'rbf' : 'linear',
-                    linearlySeparable: !this.sliderVisibilities['CSlider'],
+                    linearlySeparable: !this.props.sliderVisibilities['CSlider'],
                     normalization: this.props.normalization,
                     setF1Score: this.setF1Score,
                     setApiData: this.props.setApiData,
@@ -139,7 +141,7 @@ class SvmView extends Model {
     };
     
     gammaSlider = (
-        <Slider.Root
+        <SliderSlider.Root
         className="SliderRoot"
         defaultValue={[-0.5]} 
         onValueChange={(value) => this.handleGammaChange(value)}
@@ -149,11 +151,11 @@ class SvmView extends Model {
         style={{ width: Math.round(0.19 * (window.innerWidth * 0.97)) }}
         disabled={this.props.isTraining[this.props.index] === 1}
       >
-        <Slider.Track className="SliderTrack" style={{ height: 3 }}>
-          <Slider.Range className="SliderRange" />
-        </Slider.Track>
-        <Slider.Thumb className="SliderThumb" aria-label="Gamma" />
-      </Slider.Root>
+        <SliderSlider.Track className="SliderTrack" style={{ height: 3 }}>
+          <SliderSlider.Range className="SliderRange" />
+        </SliderSlider.Track>
+        <SliderSlider.Thumb className="SliderThumb" aria-label="Gamma" />
+      </SliderSlider.Root>
     );
     handleGammaChange = (value) => {
         this.setState( prev => {

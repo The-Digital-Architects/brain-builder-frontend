@@ -43,6 +43,13 @@ function updateErrorListIfNeeded(data, params) {
     }
 }
 
+function updateF1ScoreIfNeeded(data, params) {
+  if(data.f1score !== undefined && params.setF1Score !== undefined) {
+    console.log("updating f1 score");  // for debugging TODO remove
+    params.setF1Score(data.f1score);
+  }
+}
+
 function updateWeightsIfNeeded(data, params) {
 
     /*update the weights if they changed*/
@@ -96,4 +103,4 @@ function updateImagesIfNeeded(data, params) {
     }
 }
 
-export { updateProgress, checkTrainingComplete, updateErrorListIfNeeded, updateWeightsIfNeeded, updateBiasesIfNeeded, updateImagesIfNeeded };
+export { updateProgress, checkTrainingComplete, updateErrorListIfNeeded, updateF1ScoreIfNeeded, updateWeightsIfNeeded, updateBiasesIfNeeded, updateImagesIfNeeded };

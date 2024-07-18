@@ -1,4 +1,4 @@
-import { updateProgress, checkTrainingComplete, updateErrorListIfNeeded, updateWeightsIfNeeded, updateBiasesIfNeeded, updateImagesIfNeeded } from './updatesOnMessage';
+import { updateProgress, checkTrainingComplete, updateErrorListIfNeeded, updateF1ScoreIfNeeded, updateWeightsIfNeeded, updateBiasesIfNeeded, updateImagesIfNeeded } from './updatesOnMessage';
 
 export default function handleMessage(event, ws, params) {
 
@@ -30,6 +30,7 @@ export default function handleMessage(event, ws, params) {
         checkTrainingComplete(data, params, ws);
 
         updateErrorListIfNeeded(data, params);
+        updateF1ScoreIfNeeded(data, params);
         
         updateWeightsIfNeeded(data, params);
 
