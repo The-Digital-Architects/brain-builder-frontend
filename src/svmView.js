@@ -49,7 +49,7 @@ class SvmView extends Model {
         }
 
         this.checkboxes = {
-            'KernelCheckbox': <Checkbox disabled={this.props.isTraining===1} onClick={this.handleCheckboxChange} checked={false} />
+            'KernelCheckbox': <Checkbox disabled={this.props.isTraining===1} onClick={this.handleCheckboxChange} checked={this.state.checkboxValues['KernelCheckbox']} />
         }
 
         this.inputFields = {};
@@ -60,7 +60,7 @@ class SvmView extends Model {
 
     continueComponentDidMount = () => {
         this.props.loadData(this.props.taskId, this.props.index)  // let the backend load the data  // TODO
-        console.log("SVM mounted: ", this.props.sliderVisibilities, this.props.checkboxVisibilities)
+        console.log("SVM mounted: ", this.props.sliderVisibilities, this.props.checkboxVisibilities)  // TODO remove
     }
 
     componentWillUnmount() {
@@ -118,6 +118,7 @@ class SvmView extends Model {
     }
 
     handleCheckboxChange = () => {
+        console.log('Checkbox clicked, changing to ', !this.state.checkboxValues['KernelCheckbox'])
         this.setState( prev => {
             const newCheckboxValues = {...prev.checkboxValues};
             newCheckboxValues['KernelCheckbox'] = !prev.checkboxValues['KernelCheckbox'];
@@ -185,7 +186,7 @@ class SvmView extends Model {
     renderModel = () => {
         return (
         <Box style={{ display: 'flex', flex: 3, height: '100vh' }}>
-            {console.log('SVM img & Initplot', this.props.img, this.props.initPlot)}
+            {console.log('SVM img & initPlot', this.props.img, this.props.initPlot)}
             {this.props.img ? <img src={this.props.img} alt={"Encountered an issue while rendering plots"} style={{ width: window.innerWidth*0.65, height: 'auto' }} />
             : <img src={this.props.initPlot} alt={"Encountered an issue while rendering initial plot"} style={{ width: window.innerWidth*0.65, height: 'auto' }} />}
         </Box>)

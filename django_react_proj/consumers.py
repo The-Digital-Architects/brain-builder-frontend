@@ -41,6 +41,7 @@ class Transceiver(AsyncWebsocketConsumer):
         
     # Receive message from WebSocket
     async def receive(self, text_data):
+        print('raw instructions: ', text_data)  # TODO remove
         instructions = json.loads(text_data)
         task_type = instructions['header']
         task_id = instructions['task_id']  # watch out: this should be the notebook_id for notebooks!

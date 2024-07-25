@@ -43,6 +43,8 @@ function handleOpen(ws, trainingData, params) {
     /*handle websocket opening*/
 
     console.log('WebSocket connection opened');
+    console.log('Sending training data:', trainingData);  // TODO remove
+    console.log('file_name: ', trainingData.file_name);  // TODO remove
 
     ws.send(JSON.stringify(trainingData));
 
