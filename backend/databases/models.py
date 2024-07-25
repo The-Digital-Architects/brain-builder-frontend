@@ -89,6 +89,7 @@ class NeuralNetworkDescription(models.Model):
     normalization_visibility = models.BooleanField(default=False)
     af_visibility = models.BooleanField(default=False)
     decision_boundary_visibility = models.BooleanField(default=False)
+    sensitive_data = models.BooleanField(default=False, null=True, blank=True)
     
     def __str__(self) -> str:
         return str(self.task_description.task_id) + " - " + str(self.task_description.name)

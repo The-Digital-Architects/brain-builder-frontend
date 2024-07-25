@@ -227,6 +227,8 @@ function App() {
   const [taskNames, setTaskNames] = useState({})
   const [taskIds, setTaskIds] = useState(defaultTaskIds);
   const [taskIcons, setTaskIcons] = useState(defaultTaskIds.map(() => null));
+  const [fileNames, setFileNames] = useState(defaultTaskIds.map(() => ''));
+  const [functionNames, setFunctionNames] = useState(defaultTaskIds.map(() => ''));
   const [gamesData, setGamesData] = useState(JSON.stringify([{task_id: 11, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'Clas2.csv'}, {task_id: 12, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'load_iris()'}]));
   const [typ, setTyp] = useState(defaultTaskIds.map(() => 1));
   const [dataset, setDataset] = useState(defaultTaskIds.map(() => 'Clas2.csv'));
@@ -306,6 +308,8 @@ function App() {
 
   // ------- FETCHING TASK DATA -------
 
+  const currentFileNames = [];
+  const currentFunctionNames = [];
   const currentNInputs = [];
   const currentNOutputs = [];
   const currentTaskIds = [];
@@ -350,6 +354,8 @@ function App() {
     } else {
 
     // set TaskDescription states
+    currentFileNames.push(entry.file_name);
+    currentFunctionNames.push(entry.function_name);
     currentNInputs.push(entry.n_inputs);
     currentNOutputs.push(entry.n_outputs);
     currentTaskIds.push(entry.task_id);
@@ -439,6 +445,8 @@ function App() {
     
         // Set universal states
         setTaskIds(currentTaskIds);
+        setFileNames(currentFileNames);
+        setFunctionNames(currentFunctionNames);
         setGamesData(JSON.stringify(currentTaskData));
         setNInputs(currentNInputs);
         setNOutputs(currentNOutputs);
@@ -906,7 +914,7 @@ function App() {
                 <>
                 <SvmView 
                 isTraining={isTraining[taskIds.indexOf(taskId)]} setIsTraining={setIsTraining} userId={getCookie('user_id')} taskId={taskId} cancelRequestRef={cancelRequestRef} SVMIndex={SVMIndex} index={taskIds.indexOf(taskId)} name={taskNames[taskId]} pendingTime={pendingTime} initPlot={initPlots[taskIds.indexOf(taskId)]} isResponding={taskIds.indexOf(taskId)} apiData={apiData.indexOf(taskId)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(taskId)]} img={imgs[taskIds.indexOf(taskId)]} setImgs={setImgs} typ={typ[taskIds.indexOf(taskId)]} loadData={loadData} normalization={false} dataset={dataset[taskIds.indexOf(taskId)]}
-                fileName={taskData[taskIds.indexOf(taskId)].file_name} functionName={taskData[taskIds.indexOf(taskId)].function_name} startTraining={putRequest} tabs={['data', 'training']} sliderValues={{'CSlider': 10, 'GammaSlider': 0.1}} sliderVisibilities={{'CSlider': cSliderVisibility[SVMIndex], 'GammaSlider': gammaSliderVisibility[SVMIndex] }} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'KernelCheckbox': rbfVisibility[SVMIndex] }} setIsResponding={setIsResponding} 
+                fileName={fileNames[taskIds.indexOf(taskId)]} functionName={functionNames[taskIds.indexOf(taskId)]} startTraining={putRequest} tabs={['data', 'training']} sliderValues={{'CSlider': 10, 'GammaSlider': 0.1}} sliderVisibilities={{'CSlider': cSliderVisibility[SVMIndex], 'GammaSlider': gammaSliderVisibility[SVMIndex] }} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'KernelCheckbox': rbfVisibility[SVMIndex] }} setIsResponding={setIsResponding} 
                 />
                 </>
               }
@@ -976,8 +984,8 @@ function App() {
                   setBiases={setBiases}
                   pendingTime={pendingTime}
                   cancelRequestRef={cancelRequestRef}
-                  fileName={taskData[taskIds.indexOf(taskId)].file_name}
-                  functionName={taskData[taskIds.indexOf(taskId)].function_name}
+                  fileName={fileNames[taskIds.indexOf(taskId)]}
+                  functionName={functionNames[taskIds.indexOf(taskId)]}
                   maxNodes={maxNodes}
                   maxEpochs={maxEpochs[NNIndex]}
                   setImgs={setImgs}
