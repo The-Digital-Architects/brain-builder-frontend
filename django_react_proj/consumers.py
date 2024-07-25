@@ -47,6 +47,8 @@ class Transceiver(AsyncWebsocketConsumer):
         print("instructions received, preparing for task ", task_type)
 
         if task_type == 'start':
+            print('instructions: ', instructions)  # TODO remove
+
             # start the process
             communication.cancel_vars[(self.user_id, task_id)] = False
             communication.send_fn_vars[(str(self.user_id), str(task_id))] = self.async_send

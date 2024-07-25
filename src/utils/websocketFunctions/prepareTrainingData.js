@@ -51,7 +51,7 @@ const prepareNNTrainingData = ({
   // Simplified state updates
   [setProgress, setWeights, setBiases].forEach(setter => updateState(setter, [], index));
   if (img) {URL.revokeObjectURL(img)};  // revoke the old URL
-  updateState(setImgs, [], globalIndex);
+  updateState(setImgs, null, globalIndex);
   updateState(setErrorList, [[], null], index); // Specific update for setErrorList
 
   // Direct manipulation of cytoLayers for clarity
@@ -121,7 +121,7 @@ const prepareSVMTrainingData = ({
   updateState(setApiData, trainingData, globalIndex);
   updateState(setIsTraining, 1, globalIndex);
   if (img) {URL.revokeObjectURL(img)};  // revoke the old URL
-  updateState(setImgs, [], globalIndex);
+  updateState(setImgs, null, globalIndex);
   updateState(setF1Score, null, index);
 
   return trainingData;
