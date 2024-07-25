@@ -906,7 +906,7 @@ function App() {
                 <>
                 <SvmView 
                 isTraining={isTraining[taskIds.indexOf(taskId)]} setIsTraining={setIsTraining} userId={getCookie('user_id')} taskId={taskId} cancelRequestRef={cancelRequestRef} SVMIndex={SVMIndex} index={taskIds.indexOf(taskId)} name={taskNames[taskId]} pendingTime={pendingTime} initPlot={initPlots[taskIds.indexOf(taskId)]} isResponding={taskIds.indexOf(taskId)} apiData={apiData.indexOf(taskId)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(taskId)]} img={imgs[taskIds.indexOf(taskId)]} setImgs={setImgs} typ={typ[taskIds.indexOf(taskId)]} loadData={loadData} normalization={false} dataset={dataset[taskIds.indexOf(taskId)]}
-                startTraining={putRequest} tabs={['data', 'training']} sliderValues={{'CSlider': 10, 'GammaSlider': 0.1}} sliderVisibilities={{'CSlider': cSliderVisibility[SVMIndex], 'GammaSlider': gammaSliderVisibility[SVMIndex] }} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'KernelCheckbox': rbfVisibility[SVMIndex] }} setIsResponding={setIsResponding} 
+                fileName={taskData[taskIds.indexOf(taskId)].file_name} functionName={taskData[taskIds.indexOf(taskId)].function_name} startTraining={putRequest} tabs={['data', 'training']} sliderValues={{'CSlider': 10, 'GammaSlider': 0.1}} sliderVisibilities={{'CSlider': cSliderVisibility[SVMIndex], 'GammaSlider': gammaSliderVisibility[SVMIndex] }} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'KernelCheckbox': rbfVisibility[SVMIndex] }} setIsResponding={setIsResponding} 
                 />
                 </>
               }
@@ -976,8 +976,8 @@ function App() {
                   setBiases={setBiases}
                   pendingTime={pendingTime}
                   cancelRequestRef={cancelRequestRef}
-                  fileName={'building'}
-                  functionName={'main'}
+                  fileName={taskData[taskIds.indexOf(taskId)].file_name}
+                  functionName={taskData[taskIds.indexOf(taskId)].function_name}
                   maxNodes={maxNodes}
                   maxEpochs={maxEpochs[NNIndex]}
                   setImgs={setImgs}

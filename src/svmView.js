@@ -48,19 +48,18 @@ class SvmView extends Model {
             'GammaSlider': this.gammaSlider
         }
 
-        this.checkboxes = {
-            'KernelCheckbox': <Checkbox disabled={this.props.isTraining===1} onClick={this.handleCheckboxChange} checked={this.state.checkboxValues['KernelCheckbox']} />
-        }
-
         this.inputFields = {};
         this.dropdowns = {};
     };
+
+    checkboxes = {
+        'KernelCheckbox': <Checkbox disabled={this.props.isTraining===1} onClick={this.handleCheckboxChange} checked={this.state.checkboxValues['KernelCheckbox']} />
+    }
     
     // CUSTOMIZABLE FUNCTIONS
 
     continueComponentDidMount = () => {
         this.props.loadData(this.props.taskId, this.props.index)  // let the backend load the data  // TODO
-        console.log("SVM mounted: ", this.props.sliderVisibilities, this.props.checkboxVisibilities)  // TODO remove
     }
 
     componentWillUnmount() {
