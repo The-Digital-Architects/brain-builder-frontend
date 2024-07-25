@@ -23,8 +23,7 @@ def modify_data(dataset):
     X = []
     y = []  
 
-    for i in range(len(dataset)):
-        sample = dataset[i]
+    for sample in dataset:
         X.append(sample['data'])
         y.append(sample['target'])
 
