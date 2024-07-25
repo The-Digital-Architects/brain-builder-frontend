@@ -81,6 +81,7 @@ class SvmView extends Model {
                 this.props.cancelRequestRef.current(this.props.taskId, this.props.index)
             } else { 
                 let trainingParams = {
+                    userId: this.props.userId,
                     taskId: this.props.taskId,
                     fileName: this.props.fileName,
                     functionName: this.props.functionName, 
@@ -185,8 +186,8 @@ class SvmView extends Model {
         return (
         <Box style={{ display: 'flex', flex: 3, height: '100vh' }}>
             {console.log('SVM img & Initplot', this.props.img, this.props.initPlot)}
-            {this.props.img ? <img src={this.props.img} alt={"Encountered an issue while rendering plots"} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-            : <img src={this.props.initPlot} alt={"Encountered an issue while rendering initial plot"} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />}
+            {this.props.img ? <img src={this.props.img} alt={"Encountered an issue while rendering plots"} style={{ width: window.innerWidth*0.65, height: 'auto' }} />
+            : <img src={this.props.initPlot} alt={"Encountered an issue while rendering initial plot"} style={{ width: window.innerWidth*0.65, height: 'auto' }} />}
         </Box>)
     }
 
