@@ -164,6 +164,8 @@ function App() {
         // decompress and parse the images in 'plot'
         setInitPlots(prevInitPlots => {
           const newInitPlots = [...prevInitPlots];
+          if (newInitPlots[index]) {URL.revokeObjectURL(newInitPlots[index])};  // revoke the old URL
+
           const binaryString = atob(data.plot);  // decode from base64 to binary string
           const bytes = new Uint8Array(binaryString.length);  // convert from binary string to byte array
           for (let i = 0; i < binaryString.length; i++) {
@@ -229,7 +231,7 @@ function App() {
   const [typ, setTyp] = useState(defaultTaskIds.map(() => 1));
   const [dataset, setDataset] = useState(defaultTaskIds.map(() => 'Clas2.csv'));
   const [featureNames, setFeatureNames] = useState(defaultTaskIds.map(() => []));
-  const [initPlots, setInitPlots] = useState(defaultTaskIds.map(() => []));
+  const [initPlots, setInitPlots] = useState(defaultTaskIds.map(() => null));
   const [nInputs, setNInputs] = useState(defaultTaskIds.map(() => 4));
   const [nOutputs, setNOutputs] = useState(defaultTaskIds.map(() => 3));
   const [nObjects, setNObjects] = useState(defaultTaskIds.map(() => 0));
@@ -256,10 +258,10 @@ function App() {
   const [errorList, setErrorList] = useState(defaultTaskIds.map(() => [[], null]));
   const [weights, setWeights] = useState(defaultTaskIds.map(() => []));
   const [biases, setBiases] = useState(defaultTaskIds.map(() => []));
-  const [imgs, setImgs] = useState(defaultTaskIds.map(() => []));
+  const [imgs, setImgs] = useState(defaultTaskIds.map(() => null));
 
   // this is for the SVM tasks
-  const [SVMTaskIds, setSVMTaskIds] = useState([]);
+  const [SVMTaskIds, setSVMTaskIds] = useState([21]);
   const [cSliderVisibility, setCSliderVisibility] = useState([]);
   const [gammaSliderVisibility, setGammaSliderVisibility] = useState([]);
   const [rbfVisibility, setRbfVisibility] = useState([]);
@@ -903,8 +905,8 @@ function App() {
               element={
                 <>
                 <SvmView 
-                isTraining={isTraining[taskIds.indexOf(taskId)]} taskId={taskId} cancelRequestRef={cancelRequestRef} SVMIndex={SVMIndex} index={taskIds.indexOf(taskId)} name={taskNames[taskId]} pendingTime={pendingTime} initPlot={initPlots[taskIds.indexOf(taskId)]} isResponding={taskIds.indexOf(taskId)} apiData={apiData.indexOf(taskId)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(taskId)]} img={imgs[taskIds.indexOf(taskId)]} setImgs={setImgs} typ={typ[taskIds.indexOf(taskId)]} loadData={loadData} normalization={false} dataset={dataset[taskIds.indexOf(taskId)]}
-                startTraining={putRequest} tabs={['Data', 'Model']} sliderValues={{'CSlider': 10, 'GammaSlider': 0.1}} sliderVisibilities={{'CSlider': cSliderVisibility[SVMIndex], 'GammaSlider': gammaSliderVisibility[SVMIndex] }} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'KernelCheckbox': rbfVisibility[SVMIndex] }} setIsResponding={setIsResponding} 
+                isTraining={isTraining[taskIds.indexOf(taskId)]} setIsTraining={setIsTraining} taskId={taskId} cancelRequestRef={cancelRequestRef} SVMIndex={SVMIndex} index={taskIds.indexOf(taskId)} name={taskNames[taskId]} pendingTime={pendingTime} initPlot={initPlots[taskIds.indexOf(taskId)]} isResponding={taskIds.indexOf(taskId)} apiData={apiData.indexOf(taskId)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(taskId)]} img={imgs[taskIds.indexOf(taskId)]} setImgs={setImgs} typ={typ[taskIds.indexOf(taskId)]} loadData={loadData} normalization={false} dataset={dataset[taskIds.indexOf(taskId)]}
+                startTraining={putRequest} tabs={['data', 'training']} sliderValues={{'CSlider': 10, 'GammaSlider': 0.1}} sliderVisibilities={{'CSlider': cSliderVisibility[SVMIndex], 'GammaSlider': gammaSliderVisibility[SVMIndex] }} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'KernelCheckbox': rbfVisibility[SVMIndex] }} setIsResponding={setIsResponding} 
                 />
                 </>
               }
@@ -985,7 +987,7 @@ function App() {
                   dataset={dataset[taskIds.indexOf(taskId)]}
                   name={taskNames[taskId]}
                   startTraining={putRequest}
-                  tabs={['Data', 'Model', 'Result']}
+                  tabs={['data', 'training', 'testing']}
                   sliderValues={{'EpochSlider': iterations[NNIndex], 'LRSlider': learningRate[NNIndex]}}
                   sliderVisibilities={{'EpochSlider': true, 'LRSlider': true}}
                   inputFieldVisibilities={{}}

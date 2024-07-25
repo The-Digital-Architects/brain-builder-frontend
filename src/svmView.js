@@ -34,6 +34,7 @@ class SvmView extends Model {
         this.tabs = [
             { name: 'Data', value: 'data' },
             { name: 'Model', value: 'training' },
+            { name: 'Result', value: 'testing' },
         ]
 
         this.inputNames = {
@@ -83,9 +84,10 @@ class SvmView extends Model {
                     kernelValue: this.state.checkboxValues['KernelCheckbox'] ? 'rbf' : 'linear',
                     linearlySeparable: !this.props.sliderVisibilities['CSlider'],
                     normalization: this.props.normalization,
+                    img: this.props.img,
+                    setImgs: this.props.setImgs,
                     setF1Score: this.setF1Score,
                     setApiData: this.props.setApiData,
-                    setImgs: this.props.setImgs,
                     setIsTraining: this.props.setIsTraining,
                     index: this.props.SVMIndex,
                     globalIndex: this.props.index
@@ -175,8 +177,10 @@ class SvmView extends Model {
     renderModel = () => {
         return (
         <Box style={{ display: 'flex', flex: 3, height: '100vh' }}>
+            {console.log('SVM img & Initplot', this.props.img, this.props.initPlot)}
             {this.props.img ? <img src={this.props.img} alt={"Encountered an issue while rendering plots"} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-            : <img src={this.props.initPlot} alt={"Encountered an issue while rendering plots"} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />}
+            : <img src={this.props.initPlot} alt={"Encountered an issue while rendering initial plot"} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />}
+            <img src={this.props.initPlot} alt='No data available' width='auto' height='auto' style={{ maxWidth: '100%', maxHeight: '100%' }} onLoad={() => {}}/>
         </Box>)
     }
 

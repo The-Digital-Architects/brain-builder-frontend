@@ -336,10 +336,6 @@ class Model extends React.Component {
                     </Tabs.Trigger>
                     )
                     ))}
-                  <Tabs.Trigger value="data" onValueChange={this.handleTabChange} >Background Info </Tabs.Trigger>
-                  <Tabs.Trigger value="training" onValueChange={this.handleTabChange} >Build</Tabs.Trigger>
-                  <Tabs.Trigger value="testing" onValueChange={this.handleTabChange} >Result</Tabs.Trigger>
-                  {/*<Tabs.Trigger value="settings">Settings</Tabs.Trigger>*/}
                 </Tabs.List>
         
                 <Box px="4" pt="3" pb="0">
