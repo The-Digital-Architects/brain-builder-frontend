@@ -63,6 +63,12 @@ class SvmView extends Model {
         console.log("SVM mounted: ", this.props.sliderVisibilities, this.props.checkboxVisibilities)
     }
 
+    componentWillUnmount() {
+        if (this.props.isTraining === 1) {
+          this.props.cancelRequest();
+        }
+      }
+
     valuesUndefined = () => {
         return Object.values(this.props.sliderVisibilities).includes(null) || Object.values(this.state.sliderValues).includes(null);
     }
@@ -90,7 +96,8 @@ class SvmView extends Model {
                     setApiData: this.props.setApiData,
                     setIsTraining: this.props.setIsTraining,
                     index: this.props.SVMIndex,
-                    globalIndex: this.props.index
+                    globalIndex: this.props.index,
+                    cancelRequestRef: this.props.cancelRequestRef
                 }
                 this.props.startTraining(event, trainingParams, 'SVM');
             }
@@ -180,7 +187,6 @@ class SvmView extends Model {
             {console.log('SVM img & Initplot', this.props.img, this.props.initPlot)}
             {this.props.img ? <img src={this.props.img} alt={"Encountered an issue while rendering plots"} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             : <img src={this.props.initPlot} alt={"Encountered an issue while rendering initial plot"} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />}
-            <img src={this.props.initPlot} alt='No data available' width='auto' height='auto' style={{ maxWidth: '100%', maxHeight: '100%' }} onLoad={() => {}}/>
         </Box>)
     }
 

@@ -484,8 +484,8 @@ function App() {
         setApiData(currentTaskIds.map(() => null));
         setIsResponding(currentTaskIds.map(() => false));
         setFeatureNames(currentTaskIds.map(() => []));  // TODO: load these somewhere else
-        setImgs(currentTaskIds.map(() => []));
-        setInitPlots(currentTaskIds.map(() => []));
+        setImgs(currentTaskIds.map(() => null));
+        setInitPlots(currentTaskIds.map(() => null));
 
         setCytoLayers(currentNNTaskIds.map(() => []));
         setAccuracy(currentNNTaskIds.map(() => 0));
