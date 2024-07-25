@@ -3,10 +3,12 @@
 import React from 'react'
 import './css/App.css';
 import { Flex, Box, Checkbox } from '@radix-ui/themes';
+import { ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 import '@radix-ui/themes/styles.css';
 import color_scale_pic from "./images/color_scale_2.png";
 import CytoscapeComponent from 'react-cytoscapejs';
 import * as Slider from '@radix-ui/react-slider';
+import * as Select from '@radix-ui/react-select';
 import { useNavigate } from 'react-router-dom';
 import layersToCode from './code_preview/codeExplainTools';
 import {GenerateFloatingButtons, LayerRemoveButton, LayerAddButton} from './common/floatingButtons';
@@ -24,6 +26,37 @@ import {
 import { Model } from './common/viewTemplate';
 
 
+const Dropdown = ({ label, options, onChange, placeholder, disabled }) => (
+  <Select.Root onValueChange={onChange} disabled={disabled} >
+    <Select.Trigger className="SelectTrigger" aria-label={label}>
+      <Select.Value placeholder={placeholder} />
+      <Select.Icon className="SelectIcon">
+        <ChevronDownIcon />
+      </Select.Icon>
+    </Select.Trigger>
+    <Select.Portal>
+      <Select.Content className="SelectContent" >
+        <Select.ScrollUpButton className="SelectScrollButton">
+          <ChevronUpIcon />
+        </Select.ScrollUpButton>
+        <Select.Viewport className="SelectViewport">
+          <Select.Group>
+          {options.map((option) => (
+              <Select.Item key={option} value={option} className="SelectItem" style={{ margin: 5, marginLeft:10 }}>
+                  <Select.ItemText>{option}</Select.ItemText>
+              </Select.Item>
+          ))}
+          </Select.Group>
+        </Select.Viewport>
+        <Select.ScrollDownButton className="SelectScrollButton">
+          <ChevronDownIcon />
+        </Select.ScrollDownButton>
+      </Select.Content>
+    </Select.Portal>
+  </Select.Root>
+);
+
+
 class Building extends Model {
 
     // INITIALIZATION
@@ -38,7 +71,8 @@ class Building extends Model {
         description: '',
 
         sliderValues: {'EpochSlider': 100, 'LRSlider': 0.01},
-        checkboxValues: {'NormCheckbox': false, 'AFCheckbox': true},
+        dropdownValues: {'AFDropdown': 'ReLU', 'OptimizerDropdown': 'SGD'},
+        checkboxValues: {'NormCheckbox': false, 'AFCheckbox': true, 'ColorCheckbox': true, 'HeightCheckbox': true, 'ResizeCheckbox': true},
         runTutorial: false,
         steps: [
             {
@@ -72,7 +106,10 @@ class Building extends Model {
             'EpochSlider': 'Epochs',
             'LRSlider': 'Learning rate',
             'normCheckbox': 'Normalize data',
-            'AFCHeckbox': 'Enable activation functions'
+            'AFCheckbox': 'Enable activation functions',
+            'ColorCheckbox': 'Use color',
+            'HeightCheckbox': 'Use height',
+            'ResizeCheckbox': 'Use datasets of equal size',
         }
 
         this.sliders = {
@@ -83,15 +120,20 @@ class Building extends Model {
         this.inputFields = {
         }
 
-        this.dropdowns = {
-        }
-
-        this.checkboxes = {
-            'NormCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleNormClick()} checked={this.state.checkboxValues['Normcheckbox']} />,
-            'AFCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleAfClick()} checked={this.state.checkboxValues['AFCheckbox']} />,
-        }
-
     };
+
+    dropdowns = {
+      'AFDropdown': <Dropdown options={["ReLU", "Sigmoid", "htan", "Swish"]} onChange={(selectedOption) => this.handleDropdownChange(selectedOption)} placeholder={"Please select an option"} disabled={this.props.isTraining===1} />,
+      'OptimizerDropdown': <Dropdown options={["SGD", "Adam"]} onChange={(selectedOption) => this.handleDropdownChange(selectedOption)} placeholder={"Please select an option"} disabled={this.props.isTraining===1} />
+    }
+
+    checkboxes = {
+      'NormCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleNormClick()} checked={this.state.checkboxValues['Normcheckbox']} />,
+      'AFCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleAfClick()} checked={this.state.checkboxValues['AFCheckbox']} />,
+      'ColorCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleColorClick()} checked={this.state.checkboxValues['ColorCheckbox']} />,
+      'HeightCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleHeightClick()} checked={this.state.checkboxValues['HeightCheckbox']} />,
+      'ResizeCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleResizeClick()} checked={this.state.checkboxValues['ResizeCheckbox']} />,
+    }
 
 
     // CUSTOMIZABLE FUNCTIONS

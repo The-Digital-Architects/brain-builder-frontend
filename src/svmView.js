@@ -48,13 +48,13 @@ class SvmView extends Model {
             'GammaSlider': this.gammaSlider
         }
 
+        this.checkboxes = {
+            'KernelCheckbox': <Checkbox disabled={this.props.isTraining===1} onClick={this.handleCheckboxChange} checked={this.state.checkboxValues['KernelCheckbox']} />
+        }
+
         this.inputFields = {};
         this.dropdowns = {};
     };
-
-    checkboxes = {
-        'KernelCheckbox': <Checkbox disabled={this.props.isTraining===1} onClick={this.handleCheckboxChange} checked={this.state.checkboxValues['KernelCheckbox']} />
-    }
     
     // CUSTOMIZABLE FUNCTIONS
 
