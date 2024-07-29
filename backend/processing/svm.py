@@ -62,7 +62,7 @@ def main(kernel, c, gamma, dataset, normalization, user_id, task_id):
     y_pred = model.predict(X_test)
 
     accuracy = model.score(X_test, y_test)
-    f1score = f1_score(y_test, average='weighted')
+    f1score = f1_score(y_test, y_pred, average='weighted')
 
     data.plot_decision_boundary(model)  # plot the current decision boundary (will be ignored if the dataset has too many dimensions)
     plot = b64encode(data.images[-1]).decode()
