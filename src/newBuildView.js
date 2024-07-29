@@ -128,11 +128,11 @@ class Building extends Model {
     }
 
     checkboxes = {
-      'NormCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleNormClick()} checked={this.state.checkboxValues['Normcheckbox']} />,
-      'AFCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleAfClick()} checked={this.state.checkboxValues['AFCheckbox']} />,
-      'ColorCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleColorClick()} checked={this.state.checkboxValues['ColorCheckbox']} />,
-      'HeightCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleHeightClick()} checked={this.state.checkboxValues['HeightCheckbox']} />,
-      'ResizeCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleResizeClick()} checked={this.state.checkboxValues['ResizeCheckbox']} />,
+      'NormCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('NormCheckbox')} checked={this.state.checkboxValues['Normcheckbox']} />,
+      'AFCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('AFCheckbox')} checked={this.state.checkboxValues['AFCheckbox']} />,
+      'ResizeCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('ResizeCheckbox')} checked={this.state.checkboxValues['ResizeCheckbox']} />,
+      'ColorCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('ColorCheckbox')} checked={this.state.checkboxValues['ColorCheckbox']} />,
+      'HeightCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('HeightCheckbox')} checked={this.state.checkboxValues['HeightCheckbox']} />,
     }
 
 
@@ -231,8 +231,8 @@ class Building extends Model {
         } else { 
             let trainingParams = {
                 cytoLayers: this.props.cytoLayers,
-                learningRate: this.props.learningRate,
-                iterations: this.props.iterations,
+                learningRate: this.state.sliderValues['LRSlider'],
+                iterations: this.state.sliderValues['EpochSlider'],
                 taskId: this.props.taskId,
                 nOfInputs: this.props.nOfInputs,
                 nOfOutputs: this.props.nOfOutputs,
@@ -254,7 +254,7 @@ class Building extends Model {
                 biases: this.props.biases,
                 img: this.props.img,
                 isTraining: this.props.isTraining,
-                af: this.props.af,
+                af: this.state.checkboxValues['AFCheckbox'],
                 cancelRequestRef: this.props.cancelRequestRef,
                 typ: this.props.typ,
                 dataset: this.props.dataset,
@@ -271,24 +271,16 @@ class Building extends Model {
 
     handleCodeClick = (event) => {
         this.setState({
-            code: layersToCode(this.props.cytoLayers, this.props.learningRate, this.props.iterations, this.props.taskId, this.props.af),
+            code: layersToCode(this.props.cytoLayers, this.state.sliderValues['LRSlider'], this.state.sliderValues['EpochSlider'], this.props.taskId, this.state.checkboxValues['AFCheckbox']),
             showCode: true
           });
         window.scrollTo(0, document.body.scrollHeight); // Scroll to the bottom of the page
     }
 
-    handleAfClick = () => {
+    handleCheckboxChange = (name) => {
         this.setState( prev => {
             const newCheckboxValues = {...prev.checkboxValues};
-            newCheckboxValues['AFCheckbox'] = !prev.checkboxValues['AFCheckbox'];
-            return {checkboxValues: newCheckboxValues};
-        });
-    }
-
-    handleNormClick = () => {
-        this.setState( prev => {
-            const newCheckboxValues = {...prev.checkboxValues};
-            newCheckboxValues['NormCheckbox'] = !prev.checkboxValues['NormCheckbox'];
+            newCheckboxValues[name] = !prev.checkboxValues[name];
             return {checkboxValues: newCheckboxValues};
         });
     }

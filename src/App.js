@@ -241,12 +241,13 @@ function App() {
 
   // this is for the neural network tasks
   const [NNTaskIds, setNNTaskIds] = useState(defaultTaskIds);
+  const [sensitiveIds, setSensitiveIds] = useState([])
   const [maxEpochs, setMaxEpochs] = useState(defaultTaskIds.map(() => 200));
   const [maxLayers, setMaxLayers] = useState(defaultTaskIds.map(() => 10));
   const [maxNodes, setMaxNodes] = useState(defaultTaskIds.map(() => 16));
-  const [normalization, setNormalization] = useState(defaultTaskIds.map(() => true));
+  // const [normalization, setNormalization] = useState(defaultTaskIds.map(() => true));
   const [normalizationVisibility, setNormalizationVisibility] = useState([false]);
-  const [afs, setAfs] = useState(defaultTaskIds.map(() => []));
+  // const [afs, setAfs] = useState(defaultTaskIds.map(() => []));
   const [afVisibility, setAfVisibility] = useState(defaultTaskIds.map(() => false));
   const [iterationsSliderVisibility, setIterationsSliderVisibility] = useState([false]);
   const [lrSliderVisibility, setLRSliderVisibility] = useState(defaultTaskIds.map(() => false));
@@ -295,16 +296,6 @@ function App() {
   const [constructionTaskIds, setConstructionTaskIds] = useState([23]);
 
 
-  function setAf(index, value) {
-    setAfs(prevAfs => {
-      const newAfs = [...prevAfs];
-      newAfs[index] = value;
-      return newAfs;
-    });
-  };
-
-
-
 
   // ------- FETCHING TASK DATA -------
 
@@ -319,6 +310,7 @@ function App() {
   const currentIcons = [];
 
   const currentNNTaskIds = [];
+  const currentSensitiveIds = [];
   const currentMaxEpochs = [];
   const currentMaxLayers = [];
   const currentMaxNodes = [];
@@ -372,6 +364,7 @@ function App() {
       // set NN states
       let nnDescription = entry.neural_network_description;
       if (nnDescription) {
+        if (nnDescription.sensitive_data) {currentSensitiveIds.push(entry.task_id)};
         currentNNTaskIds.push(entry.task_id);
         currentMaxEpochs.push(nnDescription.max_epochs);
         currentMaxLayers.push(nnDescription.max_layers);
@@ -456,6 +449,7 @@ function App() {
 
         // Set neural network states
         setNNTaskIds(currentNNTaskIds);
+        setSensitiveIds(currentSensitiveIds);
         setMaxEpochs(currentMaxEpochs);
         setMaxLayers(currentMaxLayers);
         setMaxNodes(currentMaxNodes);
@@ -922,6 +916,25 @@ function App() {
             </>
           ))}
 
+          {sensitiveIds.map((taskId, NNIndex) => (
+            <>
+            <Route
+              key={taskId}
+              path={`/exercise${taskId/10}`}
+              element={
+                <>
+                <BuildView
+                  nOfInputs={nInputs[taskIds.indexOf(taskId)]} nOfOutputs={nOutputs[taskIds.indexOf(taskId)]} maxLayers={maxLayers[taskIds.indexOf(taskId)]} taskId={taskId} NNIndex={NNIndex} index={taskIds.indexOf(taskId)} cytoElements={cytoElements[NNIndex]} cytoStyle={cytoStyle[NNIndex]} cytoLayers={cytoLayers[NNIndex]} setCytoLayers={setCytoLayers} updateCytoLayers={updateCytoLayers} loadLastCytoLayers={loadLastCytoLayers} 
+                  isTraining={isTraining[taskIds.indexOf(taskId)]} setIsTraining={setIsTraining} apiData={apiData[taskIds.indexOf(taskId)]} setApiData={setApiData} accuracy={accuracy[NNIndex]} setAccuracy={setAccuracy} accuracyColor={accuracyColor} handleSubmit={handleSubmit} isResponding={isResponding[taskIds.indexOf(taskId)]} setIsResponding={setIsResponding} loadData={loadData} pendingTime={pendingTime} intervalTimeout={intervalTimeout} cancelRequestRef={cancelRequestRef}
+                  progress={NNProgress[NNIndex]} setProgress={setNNProgress} featureNames={featureNames[taskIds.indexOf(taskId)]} errorList={errorList[NNIndex]} setErrorList={setErrorList} weights={weights[NNIndex]} setWeights={setWeights} biases={biases[NNIndex]} setBiases={setBiases} img={imgs[taskIds.indexOf(taskId)]} setImgs={setImgs} initPlot={initPlots[taskIds.indexOf(taskId)]} userId={getCookie('user_id')}
+                  fileName={fileNames[taskIds.indexOf(taskId)]} functionName={functionNames[taskIds.indexOf(taskId)]} maxNodes={maxNodes[NNIndex]} maxEpochs={maxEpochs[NNIndex]} typ={typ[taskIds.indexOf(taskId)]} dataset={dataset[taskIds.indexOf(taskId)]} name={taskNames[taskId]} startTraining={putRequest} imageVisibility={imageVisibility[NNIndex]}
+                  tabs={['data', 'training']} sliderVisibilities={{}} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'ColorCheckbox': true, 'HeightCheckbox': true, 'ResizeCheckbox': true}}
+                />
+                </>
+              }
+            />
+            </>
+          ))}
           {NNTaskIds.map((taskId, NNIndex) => (
             <>
             <Route
@@ -932,7 +945,7 @@ function App() {
                 <BuildView
                   nOfInputs={nInputs[taskIds.indexOf(taskId)]}
                   nOfOutputs={nOutputs[taskIds.indexOf(taskId)]}
-                  nOfObjects={nObjects[taskIds.indexOf(taskId)]}
+                  // nOfObjects={nObjects[taskIds.indexOf(taskId)]}
                   maxLayers={maxLayers[taskIds.indexOf(taskId)]}
                   taskId={taskId}
                   NNIndex={NNIndex}
@@ -943,20 +956,20 @@ function App() {
                   setCytoLayers={setCytoLayers}
                   updateCytoLayers={updateCytoLayers}
                   loadLastCytoLayers={loadLastCytoLayers}
-                  iterationsSlider={iterationsSliders[NNIndex]}
-                  iterations={iterations[NNIndex]}
-                  setIterations={setIterations}
-                  learningRateSlider={learningRateSliders[NNIndex]}
-                  learningRate={learningRate[NNIndex]}
-                  setLearningRate={setLearningRate}
+                  // iterationsSlider={iterationsSliders[NNIndex]}
+                  // iterations={iterations[NNIndex]}
+                  // setIterations={setIterations}
+                  // learningRateSlider={learningRateSliders[NNIndex]}
+                  // learningRate={learningRate[NNIndex]}
+                  // setLearningRate={setLearningRate}
                   isTraining={isTraining[taskIds.indexOf(taskId)]}
                   setIsTraining={setIsTraining}
                   apiData={apiData[taskIds.indexOf(taskId)]}
                   setApiData={setApiData}
-                  taskData={taskData}
-                  setTaskData={setTaskData}
-                  putRequest={putRequest}
-                  accuracy={accuracy[NNIndex]}
+                  // taskData={taskData}
+                  // setTaskData={setTaskData}
+                  // putRequest={putRequest}
+                  // accuracy={accuracy[NNIndex]}
                   setAccuracy={setAccuracy}
                   accuracyColor={accuracyColor}
                   handleSubmit={handleSubmit}
@@ -970,13 +983,13 @@ function App() {
                   img={imgs[taskIds.indexOf(taskId)]}
                   initPlot={initPlots[taskIds.indexOf(taskId)]}
                   loadData={loadData}
-                  normalization={false}
-                  normalizationVisibility={normalizationVisibility[NNIndex]}
-                  af={afs[NNIndex]}
-                  setAf={setAf}
-                  afVisibility={afVisibility[NNIndex]}
-                  iterationsSliderVisibility={iterationsSliderVisibility[NNIndex]}
-                  lrSliderVisibility={lrSliderVisibility[NNIndex]}
+                  // normalization={false}
+                  // normalizationVisibility={normalizationVisibility[NNIndex]}
+                  // af={afs[NNIndex]}
+                  // setAf={setAf}
+                  // afVisibility={afVisibility[NNIndex]}
+                  // iterationsSliderVisibility={iterationsSliderVisibility[NNIndex]}
+                  // lrSliderVisibility={lrSliderVisibility[NNIndex]}
                   imageVisibility={imageVisibility[NNIndex]}
                   setProgress={setNNProgress}
                   setErrorList={setErrorList}
@@ -986,7 +999,7 @@ function App() {
                   cancelRequestRef={cancelRequestRef}
                   fileName={fileNames[taskIds.indexOf(taskId)]}
                   functionName={functionNames[taskIds.indexOf(taskId)]}
-                  maxNodes={maxNodes}
+                  maxNodes={maxNodes[NNIndex]}
                   maxEpochs={maxEpochs[NNIndex]}
                   setImgs={setImgs}
                   userId={getCookie('user_id')}
@@ -996,8 +1009,7 @@ function App() {
                   name={taskNames[taskId]}
                   startTraining={putRequest}
                   tabs={['data', 'training', 'testing']}
-                  sliderValues={{'EpochSlider': iterations[NNIndex], 'LRSlider': learningRate[NNIndex]}}
-                  sliderVisibilities={{'EpochSlider': true, 'LRSlider': true}}
+                  sliderVisibilities={{'EpochSlider': iterationsSliderVisibility[NNIndex], 'LRSlider': lrSliderVisibility[NNIndex]}}
                   inputFieldVisibilities={{}}
                   dropdownVisibilities={{}}
                   checkboxVisibilities={{'AFCheckbox': afVisibility[NNIndex], 'NormCheckbox': normalizationVisibility[NNIndex]}}

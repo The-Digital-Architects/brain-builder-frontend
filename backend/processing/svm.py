@@ -31,6 +31,8 @@ def modify_data(dataset):
     X = np.vstack(X)  # This stacks the feature vectors into a 2D array
     y = np.vstack(y)  # This stacks the target vectors into a 2D array 
 
+    X = np.reshape(X, (X.shape[0], -1))  # for some reason numpy adds an extra dimension, remove it.
+    y = np.reshape(y, (y.shape[0], -1))
     if y.shape[1] == 1:
         y = y.ravel()
 
