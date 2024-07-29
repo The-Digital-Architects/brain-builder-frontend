@@ -170,7 +170,7 @@ class SvmView extends Model {
     handleGammaChange = (value) => {
         this.setState( prev => {
             const newSliderValues = {...prev.sliderValues};
-            newSliderValues['GammaSlider'] = (value[0] % 1 + 0.5) * 10**Math.round(-value[0]);
+            newSliderValues['GammaSlider'] = (value[0] % 1 + 0.5) * 10**(-Math.round(value[0]));
             return {sliderValues: newSliderValues};
         });
     };

@@ -29,11 +29,12 @@ def modify_data(dataset):
 
     # Convert lists to numpy arrays
     X = np.vstack(X)  # This stacks the feature vectors into a 2D array
-    if dataset.data_type == 1:
-        y = np.concatenate(y).ravel()  # Flatten the array if targets are single values
-    else:
-        # Handle multi-target scenario if necessary
-        y = np.vstack(y)  # This stacks the target vectors into a 2D array if there are multiple targets
+    y = np.vstack(y)  # This stacks the target vectors into a 2D array 
+
+    if y.shape[1] == 1:
+        y = y.ravel()
+
+    # y = np.concatenate(y).ravel()  # Flatten the array if targets are single values
     
     return X, y
 

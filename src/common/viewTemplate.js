@@ -441,7 +441,7 @@ class Model extends React.Component {
                             this.props.checkboxVisibilities[name] ?
                             (<Text className={name} as = "label" size="2">
                                 <Flex style={{ position:"absolute", top: this.checkboxPosition(index), left: Math.round(0.7 * (window.innerWidth * 0.97)), width: Math.round(0.27 * (window.innerWidth * 0.97)), justifyContent:"flex-start", alignItems:"flex-start"}} gap="2">          
-                                {this.inputNames[name]}: {checkbox}
+                                {this.inputNames[name]}: {React.cloneElement(checkbox, {checked: this.state.checkboxValues[name]})}
                                 </Flex>
                             </Text>) : (<div></div>)
                         ))}
