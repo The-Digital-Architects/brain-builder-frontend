@@ -58,6 +58,7 @@ def get_data(dataset, typ:int=None, normalization=False, test_size=None, data=No
         # else: 
         #     return data
     
+        train, test = train_test_split(data, test_size=test_size)
         data.training_set = train
         data.testing_set = test
     return data, (train, test)
