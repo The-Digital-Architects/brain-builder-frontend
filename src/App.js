@@ -344,13 +344,14 @@ function App() {
   const currentConstructionTaskIds = [];
 
   function convertToList(string, separator=';') {
-    if (string[0] === '[') {
-      return JSON.parse(string);
-    } else { if (string) {
+    if (string) {
+      if (string[0] === '[') {
+        return JSON.parse(string);
+      } else { 
       return string.split(separator).map((item) => item.trim());
-    } else {
+    }} else {
       return [];
-    }}
+    }
   }
 
   function readTaskEntry(entry) {
