@@ -97,6 +97,7 @@ class SvmView extends Model {
                     setIsTraining: this.props.setIsTraining,
                     index: this.props.SVMIndex,
                     globalIndex: this.props.index,
+                    intervalTimeout: this.props.intervalTimeout,
                     cancelRequestRef: this.props.cancelRequestRef
                 }
                 this.props.startTraining(event, trainingParams, 'SVM');

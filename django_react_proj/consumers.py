@@ -41,14 +41,12 @@ class Transceiver(AsyncWebsocketConsumer):
         
     # Receive message from WebSocket
     async def receive(self, text_data):
-        print('raw instructions: ', text_data)  # TODO remove
         instructions = json.loads(text_data)
         task_type = instructions['header']
         task_id = instructions['task_id']  # watch out: this should be the notebook_id for notebooks!
         print("instructions received, preparing for task ", task_type)
 
         if task_type == 'start':
-            print('instructions: ', instructions)  # TODO remove
 
             # start the process
             communication.cancel_vars[(self.user_id, task_id)] = False

@@ -36,10 +36,6 @@ def modify_data(dataset):
     if y.shape[1] == 1:
         y = y.ravel()
 
-    # y = np.concatenate(y).ravel()  # Flatten the array if targets are single values
-    
-    print(X.shape, X[:5], '\n', y.shape, y[:5])
-
     return X, y
 
 

@@ -26,6 +26,7 @@ import { generateCytoElements, generateCytoStyle } from './utils/cytoUtils';
 import getCookie from './utils/cookieUtils';
 import putRequest from './utils/websocketUtils';
 import ClusteringTest from './clustering'
+import sensitiveDataPlot from './images/sensitive_kerbals.png';
 
 // ------- APP FUNCTION -------
 
@@ -236,8 +237,11 @@ function App() {
   const [initPlots, setInitPlots] = useState(defaultTaskIds.map(() => null));
   const [nInputs, setNInputs] = useState(defaultTaskIds.map(() => 4));
   const [nOutputs, setNOutputs] = useState(defaultTaskIds.map(() => 3));
-  const [nObjects, setNObjects] = useState(defaultTaskIds.map(() => 0));
+  const [nObjects, setNObjects] = useState(defaultTaskIds.map(() => 0));  // TODO are we using this?
   const [isResponding, setIsResponding] = useState(defaultTaskIds.map(() => 0));
+  const [isTraining, setIsTraining] = useState(defaultTaskIds.map(() => false));
+  const [apiData, setApiData] = useState(defaultTaskIds.map(() => null));
+  const [accuracy, setAccuracy] = useState(defaultTaskIds.map(() => 0));
 
   // this is for the neural network tasks
   const [NNTaskIds, setNNTaskIds] = useState(defaultTaskIds);
@@ -245,17 +249,14 @@ function App() {
   const [maxEpochs, setMaxEpochs] = useState(defaultTaskIds.map(() => 200));
   const [maxLayers, setMaxLayers] = useState(defaultTaskIds.map(() => 10));
   const [maxNodes, setMaxNodes] = useState(defaultTaskIds.map(() => 16));
-  // const [normalization, setNormalization] = useState(defaultTaskIds.map(() => true));
   const [normalizationVisibility, setNormalizationVisibility] = useState([false]);
-  // const [afs, setAfs] = useState(defaultTaskIds.map(() => []));
   const [afVisibility, setAfVisibility] = useState(defaultTaskIds.map(() => false));
+  const [afOptions, setAfOptions] = useState(defaultTaskIds.map(() => []));
+  const [optimOptions, setOptimOptions] = useState(defaultTaskIds.map(() => []));
   const [iterationsSliderVisibility, setIterationsSliderVisibility] = useState([false]);
   const [lrSliderVisibility, setLRSliderVisibility] = useState(defaultTaskIds.map(() => false));
   const [imageVisibility, setImageVisibility] = useState(defaultTaskIds.map(() => false));
   const [cytoLayers, setCytoLayers] = useState(defaultTaskIds.map(() => []));
-  const [isTraining, setIsTraining] = useState(defaultTaskIds.map(() => false));
-  const [apiData, setApiData] = useState(defaultTaskIds.map(() => null));
-  const [accuracy, setAccuracy] = useState(defaultTaskIds.map(() => 0));
   // setting default values for the network-related states
   const [NNProgress, setNNProgress] = useState(defaultTaskIds.map(() => -1));
   const [errorList, setErrorList] = useState(defaultTaskIds.map(() => [[], null]));
@@ -316,6 +317,8 @@ function App() {
   const currentMaxNodes = [];
   const currentNormalizationVisibility = [];
   const currentAfVisibility = [];
+  const currentAfOptions = [];
+  const currentOptimOptions = [];
   const currentIterationsSliderVisibility = [];
   const currentLRSliderVisibility = [];
   const currentImageVisibility = [];
@@ -339,6 +342,16 @@ function App() {
   const currentOtherTasks = {};
   const currentOtherDescriptions = {};
   const currentConstructionTaskIds = [];
+
+  function convertToList(string, separator=';') {
+    if (string[0] === '[') {
+      return JSON.parse(string);
+    } else { if (string) {
+      return string.split(separator).map((item) => item.trim());
+    } else {
+      return [];
+    }}
+  }
 
   function readTaskEntry(entry) {
     if (!entry.visibility) {
@@ -371,6 +384,8 @@ function App() {
         currentMaxNodes.push(nnDescription.max_nodes);
         currentNormalizationVisibility.push(nnDescription.normalization_visibility);
         currentAfVisibility.push(nnDescription.af_visibility);
+        currentAfOptions.push(convertToList(nnDescription.af_options));
+        currentOptimOptions.push(convertToList(nnDescription.optim_options));
         currentIterationsSliderVisibility.push(nnDescription.iterations_slider_visibility);
         currentLRSliderVisibility.push(nnDescription.lr_slider_visibility);
         currentImageVisibility.push(nnDescription.decision_boundary_visibility);
@@ -459,13 +474,14 @@ function App() {
         setIterationsSliderVisibility(currentIterationsSliderVisibility);
         setLRSliderVisibility(currentLRSliderVisibility);
         setImageVisibility(currentImageVisibility);
+        setAfOptions(currentAfOptions);
+        setOptimOptions(currentOptimOptions);
 
         // Set svm states
         setSVMTaskIds(currentSVMTaskIds);
         setCSliderVisibility(currentCSliderVisibility);
         setGammaSliderVisibility(currentGammaSliderVisibility);
         setRbfVisibility(currentRbfVisibility);
-        // TODO
 
         // Set basics states
         setBasicsIds(currentBasicsTaskIds);
@@ -494,7 +510,6 @@ function App() {
         setNNProgress(currentNNTaskIds.map(() => 0));
         setErrorList(currentNNTaskIds.map(() => [[], null]));
         setBiases(currentNNTaskIds.map(() => []));
-
 
         // some custom taskIds
         setOtherTasks(currentOtherTasks);
@@ -723,68 +738,8 @@ function App() {
   };
 
 
-  // ------- SLIDERS -------
 
-  // initialize an array to store the state for each slider
-  const [iterations, setIterations] = useState(Array(NNTaskIds.length).fill(100));
-  const [learningRate, setLearningRate] = useState(Array(NNTaskIds.length).fill(0.01));
-
-  const handleIterationChange = (index, value) => {
-    setIterations(prev => {
-      const newIterations = [...prev];
-      newIterations[index] = value[0] * 2;
-      return newIterations;
-    });
-  };
-  
-  const handleLearningRateChange = (index, value) => {
-    setLearningRate(prev => {
-      const newLearningRates = [...prev];
-      newLearningRates[index] = (10 ** ((value[0]/-20)-0.33)).toFixed(Math.round((value[0]+10) / 20));
-      return newLearningRates;
-    });
-  };
-
-  const iterationsSliders = NNTaskIds.map((taskId, index) => {
-    return (
-      <Slider.Root
-        key={index}
-        className="SliderRoot"
-        defaultValue={[null]} //maxEpochs[index] ? maxEpochs[index] / 4 : 25
-        onValueChange={(value) => handleIterationChange(index, value)}
-        max={maxEpochs[index] ? maxEpochs[index] / 2 : 50}
-        step={0.5}
-        style={{ width: Math.round(0.19 * (window.innerWidth * 0.97)) }}
-        disabled={isTraining[taskIds.indexOf(taskId)] === 1}
-      >
-        <Slider.Track className="SliderTrack" style={{ height: 3 }}>
-          <Slider.Range className="SliderRange" />
-        </Slider.Track>
-        <Slider.Thumb className="SliderThumb" aria-label="Iterations" />
-      </Slider.Root>
-    );
-  });
-
-  const learningRateSliders = NNTaskIds.map((taskId, index) => {
-    return (
-      <Slider.Root
-        key={index}
-        className="SliderRoot"
-        defaultValue={[null]} //40
-        onValueChange={(value) => handleLearningRateChange(index, value)}
-        max={70}
-        step={10}
-        style={{ width: Math.round(0.19 * (window.innerWidth * 0.97)) }}
-        disabled={isTraining[taskIds.indexOf(taskId)] === 1}
-      >
-        <Slider.Track className="SliderTrack" style={{ height: 3 }}>
-          <Slider.Range className="SliderRange" />
-        </Slider.Track>
-        <Slider.Thumb className="SliderThumb" aria-label="Learning Rate" />
-      </Slider.Root>
-    );
-  });
-
+  // ------- CYTOSCAPE STUFF -------
 
   const updateCytoLayers = (setCytoLayers, nOfInputs, nOfOutputs, index) => {
     setCytoLayers(prevCytoLayers => {
@@ -907,7 +862,7 @@ function App() {
               element={
                 <>
                 <SvmView 
-                isTraining={isTraining[taskIds.indexOf(taskId)]} setIsTraining={setIsTraining} userId={getCookie('user_id')} taskId={taskId} cancelRequestRef={cancelRequestRef} SVMIndex={SVMIndex} index={taskIds.indexOf(taskId)} name={taskNames[taskId]} pendingTime={pendingTime} initPlot={initPlots[taskIds.indexOf(taskId)]} isResponding={taskIds.indexOf(taskId)} apiData={apiData.indexOf(taskId)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(taskId)]} img={imgs[taskIds.indexOf(taskId)]} setImgs={setImgs} typ={typ[taskIds.indexOf(taskId)]} loadData={loadData} normalization={false} dataset={dataset[taskIds.indexOf(taskId)]}
+                isTraining={isTraining[taskIds.indexOf(taskId)]} setIsTraining={setIsTraining} userId={getCookie('user_id')} taskId={taskId} cancelRequestRef={cancelRequestRef} SVMIndex={SVMIndex} index={taskIds.indexOf(taskId)} name={taskNames[taskId]} pendingTime={pendingTime}  isResponding={taskIds.indexOf(taskId)} apiData={apiData.indexOf(taskId)} setApiData={setApiData} handleSubmit={handleSubmit} featureNames={featureNames[taskIds.indexOf(taskId)]} img={imgs[taskIds.indexOf(taskId)]} setImgs={setImgs} typ={typ[taskIds.indexOf(taskId)]} loadData={loadData} normalization={false} dataset={dataset[taskIds.indexOf(taskId)]}
                 fileName={fileNames[taskIds.indexOf(taskId)]} functionName={functionNames[taskIds.indexOf(taskId)]} startTraining={putRequest} tabs={['data', 'training']} sliderValues={{'CSlider': 10, 'GammaSlider': 0.1}} sliderVisibilities={{'CSlider': cSliderVisibility[SVMIndex], 'GammaSlider': gammaSliderVisibility[SVMIndex] }} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'KernelCheckbox': rbfVisibility[SVMIndex] }} setIsResponding={setIsResponding} 
                 />
                 </>
@@ -917,6 +872,7 @@ function App() {
           ))}
 
           {sensitiveIds.map((taskId, NNIndex) => (
+            // TODO currently unused as this whole idea turned into a big stinky mess
             <>
             <Route
               key={taskId}
@@ -926,8 +882,9 @@ function App() {
                 <BuildView
                   nOfInputs={nInputs[taskIds.indexOf(taskId)]} nOfOutputs={nOutputs[taskIds.indexOf(taskId)]} maxLayers={maxLayers[taskIds.indexOf(taskId)]} taskId={taskId} NNIndex={NNIndex} index={taskIds.indexOf(taskId)} cytoElements={cytoElements[NNIndex]} cytoStyle={cytoStyle[NNIndex]} cytoLayers={cytoLayers[NNIndex]} setCytoLayers={setCytoLayers} updateCytoLayers={updateCytoLayers} loadLastCytoLayers={loadLastCytoLayers} 
                   isTraining={isTraining[taskIds.indexOf(taskId)]} setIsTraining={setIsTraining} apiData={apiData[taskIds.indexOf(taskId)]} setApiData={setApiData} accuracy={accuracy[NNIndex]} setAccuracy={setAccuracy} accuracyColor={accuracyColor} handleSubmit={handleSubmit} isResponding={isResponding[taskIds.indexOf(taskId)]} setIsResponding={setIsResponding} loadData={loadData} pendingTime={pendingTime} intervalTimeout={intervalTimeout} cancelRequestRef={cancelRequestRef}
-                  progress={NNProgress[NNIndex]} setProgress={setNNProgress} featureNames={featureNames[taskIds.indexOf(taskId)]} errorList={errorList[NNIndex]} setErrorList={setErrorList} weights={weights[NNIndex]} setWeights={setWeights} biases={biases[NNIndex]} setBiases={setBiases} img={imgs[taskIds.indexOf(taskId)]} setImgs={setImgs} initPlot={initPlots[taskIds.indexOf(taskId)]} userId={getCookie('user_id')}
+                  progress={NNProgress[NNIndex]} setProgress={setNNProgress} featureNames={featureNames[taskIds.indexOf(taskId)]} errorList={errorList[NNIndex]} setErrorList={setErrorList} weights={weights[NNIndex]} setWeights={setWeights} biases={biases[NNIndex]} setBiases={setBiases} img={imgs[taskIds.indexOf(taskId)]} setImgs={setImgs} userId={getCookie('user_id')}
                   fileName={fileNames[taskIds.indexOf(taskId)]} functionName={functionNames[taskIds.indexOf(taskId)]} maxNodes={maxNodes[NNIndex]} maxEpochs={maxEpochs[NNIndex]} typ={typ[taskIds.indexOf(taskId)]} dataset={dataset[taskIds.indexOf(taskId)]} name={taskNames[taskId]} startTraining={putRequest} imageVisibility={imageVisibility[NNIndex]}
+                  initPlot={sensitiveDataPlot}
                   tabs={['data', 'training']} sliderVisibilities={{}} inputFieldVisibilities={{}} dropdownVisibilities={{}} checkboxVisibilities={{'ColorCheckbox': true, 'HeightCheckbox': true, 'ResizeCheckbox': true}}
                 />
                 </>
@@ -956,20 +913,10 @@ function App() {
                   setCytoLayers={setCytoLayers}
                   updateCytoLayers={updateCytoLayers}
                   loadLastCytoLayers={loadLastCytoLayers}
-                  // iterationsSlider={iterationsSliders[NNIndex]}
-                  // iterations={iterations[NNIndex]}
-                  // setIterations={setIterations}
-                  // learningRateSlider={learningRateSliders[NNIndex]}
-                  // learningRate={learningRate[NNIndex]}
-                  // setLearningRate={setLearningRate}
                   isTraining={isTraining[taskIds.indexOf(taskId)]}
                   setIsTraining={setIsTraining}
                   apiData={apiData[taskIds.indexOf(taskId)]}
                   setApiData={setApiData}
-                  // taskData={taskData}
-                  // setTaskData={setTaskData}
-                  // putRequest={putRequest}
-                  // accuracy={accuracy[NNIndex]}
                   setAccuracy={setAccuracy}
                   accuracyColor={accuracyColor}
                   handleSubmit={handleSubmit}
@@ -983,13 +930,6 @@ function App() {
                   img={imgs[taskIds.indexOf(taskId)]}
                   initPlot={initPlots[taskIds.indexOf(taskId)]}
                   loadData={loadData}
-                  // normalization={false}
-                  // normalizationVisibility={normalizationVisibility[NNIndex]}
-                  // af={afs[NNIndex]}
-                  // setAf={setAf}
-                  // afVisibility={afVisibility[NNIndex]}
-                  // iterationsSliderVisibility={iterationsSliderVisibility[NNIndex]}
-                  // lrSliderVisibility={lrSliderVisibility[NNIndex]}
                   imageVisibility={imageVisibility[NNIndex]}
                   setProgress={setNNProgress}
                   setErrorList={setErrorList}
@@ -1011,7 +951,8 @@ function App() {
                   tabs={['data', 'training', 'testing']}
                   sliderVisibilities={{'EpochSlider': iterationsSliderVisibility[NNIndex], 'LRSlider': lrSliderVisibility[NNIndex]}}
                   inputFieldVisibilities={{}}
-                  dropdownVisibilities={{}}
+                  dropdownVisibilities={{'AFDropdown': !!afOptions[NNIndex].length, 'OptimizerDropdown': !!optimOptions[NNIndex].length}}
+                  dropdownOptions={{'AFDropdown': afOptions[NNIndex], 'OptimizerDropdown': optimOptions[NNIndex]}}
                   checkboxVisibilities={{'AFCheckbox': afVisibility[NNIndex], 'NormCheckbox': normalizationVisibility[NNIndex]}}
                 />
                 </>

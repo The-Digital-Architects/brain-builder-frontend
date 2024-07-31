@@ -25,39 +25,41 @@ def get_data(dataset, typ:int=None, normalization=False, test_size=None, data=No
     # if the dataset has been passed on, just use that
     if data is not None:
         pass
+    else:
 
-    elif type(dataset) is str and dataset.startswith('load_'):
-        # import a dataset from sklearn
-        exec('data = DataFromSklearn1(datasets.' + dataset + ', normalize=normalization)', magic_box)
-        data = magic_box['data']
-        # Note: exec may cause security problems if games is defined elsewhere, but should be fine for now
+        if type(dataset) is str and dataset.startswith('load_'):
+            # import a dataset from sklearn
+            exec('data = DataFromSklearn1(datasets.' + dataset + ', normalize=normalization)', magic_box)
+            data = magic_box['data']
+            # Note: exec may cause security problems if games is defined elsewhere, but should be fine for now
 
-    elif type(dataset) is str and dataset.startswith('make_'):
-        # import a dataset from sklearn
-        exec('data = DataFromSklearn2(datasets.' + dataset + ', normalize=normalization, data_type=' + str(typ) + ')', magic_box)
-        data = magic_box['data']
-        # Note: exec may cause security problems if games is defined elsewhere, but should be fine for now
+        elif type(dataset) is str and dataset.startswith('make_'):
+            # import a dataset from sklearn
+            exec('data = DataFromSklearn2(datasets.' + dataset + ', normalize=normalization, data_type=' + str(typ) + ')', magic_box)
+            data = magic_box['data']
+            # Note: exec may cause security problems if games is defined elsewhere, but should be fine for now
 
-    elif type(dataset) is str and dataset.startswith('['):
-        # Note: I had to use eval here on the external csv file,
-        # so first some basic security measures:
-        if (len(dataset) < 100 and list(dataset)[-1] == ']' and
-                not dataset.__contains__('(') and not dataset.__contains__(')')):
-            data = DataFromFunction(eval(dataset), normalize=normalization)
+        elif type(dataset) is str and dataset.startswith('['):
+            # Note: I had to use eval here on the external csv file,
+            # so first some basic security measures:
+            if (len(dataset) < 100 and list(dataset)[-1] == ']' and
+                    not dataset.__contains__('(') and not dataset.__contains__(')')):
+                data = DataFromFunction(eval(dataset), normalize=normalization)
 
-    elif type(dataset) is str:
-        # load the dataset from Excel -> use custom dataset class
-        data = DataFromExcel(os.path.join(os.path.dirname(__file__), 'datasets/' + dataset), data_type=typ, normalize=normalization)
+        elif type(dataset) is str:
+            # load the dataset from Excel -> use custom dataset class
+            data = DataFromExcel(os.path.join(os.path.dirname(__file__), 'datasets/' + dataset), data_type=typ, normalize=normalization)
 
 
-    # if test_size is not None or val_size is not None:
-    #     train, test_val = train_test_split(data, test_size=(test_size+val_size))
-    #     test, val = train_test_split(test_val, test_size=val_size/(test_size+val_size))
-    #     return train, test, val
-    # else: 
-    #     return data
+        # if test_size is not None or val_size is not None:
+        #     train, test_val = train_test_split(data, test_size=(test_size+val_size))
+        #     test, val = train_test_split(test_val, test_size=val_size/(test_size+val_size))
+        #     return train, test, val
+        # else: 
+        #     return data
     
-    train, test = train_test_split(data, test_size=test_size)
+        data.training_set = train
+        data.testing_set = test
     return data, (train, test)
 
 
@@ -93,6 +95,7 @@ class DataFromExcel(Dataset):
             data_type (integer): currently only 0 is supported
             normalize (boolean): normalize the data to the range [0, 1]
         """
+        self.training_set, self.testing_set, self.validation_set = None, None, None
         self.data_type, self.normalization = data_type, normalize
         self.data = pd.read_csv(csv_file_path)
         # set some initial values
@@ -392,6 +395,7 @@ print(d.denormalize(norm))
 
 class DataFromSklearn1(Dataset):  # this one is for load_wine(), etc.
     def __init__(self, dataset, normalize=False):  # assumed to be for classification
+        self.training_set, self.testing_set, self.validation_set = None, None, None
         self.data = dataset.data
         self.targets = dataset.target
         self.normalization = normalize
@@ -570,6 +574,7 @@ class DataFromSklearn1(Dataset):  # this one is for load_wine(), etc.
 
 class DataFromSklearn2(Dataset):  # this one is for make_moons(n_samples, noise), make_regression() and make_classification()
     def __init__(self, dataset, normalize=False, data_type=2):  # works for up to 10 features and 10 targets
+        self.training_set, self.testing_set, self.validation_set = None, None, None
         self.data_type = data_type
         self.data, self.targets = dataset
         if len(self.data.shape) == 1:
@@ -821,6 +826,7 @@ class DataFromSklearn2(Dataset):  # this one is for make_moons(n_samples, noise)
 
 class DataFromFunction(Dataset):  # this one is for one to one regression on simple functions
     def __init__(self, inp, normalize=False):  # works for up to 10 features and 10 targets
+        self.training_set, self.testing_set, self.validation_set = None, None, None
         self.n_features, self.n_targets = 1, 1
         self.function, self.n_objects, lower, upper, noise = inp
         self.data = np.random.rand(self.n_objects) * (upper - lower) + lower

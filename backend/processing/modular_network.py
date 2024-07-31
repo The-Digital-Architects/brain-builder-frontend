@@ -48,13 +48,17 @@ class BuildNetwork(torch.nn.Module):
         if torch.isnan(torch.tensor(x)).any() or torch.isinf(torch.tensor(x)).any():
             print("NaN after layer", x)
         if activation == 'Sigmoid':
-            return torch.sigmoid(x)
-        elif activation == 'ReLu':
+            return torch.nn.functional.sigmoid(x)
+        elif activation == 'TanH':
+            return torch.nn.functional.tanh(x)
+        elif activation == 'ReLU':
             return torch.nn.functional.relu(x)
         elif activation == 'Softmax':
             return torch.nn.functional.softmax(x, dim=-1)
         elif activation == 'Log_Softmax':
             return torch.nn.functional.log_softmax(x, dim=-1)
+        elif activation == 'SiLU' or activation == 'Swish':
+            return torch.nn.functional.silu(x)
         else:
             # cap the weights at 100 to prevent overflow
             parameters = list(self.parameters())

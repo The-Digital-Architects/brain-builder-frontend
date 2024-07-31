@@ -47,14 +47,17 @@ from base64 import b64encode, b64decode
 
 
 def build_nn(structure, learning_rate, epochs, norma, dataset, typ, dat=None):
+    if type(dataset) is not str:
+        dat = dataset
+        dataset = ''
 
     # get the data and separate into training and testing data:
     batch_size = 1  # feed small amounts of data to adjust gradient with, usually between 8 and 64
     test_size = 0.1  # 10% of the data is used for testing
 
-    data, (training_set, test_set) = df.get_data(dataset, typ, norma, data=dat, test_size=test_size)
-    training_set = torch.utils.data.DataLoader(training_set, batch_size=batch_size, shuffle=True)
-    test_set = torch.utils.data.DataLoader(test_set, batch_size=batch_size, shuffle=True)
+    data = df.get_data(dataset, typ, norma, data=dat, test_size=test_size)
+    training_set = torch.utils.data.DataLoader(data.training_set, batch_size=batch_size, shuffle=True)
+    test_set = torch.utils.data.DataLoader(data.testing_set, batch_size=batch_size, shuffle=True)
     # shuffle: always turn on if dataset is ordered!
     print('Data loaded, initiating neural network')
 
@@ -64,9 +67,13 @@ def build_nn(structure, learning_rate, epochs, norma, dataset, typ, dat=None):
     return nn, data, training_set, test_set
 
 
-def train_nn_epoch(nn, training_set, test_set, current_epoch, epochs, learning_rate, typ, errors):
+def train_nn_epoch(nn, training_set, test_set, current_epoch, epochs, learning_rate, typ, errors, optim):
     accuracy, weights, biases = None, None, None
-    optimizer = torch.optim.SGD(nn.parameters(), lr=learning_rate)  # optimizer has to be defined outside the network module, idk why
+    # optimizer has to be defined outside the network module, idk why
+    if optim == 'adam' or optim == 'Adam':
+        optimizer = torch.optim.Adam(nn.parameters(), lr=learning_rate)
+    else:
+        optimizer = torch.optim.SGD(nn.parameters(), lr=learning_rate)
 
     nn.train_epoch(training_set, optimizer, typ)
 
@@ -81,7 +88,7 @@ def train_nn_epoch(nn, training_set, test_set, current_epoch, epochs, learning_r
     return errors, accuracy, weights, biases
 
 
-def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ, user_id, task_id):
+def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ, optimizer, user_id, task_id):
     # first, reset all variables
     progress = 0
     errors = []
@@ -95,7 +102,7 @@ def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ, user_id,
             break
         
         print("Epoch: ", epoch)
-        errors, accuracy, we, bi = train_nn_epoch(nn, train_set, test_set, epoch, epochs, learning_rate, typ, errors)
+        errors, accuracy, we, bi = train_nn_epoch(nn, train_set, test_set, epoch, epochs, learning_rate, typ, errors, optimizer)
         if we is not None:
             w = we
             b = bi
@@ -166,11 +173,12 @@ def predict(x, nn, typ, data, normalization=False, name=False):
         return None
 
 
-def convert_input(nodes, n_inputs, n_outputs, typ, af=True):
+def convert_input(nodes, n_inputs, n_outputs, typ, af='Sigmoid'):
     # basic settings
     structure = [[nodes[0]]]
     for x in nodes[1:]:
-        structure += [[x, 'Linear', 'Sigmoid', True]]  # all nodes are linear and include a sigmoid activation and bias
+        structure += [[x, 'Linear', af, True]]
+        # TODO: works for now: modular_network.py is hard-coded to include ReLU, Sigmoid, SiLU/Swish, TanH, Log_Softmax and Softmax
 
     assert structure[0][0] == n_inputs, structure
     assert structure[-1][0] == n_outputs, structure
@@ -189,8 +197,8 @@ def convert_input(nodes, n_inputs, n_outputs, typ, af=True):
     return structure
 
 
-def main(nodes, n_inputs, n_outputs, activations_on, learning_rate, epochs, normalization, dataset, typ, user_id, task_id):  
-    architecture = convert_input(nodes, n_inputs, n_outputs, typ, activations_on)
+def main(nodes, n_inputs, n_outputs, learning_rate, epochs, normalization, dataset, typ, user_id, task_id, optimizer, af):
+    architecture = convert_input(nodes, n_inputs, n_outputs, typ, af=af)
     
     # build the neural network
     nn, data, training_set, testing_set = build_nn(architecture, learning_rate, epochs, normalization, dataset, typ)

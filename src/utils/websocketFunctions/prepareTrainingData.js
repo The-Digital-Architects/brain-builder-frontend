@@ -1,3 +1,4 @@
+import { act } from 'react';
 import getCookie from '../cookieUtils';
 
 // Extracted task-specific configurations for better separation of concerns
@@ -18,6 +19,8 @@ const updateState = (setter, newValue, index) => {
 const prepareNNTrainingData = ({
   learningRate = 0.01,
   iterations = 50,
+  af,
+  optimizer,
   taskId,
   setProgress,
   setErrorList,
@@ -66,7 +69,8 @@ const prepareNNTrainingData = ({
     learning_rate: parseFloat(finalLearningRate),
     epochs: iterations,
     normalization,
-    activations_on: activationFunctionsEnabled,
+    af: af,
+    optimizer: optimizer,
     nodes: updatedCytoLayers,
     n_inputs: nOfInputs,
     n_outputs: nOfOutputs,

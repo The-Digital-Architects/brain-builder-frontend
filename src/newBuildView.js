@@ -123,16 +123,18 @@ class Building extends Model {
     };
 
     dropdowns = {
-      'AFDropdown': <Dropdown options={["ReLU", "Sigmoid", "htan", "Swish"]} onChange={(selectedOption) => this.handleDropdownChange(selectedOption)} placeholder={"Please select an option"} disabled={this.props.isTraining===1} />,
-      'OptimizerDropdown': <Dropdown options={["SGD", "Adam"]} onChange={(selectedOption) => this.handleDropdownChange(selectedOption)} placeholder={"Please select an option"} disabled={this.props.isTraining===1} />
+      'AFDropdown': <Dropdown options={this.props.dropdownOptions['AFDropdown']} onChange={(selectedOption) => this.handleDropdownChange('AFDropdown', selectedOption)} placeholder={"Please select an option"} disabled={this.props.isTraining===1} />,
+      // preferred options: ["ReLU", "Sigmoid", "TanH", "Swish"]
+      'OptimizerDropdown': <Dropdown options={this.props.dropdownOptions['OptimizerDropdown']} onChange={(selectedOption) => this.handleDropdownChange('OptimizerDropdown', selectedOption)} placeholder={"Please select an option"} disabled={this.props.isTraining===1} />
+      // preferred options: ["SGD", "Adam"]
     }
 
     checkboxes = {
       'NormCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('NormCheckbox')} checked={this.state.checkboxValues['Normcheckbox']} />,
-      'AFCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('AFCheckbox')} checked={this.state.checkboxValues['AFCheckbox']} />,
-      'ResizeCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('ResizeCheckbox')} checked={this.state.checkboxValues['ResizeCheckbox']} />,
-      'ColorCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('ColorCheckbox')} checked={this.state.checkboxValues['ColorCheckbox']} />,
-      'HeightCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('HeightCheckbox')} checked={this.state.checkboxValues['HeightCheckbox']} />,
+      'AFCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleAFChange('AFCheckbox')} checked={this.state.checkboxValues['AFCheckbox']} />,
+      // 'ResizeCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('ResizeCheckbox')} checked={this.state.checkboxValues['ResizeCheckbox']} />,
+      // 'ColorCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('ColorCheckbox')} checked={this.state.checkboxValues['ColorCheckbox']} />,
+      // 'HeightCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('HeightCheckbox')} checked={this.state.checkboxValues['HeightCheckbox']} />,
     }
 
 
@@ -254,7 +256,8 @@ class Building extends Model {
                 biases: this.props.biases,
                 img: this.props.img,
                 isTraining: this.props.isTraining,
-                af: this.state.checkboxValues['AFCheckbox'],
+                af: this.state.dropdownValues['AFDropdown'],
+                optimzer: this.state.dropdownValues['OptimizerDropdown'],
                 cancelRequestRef: this.props.cancelRequestRef,
                 typ: this.props.typ,
                 dataset: this.props.dataset,
@@ -282,6 +285,20 @@ class Building extends Model {
             const newCheckboxValues = {...prev.checkboxValues};
             newCheckboxValues[name] = !prev.checkboxValues[name];
             return {checkboxValues: newCheckboxValues};
+        });
+    }
+
+    handleAFChange = () => {
+      this.state.checkboxValues['AFCheckbox'] ? this.handleDropdownChange('AFDropdown', '') : this.handleDropdownChange('AFDropdown', 'ReLU');
+      // if the AFCheckbox is checked, set to empty string, else set to ReLU
+      this.handleCheckboxChange('AFCheckbox');
+  }
+
+    handleDropdownChange = (name, value) => {
+        this.setState( prev => {
+            const newDropdownValues = {...prev.dropdownValues};
+            newDropdownValues[name] = value;
+            return {dropdownValues: newDropdownValues};
         });
     }
 

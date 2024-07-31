@@ -89,6 +89,8 @@ class NeuralNetworkDescription(models.Model):
     normalization_visibility = models.BooleanField(default=False)
     af_visibility = models.BooleanField(default=False)
     decision_boundary_visibility = models.BooleanField(default=False)
+    af_options = models.TextField(max_length=50, default='')
+    optimizer_options = models.TextField(max_length=50, default='')
     sensitive_data = models.BooleanField(default=False, null=True, blank=True)
     
     def __str__(self) -> str:
