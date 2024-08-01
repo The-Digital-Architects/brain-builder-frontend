@@ -257,7 +257,7 @@ class Building extends Model {
                 img: this.props.img,
                 isTraining: this.props.isTraining,
                 af: this.state.dropdownValues['AFDropdown'],
-                optimzer: this.state.dropdownValues['OptimizerDropdown'],
+                optimizer: this.state.dropdownValues['OptimizerDropdown'],
                 cancelRequestRef: this.props.cancelRequestRef,
                 typ: this.props.typ,
                 dataset: this.props.dataset,

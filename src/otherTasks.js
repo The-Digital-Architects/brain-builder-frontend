@@ -54,7 +54,7 @@ class OtherTask extends Component {
             } else if (this.props.type === 'ManualPCA') {
                 this.ws.send(JSON.stringify({ header: 'initial_change', task_name: this.props.type, task_id: this.props.customId, a: 45 }));
             } else if (this.props.type === 'Manual3DPCA') {
-                this.ws.send(JSON.stringify({ header: 'initial_change', task_name: this.props.type, task_id: this.props.customId, a: 0 }));
+                this.ws.send(JSON.stringify({ header: 'initial_change', task_name: this.props.type, task_id: this.props.customId, angle: 0 }));
             }
         }
 
@@ -110,13 +110,19 @@ class OtherTask extends Component {
     }
 
     handleWeightChange = this.throttle((value) => {
-        if (this.props.type === 'ManualPCA' || this.props.type === 'Manual3DPCA') {this.setState({ in1: value[0] })};
+        let message
+        if (this.props.type === 'Manual3DPCA') {
+            this.setState({ in1: value[0] });
+            message = JSON.stringify({ header: 'angle_change', task_name: this.props.type, task_id: this.props.customId, angle: value});
+        } else {
+        if (this.props.type === 'ManualPCA') {this.setState({ in1: value[0] })};
         value = value[0] * Math.PI / 180;
         value = Math.tan(value);
         value = parseFloat(value.toFixed(3));
         if (this.props.type === 'ManualLinReg') {this.setState({ in1: value })};
         // Send a message through the WebSocket
-        const message = JSON.stringify({ header: 'weight_change', task_name: this.props.type, task_id: this.props.customId, a: value, b: this.state.in2});
+        message = JSON.stringify({ header: 'weight_change', task_name: this.props.type, task_id: this.props.customId, a: value, b: this.state.in2});
+        }
         this.ws.send(message);
     }, 100)
 

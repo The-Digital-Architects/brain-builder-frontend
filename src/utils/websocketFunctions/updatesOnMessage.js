@@ -15,16 +15,20 @@ function checkTrainingComplete(data, params, ws) {
 
     if (data?.progress !== undefined && params?.iterations !== undefined) {
       if (data.progress >= 0.98 || (params.iterations <=30 && data.progress >= 0.95) || (params.iterations <=20 && data.progress*params.iterations >= (params.iterations - 1))) {
-        ws.close();
-        clearTimeout(params.timeoutId);
-        params.setIsTraining(prevIsTraining => {
-          const newIsTraining = [...prevIsTraining];
-          newIsTraining[params.globalIndex] = 2;
-          return newIsTraining;
-        });
-        console.log("Training finished")
+        endTraining(ws, params);
       }
     }
+}
+
+function endTraining(ws, params) {
+  ws.close();
+  clearTimeout(params.timeoutId);
+  params.setIsTraining(prevIsTraining => {
+    const newIsTraining = [...prevIsTraining];
+    newIsTraining[params.globalIndex] = 2;
+    return newIsTraining;
+  });
+  console.log("Training finished")
 }
 
 function updateErrorListIfNeeded(data, params) {
@@ -84,8 +88,7 @@ function updateImagesIfNeeded(data, params) {
 
     /*decompress and parse the images in 'plots', but only if it's not empty or the same as the current params.imgs*/
 
-    if (data?.plot !== undefined && params?.imgs !== undefined) {
-      if (data.plot.length > 0 && data.plot.length !== params.imgs.length) {
+    if (data?.plot) {
         params.setImgs(prevImgs => {
           const newImgs = [...prevImgs];
           const binaryString = atob(data.plot);  // decode from base64 to binary string
@@ -99,8 +102,7 @@ function updateImagesIfNeeded(data, params) {
           newImgs[params.globalIndex] = url
           return newImgs;
         });
-      }
     }
 }
 
-export { updateProgress, checkTrainingComplete, updateErrorListIfNeeded, updateF1ScoreIfNeeded, updateWeightsIfNeeded, updateBiasesIfNeeded, updateImagesIfNeeded };
+export { updateProgress, checkTrainingComplete, endTraining, updateErrorListIfNeeded, updateF1ScoreIfNeeded, updateWeightsIfNeeded, updateBiasesIfNeeded, updateImagesIfNeeded };

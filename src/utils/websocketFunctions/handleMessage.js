@@ -1,4 +1,4 @@
-import { updateProgress, checkTrainingComplete, updateErrorListIfNeeded, updateF1ScoreIfNeeded, updateWeightsIfNeeded, updateBiasesIfNeeded, updateImagesIfNeeded } from './updatesOnMessage';
+import { updateProgress, checkTrainingComplete, endTraining, updateErrorListIfNeeded, updateF1ScoreIfNeeded, updateWeightsIfNeeded, updateBiasesIfNeeded, updateImagesIfNeeded } from './updatesOnMessage';
 
 export default function handleMessage(event, ws, params) {
 
@@ -11,11 +11,8 @@ export default function handleMessage(event, ws, params) {
     if (data.header === 'SVM') {  // SVM training is completed, includes plot and f1score
         
         params.setF1Score(data.f1_score);
-        params.setImgs(prevImgs => {
-          const newImgs = [...prevImgs];
-          newImgs[params.index] = data.plot;
-          return newImgs;
-        });
+        updateImagesIfNeeded(data, params);
+        endTraining(ws, params);
         
     }
 
