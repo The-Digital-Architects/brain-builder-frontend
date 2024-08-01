@@ -11,9 +11,9 @@ class OtherTask extends Component {
     /* This component can be used for simple tasks with a split screen with an explanation on the left and sliders and a visualisation on the right, separated by a vertical line. */
 
     constructor(props) {
-        let inVals = {'ManualLinReg': [1, 0], 'ManualPolyReg': [1], 'ManualMatrix': [5, 3], 'ManualPCA': [45], 'ManualEmissions': []}
-        let inNames = {'ManualLinReg': ['Weight', 'Bias'], 'ManualPolyReg': ['Order of the polynomial'], 'ManualMatrix': ['Number of objects', 'Number of features'], 'ManualPCA': ['Angle'], 'ManualEmissions': []}
-        let outNames = {'ManualLinReg': ['Error'], 'ManualPolyReg': [], 'ManualMatrix': [], 'ManualPCA': ['Explained variance'], 'ManualEmissions': []}
+        let inVals = {'ManualLinReg': [1, 0], 'ManualPolyReg': [1], 'ManualMatrix': [5, 3], 'ManualPCA': [45], 'Manual3DPCA': [0], 'ManualEmissions': []}
+        let inNames = {'ManualLinReg': ['Weight', 'Bias'], 'ManualPolyReg': ['Order of the polynomial'], 'ManualMatrix': ['Number of objects', 'Number of features'], 'ManualPCA': ['Angle'], 'Manual3DPCA': ['Angle'], 'ManualEmissions': []}
+        let outNames = {'ManualLinReg': ['Error'], 'ManualPolyReg': [], 'ManualMatrix': [], 'ManualPCA': ['Explained variance'], 'Manual3DPCA': ['Explained variance'], 'ManualEmissions': []}
         super(props);
         this.state = {
             in1: inVals[this.props.type][0] || 0,
@@ -27,7 +27,7 @@ class OtherTask extends Component {
             img: null,
             view: null
         };
-        if (this.props.type === 'ManualLinReg' || this.props.type === 'ManualPolyReg' || this.props.type === 'ManualPCA') {
+        if (this.props.type === 'ManualLinReg' || this.props.type === 'ManualPolyReg' || this.props.type === 'ManualPCA' || this.props.type === 'Manual3DPCA') {
             this.ws = new WebSocket(`wss://${this.props.host}/ws/${this.props.userId}/`);
         } else {
             this.ws = null;
@@ -53,6 +53,8 @@ class OtherTask extends Component {
                 this.ws.send(JSON.stringify({ header: 'initial_change', task_name: this.props.type, task_id: this.props.customId, n: 1 }));
             } else if (this.props.type === 'ManualPCA') {
                 this.ws.send(JSON.stringify({ header: 'initial_change', task_name: this.props.type, task_id: this.props.customId, a: 45 }));
+            } else if (this.props.type === 'Manual3DPCA') {
+                this.ws.send(JSON.stringify({ header: 'initial_change', task_name: this.props.type, task_id: this.props.customId, a: 0 }));
             }
         }
 
@@ -108,7 +110,7 @@ class OtherTask extends Component {
     }
 
     handleWeightChange = this.throttle((value) => {
-        if (this.props.type === 'ManualPCA') {this.setState({ in1: value[0] })};
+        if (this.props.type === 'ManualPCA' || this.props.type === 'Manual3DPCA') {this.setState({ in1: value[0] })};
         value = value[0] * Math.PI / 180;
         value = Math.tan(value);
         value = parseFloat(value.toFixed(3));
@@ -281,7 +283,7 @@ class OtherTask extends Component {
                 <div>{this.state.in1Name}: {this.state.in1}</div>
                 <div className="slider" style={{ marginTop:10, height:50 }}>
                     {
-                    (this.props.type === 'ManualLinReg' || this.props.type === 'ManualPCA') ? weightSlider
+                    (this.props.type === 'ManualLinReg' || this.props.type === 'ManualPCA' || this.props.type === 'Manual3DPCA') ? weightSlider
                     : this.props.type === 'ManualPolyReg' ? orderSlider 
                     : this.props.type === 'ManualMatrix' ? nObjectsSlider
                     : null}

@@ -16,6 +16,7 @@ def tset(sometext):
 
 xVars = {}
 yVars = {}
+zVars = {}
 
 def ManualLinReg(a=None, b=None, task_id=None, user_id=None):
     """
@@ -69,6 +70,7 @@ def ManualPCA(a=None, task_id=None, user_id=None):
     """
     Creates a plot of some datapoints, along with a line ax + b. 
     Limits are -10 and +10 for both x and y. 
+    Also creates the projection of the datapoints on the line.
     Returns the plot as the value of a BytesIO object.
     """
     projection = True
@@ -130,6 +132,93 @@ def ManualPCA(a=None, task_id=None, user_id=None):
         ManualPCA(a, task_id, user_id)
 
 
+def Manual3DPCA(angle=None, task_id=None, user_id=None):
+    """
+    Creates a 3D plot of some datapoints, along with a plane ax + b. 
+    Limits are -10 and +10 for x, y and z. 
+    Also creates the projection of the datapoints on the plane.
+    Returns the plot as the value of a BytesIO object.
+    """
+    limits = (-10, 10)
+
+    global xVars, yVars, zVars
+    x = xVars.get((user_id, 'PCA2'))
+    y = yVars.get((user_id, 'PCA2'))
+    z = zVars.get((user_id, 'PCA2'))
+    
+    if x is not None and y is not None:
+        fig = f.Figure(figsize=(10, 5))
+        ax = fig.add_subplot(121, projection='3d')
+
+        # plot the datapoints in blue
+        ax.scatter(x, y, z, color=(4/255, 151/255, 185/255))
+
+        if angle is not None:
+            # plot the plane in grey
+            x_s = np.linspace(limits[0], limits[1], 100)
+            y_s = np.linspace(limits[0], limits[1], 100)
+            x_s, y_s = np.meshgrid(x_s, y_s)
+            mask = np.sqrt(x_s**2 + y_s**2) <= min(abs(limits[0]), abs(limits[1]))
+            x_s = x_s[mask]
+            y_s = y_s[mask]
+            z_s = -np.cos(np.radians(angle))*x_s - np.sin(np.radians(angle))*y_s
+            ax.plot(x_s, y_s, z_s, color=(200/255, 200/255, 200/255))
+
+            # plot the vector in red
+            l = 10
+            x_1 = np.cos(np.radians(angle))*np.sqrt(l/2)
+            y_1 = np.sin(np.radians(angle))*np.sqrt(l/2)
+            z_1 = np.sqrt(l/2)
+            ax.quiver(0, 0, 0, x_1, y_1, z_1, color=(185 / 255, 38 / 255, 4 / 255))
+
+        ax.set_xlim(limits[0], limits[1])
+        ax.set_ylim(limits[0], limits[1])
+        ax.set_zlim(limits[0], limits[1])
+        ax.set_title('Original Data')
+
+        projected_x_s = -x*np.sin(angle) + y*np.cos(angle)
+        projected_y_s = (-x*np.cos(angle) - y*np.sin(angle) + 3*z)/(2*np.sqrt(2))
+        projected_z_s = (x*np.cos(angle) + y*np.sin(angle) + z)/2
+        ax = fig.add_subplot(122)
+        # project the points on the specified plane and plot in 2D
+        ax.scatter(projected_x_s, projected_y_s, color=(4/255, 151/255, 185/255))
+        ax.set_xlim(-1.5*limits[0], 1.5*limits[0])
+        ax.set_ylim(-1.5*limits[0], 1.5*limits[0])
+        ax.set_title('Projection')
+
+        # save the image to a BytesIO and return it
+        img = BytesIO()
+        fig.tight_layout()
+        fig.savefig('projection_plot.png', format='png')
+        fig.savefig(img, format='png')
+        img.seek(0)
+        fig.clear()
+
+        # calculate the absolute variance and the explained variance of the projection on the plane
+        matrix = np.array([projected_x_s, projected_y_s, projected_z_s])
+        cov_matrix = np.cov(matrix)
+        var = cov_matrix[0, 0] + cov_matrix[1, 1]
+        total_var = np.trace(cov_matrix)
+        explained_var = var / total_var
+
+        plot = img.getvalue()
+        plot = b64encode(plot).decode()
+
+        send_update(header='plot', var_names=['plot', 'out1', 'out2'], vars=(plot, explained_var, None), task_id=task_id, user_id=user_id)
+
+    else: 
+        # set up the plot
+        target_angle = np.random.randint(0, 180)
+        x = np.random.randint(0.9*limits[0], 0.9*limits[1], size=(50,))
+        y = np.random.randint(0.9*limits[0], 0.9*limits[1], size=(50,))
+        z = np.cos(np.radians(target_angle))*x + np.sin(np.radians(target_angle))*y + np.random.normal(0, 1.41, size=(50,))
+    
+        xVars[(user_id, 'PCA2')] = x
+        yVars[(user_id, 'PCA2')] = y
+        zVars[(user_id, 'PCA2')] = z
+        Manual3DPCA(angle, task_id, user_id)
+
+
 def ManualPolyReg(n=None, task_id=None, user_id=None):
     """
     Creates a plot of some datapoints along a sine wave, and finds a polynomial fit of order n. 
@@ -176,3 +265,7 @@ def ManualPolyReg(n=None, task_id=None, user_id=None):
         xVars[(user_id, 'PolyReg')] = x
         yVars[(user_id, 'PolyReg')] = y
         ManualPolyReg(n, task_id, user_id)
+
+
+if __name__ == '__main__':
+    Manual3DPCA(angle=45, task_id=11, user_id='laurens')
