@@ -46,9 +46,9 @@ def main(kernel, c, gamma, dataset, normalization, user_id, task_id):
     batch_size = 1
     test_size = 0.1
 
-    data, (training_set, test_set) = df.get_data(dataset=dataset, normalization=normalization, typ=1, data=None, test_size=test_size)
-    training_set = DataLoader(training_set, batch_size=batch_size, shuffle=True)
-    test_set = DataLoader(test_set, batch_size=batch_size, shuffle=True)
+    data = df.get_data(dataset=dataset, normalization=normalization, typ=1, data=None, test_size=test_size)
+    training_set = DataLoader(data.training_set, batch_size=batch_size, shuffle=True)
+    test_set = DataLoader(data.testing_set, batch_size=batch_size, shuffle=True)
     X_train, y_train = modify_data(training_set)
     X_test, y_test = modify_data(test_set)
     

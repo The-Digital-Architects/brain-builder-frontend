@@ -109,22 +109,22 @@ class OtherTask extends Component {
         }
     }
 
+    handleAngleChange = this.throttle((value) => {
+        this.setState({ in1: value[0] });
+        const message = JSON.stringify({ header: 'angle_change', task_name: this.props.type, task_id: this.props.customId, angle: value});
+        this.ws.send(message);
+    }, 500)
+
     handleWeightChange = this.throttle((value) => {
-        let message
-        if (this.props.type === 'Manual3DPCA') {
-            this.setState({ in1: value[0] });
-            message = JSON.stringify({ header: 'angle_change', task_name: this.props.type, task_id: this.props.customId, angle: value});
-        } else {
         if (this.props.type === 'ManualPCA') {this.setState({ in1: value[0] })};
         value = value[0] * Math.PI / 180;
         value = Math.tan(value);
         value = parseFloat(value.toFixed(3));
         if (this.props.type === 'ManualLinReg') {this.setState({ in1: value })};
         // Send a message through the WebSocket
-        message = JSON.stringify({ header: 'weight_change', task_name: this.props.type, task_id: this.props.customId, a: value, b: this.state.in2});
-        }
+        const message = JSON.stringify({ header: 'weight_change', task_name: this.props.type, task_id: this.props.customId, a: value, b: this.state.in2});
         this.ws.send(message);
-    }, 100)
+    }, 200)
 
     handleBiasChange = this.throttle((value) => {
         this.setState({ in2: value[0] });
@@ -213,6 +213,23 @@ class OtherTask extends Component {
               <Slider.Thumb className="SliderThumb" aria-label="Weight" />
             </Slider.Root>
           );
+
+          const angleSlider = (
+            <Slider.Root
+              className="SliderRoot"
+              defaultValue={[0]}
+              onValueChange={(value) => this.handleAngleChange(value)}
+              min={-180}
+              max={180}
+              step={1}
+              style={{ width: Math.round(0.16 * (window.innerWidth * 0.97)), margin: 10 }}
+            >
+              <Slider.Track className="SliderTrack" style={{ height: 3 }}>
+                <Slider.Range className="SliderRange" />
+              </Slider.Track>
+              <Slider.Thumb className="SliderThumb" aria-label="Weight" />
+            </Slider.Root>
+          );
         
         const biasSlider = (
             <Slider.Root
@@ -289,7 +306,8 @@ class OtherTask extends Component {
                 <div>{this.state.in1Name}: {this.state.in1}</div>
                 <div className="slider" style={{ marginTop:10, height:50 }}>
                     {
-                    (this.props.type === 'ManualLinReg' || this.props.type === 'ManualPCA' || this.props.type === 'Manual3DPCA') ? weightSlider
+                    (this.props.type === 'ManualLinReg' || this.props.type === 'ManualPCA') ? weightSlider
+                    : this.props.type === 'Manual3DPCA' ? angleSlider
                     : this.props.type === 'ManualPolyReg' ? orderSlider 
                     : this.props.type === 'ManualMatrix' ? nObjectsSlider
                     : null}
