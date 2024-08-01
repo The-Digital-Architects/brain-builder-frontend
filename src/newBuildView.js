@@ -107,6 +107,8 @@ class Building extends Model {
             'LRSlider': 'Learning rate',
             'normCheckbox': 'Normalize data',
             'AFCheckbox': 'Enable activation functions',
+            'AFDropdown': 'Activation function',
+            'OptimizerDropdown': 'Optimizer',
             'ColorCheckbox': 'Use color',
             'HeightCheckbox': 'Use height',
             'ResizeCheckbox': 'Use datasets of equal size',
@@ -289,7 +291,7 @@ class Building extends Model {
     }
 
     handleAFChange = () => {
-      this.state.checkboxValues['AFCheckbox'] ? this.handleDropdownChange('AFDropdown', '') : this.handleDropdownChange('AFDropdown', 'ReLU');
+      this.state.checkboxValues['AFCheckbox'] ? this.handleDropdownChange('AFDropdown', '') : this.handleDropdownChange('AFDropdown', 'Sigmoid');
       // if the AFCheckbox is checked, set to empty string, else set to ReLU
       this.handleCheckboxChange('AFCheckbox');
   }
