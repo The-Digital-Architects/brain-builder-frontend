@@ -2,6 +2,7 @@
 import React, { useCallback } from 'react';
 import { PlusIcon, MinusIcon, ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import { IconButton } from '@radix-ui/themes';
+import { max } from 'd3';
 
 
 function FloatingButton(props) {
@@ -24,7 +25,6 @@ function LayerRemoveButton({setCytoLayers, index, taskId, cytoLayers, isTraining
 
     // function to remove a layer
     const removeLayer = useCallback((setCytoLayers, index) => {
-      console.log("removing layer");
       const newLayer = [...cytoLayers];
       if (newLayer.length > 2) {newLayer.splice(-2, 1)}
         setCytoLayers(prevLayers => {
@@ -62,12 +62,13 @@ function LayerAddButton({setCytoLayers, index, taskId, cytoLayers, nOfOutputs, m
     // function to add a layer
     const addLayer = useCallback((setCytoLayers, nOfOutputs, index, max_layers) => {
         const newLayer = [...cytoLayers];
+        console.log('CytoLayers for NNTask ', index, ': ', newLayer);  // TODO remove
         if (newLayer.length < max_layers) {
           newLayer.push(nOfOutputs)
           setCytoLayers(prevLayers => {
-          const newLayers = [...prevLayers];
-          newLayers[index] = newLayer;
-          return newLayers;
+            const newLayers = [...prevLayers];
+            newLayers[index] = newLayer;
+            return newLayers;
           });
         };
     }, [cytoLayers]);
@@ -100,25 +101,27 @@ function GenerateFloatingButtons({top, left, dist, isItPlus, nLayers, cytoLayers
 
   // function to add a node to a layer
   const addNode = useCallback((column, setCytoLayers, taskId, index, max_nodes) => {
+    const newLayer = [...cytoLayers];
+    newLayer[column] < max_nodes ? newLayer[column] += 1 : newLayer[column] = max_nodes;
+    document.getElementById(taskId + "-input" + column).value = newLayer[column];
     setCytoLayers(prevLayers => {
       const newLayers = [...prevLayers];
-      console.log('oldLayers[index][column]: ', newLayers[index][column], max_nodes);
-      newLayers[index][column] < max_nodes ? newLayers[index][column] += 1 : newLayers[index][column] = max_nodes;
-      console.log('newLayers[index][column]: ', newLayers[index][column]);
-      document.getElementById(taskId + "-input" + column).value = newLayers[index][column];
+      newLayers[index] = newLayer;
       return newLayers;
     });
-  }, []);
+  }, [cytoLayers]);
 
   // function to remove a node from a layer
   const removeNode = useCallback((column, setCytoLayers, taskId, index) => {
+    const newLayer = [...cytoLayers];
+    newLayer[column] > 1 ? newLayer[column] -= 1 : newLayer[column] = 1;
+    document.getElementById(taskId + "-input" + column).value = newLayer[column];
     setCytoLayers(prevLayers => {
       const newLayers = [...prevLayers];
-      newLayers[index][column] > 1 ? newLayers[index][column] -= 1 : newLayers[index][column] = 1;
-      document.getElementById(taskId + "-input" + column).value = newLayers[index][column];
+      newLayers[index] = newLayer;
       return newLayers;
     });
-  }, []);
+  }, [cytoLayers]);
 
   // function to set a custom number of nodes for a layer
   const setNodes = useCallback((column, cytoLayers, setCytoLayers, taskId, index, maxNodes) => {
@@ -129,7 +132,6 @@ function GenerateFloatingButtons({top, left, dist, isItPlus, nLayers, cytoLayers
       console.log(`taskId + "-input" + column: ${taskId + "-input" + column}`);
     }
     if (nodeInput && Number.isInteger(nodeInput)) {
-      console.log('nodeInput & maxNodes: ', nodeInput, maxNodes)
       if (nodeInput < 1) {
         nodeInput = 1;
       } else if (nodeInput > maxNodes) {
@@ -145,8 +147,8 @@ function GenerateFloatingButtons({top, left, dist, isItPlus, nLayers, cytoLayers
         console.log(`Error when setting cytoLayers (maybe wrong type?): ${error}`);
       }
     } else {
-      nodeInput = cytoLayers[index][column];
-      console.log("Invalid input: ", nodeInput);
+      nodeInput = cytoLayers[column];
+      console.log("Invalid nodeInput, setting to: ", nodeInput);
     }
     document.getElementById(taskId + "-input" + column).value = nodeInput;
   }, []);

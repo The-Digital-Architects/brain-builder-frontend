@@ -373,6 +373,7 @@ function App() {
     if (entry.other_task) {
       currentOtherTasks[entry.task_id] = entry.other_task;
       currentOtherDescriptions[entry.task_id] = JSON.parse(entry.description);
+      currentIcons.push(null);
     } else {
 
       // set NN states
@@ -400,7 +401,6 @@ function App() {
           currentCSliderVisibility.push(svmDescription.c_slider_visibility);
           currentGammaSliderVisibility.push(svmDescription.gamma_slider_visibility);
           currentRbfVisibility.push(svmDescription.rbf_visibility);
-          // TODO
           currentIcons.push(null);
         } else {
 
@@ -426,7 +426,7 @@ function App() {
               currentLinks.push(entry.external_link.url)
               currentIcons.push(Link2Icon);
               } else {
-                if (!entry.task_id === 22) {currentConstructionTaskIds.push(entry.task_id)};
+                currentConstructionTaskIds.push(entry.task_id);
                 currentIcons.push(null);
                 console.log("Task " + entry.task_id + " is not implemented in the frontend.")
               }
@@ -462,6 +462,7 @@ function App() {
         setNObjects(currentTaskIds.map(() => 0));
         setTaskNames(currentTaskNames);
         setTaskIcons(currentIcons);
+        console.log('currentIcon: ', currentIcons)  // TODO remove
 
         // Set neural network states
         setNNTaskIds(currentNNTaskIds);
@@ -521,6 +522,7 @@ function App() {
       })
       .catch(error => {
         setLoadedTasks(false);
+        // making some things visible for exercise 3.1
         setIterationsSliderVisibility(prev => {
           const updated = [...prev];
           updated[5] = true;
@@ -533,7 +535,7 @@ function App() {
         });
         setAfOptions(prev => {
           const updated = [...prev];
-          updated[5] = ['linear', 'relu', 'sigmoid', 'tanh'];
+          updated[5] = ['Linear', 'ReLU', 'Sigmoid', 'TanH'];
           return updated;
         });
         setOptimOptions(prev => {

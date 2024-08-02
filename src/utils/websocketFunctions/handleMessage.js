@@ -7,7 +7,7 @@ export default function handleMessage(event, ws, params) {
     resetTimeout(ws, params);
 
     const data = JSON.parse(event.data);
-    console.log("Message received with header: ", data.header)  // for debugging
+    console.log("Message received with header ", data.header)  // for debugging
     if (data.header === 'SVM') {  // SVM training is completed, includes plot and f1score
         
         params.setF1Score(data.f1_score);
@@ -20,7 +20,7 @@ export default function handleMessage(event, ws, params) {
 
       if (JSON.stringify(data.progress) !== JSON.stringify(params.progress[params.index])) {
 
-        console.log(`isTraining = ${params.isTraining}`);  // for debugging
+        console.log(`params.isTraining = ${params.isTraining}`);  // for debugging
         
         updateProgress(data, params);
 

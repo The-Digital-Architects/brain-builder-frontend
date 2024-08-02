@@ -118,24 +118,22 @@ class OtherTask extends Component {
         }
     }
 
-    handleAngleChange = (value) => {
+    handleAngleChange = this.throttle((value) => {
         this.setState({ in1: value[0] });
-        this.throttle((value) => {
         const message = JSON.stringify({ header: 'angle_change', task_name: this.props.type, task_id: this.props.customId, angle: value});
         this.ws.send(message);
-    }, 500)}
+    }, 500)
 
-    handleWeightChange = (value) => {
+    handleWeightChange = this.debounce((value) => {
         if (this.props.type === 'ManualPCA') {this.setState({ in1: value[0] })};
         value = value[0] * Math.PI / 180;
         value = Math.tan(value);
         value = parseFloat(value.toFixed(3));
         if (this.props.type === 'ManualLinReg') {this.setState({ in1: value })};
-        this.debounce((value) => {
         // Send a message through the WebSocket
         const message = JSON.stringify({ header: 'weight_change', task_name: this.props.type, task_id: this.props.customId, a: value, b: this.state.in2});
         this.ws.send(message);
-    }, 100)}
+    }, 100)
 
     handleBiasChange = this.throttle((value) => {
         this.setState({ in2: value[0] });
@@ -149,7 +147,7 @@ class OtherTask extends Component {
         // Send a message through the WebSocket
         const message = JSON.stringify({ header: 'order_change', task_name: this.props.type, task_id: this.props.customId, n: value[0] });
         this.ws.send(message);
-    }, 100)
+    }, 50)
 
     setResult = (value) => {
         this.setState({ out1: value[0], out2: value[1] });

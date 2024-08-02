@@ -187,8 +187,8 @@ class SvmView extends Model {
         return (
         <Box style={{ display: 'flex', flex: 3, height: '100vh' }}>
             {console.log('SVM img & initPlot', this.props.img, this.props.initPlot)}
-            {this.props.img ? <img src={this.props.img} alt={"Encountered an issue while rendering plots"} style={{ width: window.innerWidth*0.65, height: 'auto' }} />
-            : <img src={this.props.initPlot} alt={"Encountered an issue while rendering initial plot"} style={{ width: window.innerWidth*0.65, height: 'auto' }} />}
+            {this.props.img ? <img src={this.props.img} alt={"Encountered an issue while rendering plots"} style={{ width: window.innerWidth*0.6, height: 'auto' }} />
+            : <img src={this.props.initPlot} alt={"Encountered an issue while rendering initial plot"} style={{ width: window.innerWidth*0.6, height: 'auto' }} />}
         </Box>)
     }
 

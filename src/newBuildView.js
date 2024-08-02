@@ -122,6 +122,8 @@ class Building extends Model {
         this.inputFields = {
         }
 
+        console.log('Rendering newBuildView; these are the dropdown options: ', this.props.dropdownOptions)  // TODO remove
+
     };
 
     dropdowns = {
@@ -358,6 +360,7 @@ class Building extends Model {
     };
 
     renderModel = () => {
+      console.log(`newBuildView.props.isTraining = ${this.props.isTraining}`);  // TODO remove
         return (
         <Box style={{ display: 'flex', flex: 3, height: '100vh' }}>
         <div className='cytoscape'style={{top: 5, left: 3, position: 'absolute', width: window.innerWidth*0.65, height: window.innerHeight-130}}></div>

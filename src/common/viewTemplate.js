@@ -288,15 +288,18 @@ class Model extends React.Component {
     }
 
     inputFieldPosition = (index) => {
-        return Math.round(this.sliderPosition(Object.keys(this.sliders).length) + this.textHeight*index)  // (0.14 + 0.12*Object.keys(this.sliders).length)*(window.innerHeight-140) + this.textHeight*index
+        const n = Object.keys(this.sliders).length
+        return Math.round(this.sliderPosition(n) + this.textHeight*index)  // (0.14 + 0.12*Object.keys(this.sliders).length)*(window.innerHeight-140) + this.textHeight*index
     }
 
     dropdownPosition = (index) => {
-        return Math.round(this.inputFieldPosition(Object.keys(this.inputFields).length) + this.textHeight*index)
+        const n = Object.values(this.inputFields).filter(value => value !== 0).length;  // Object.keys(this.inputFields).length
+        return Math.round(this.inputFieldPosition(n) + this.textHeight*index)
     }
 
     checkboxPosition = (index) => {
-        return Math.round(this.dropdownPosition(Object.keys(this.dropdowns).length) + 1.2*this.textHeight*index)
+        const n = Object.values(this.inputFields).filter(value => value !== 0).length;
+        return Math.round(this.dropdownPosition(n) + 1.2*this.textHeight*index)
     }
 
     renderModel = () => {
