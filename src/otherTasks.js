@@ -99,6 +99,15 @@ class OtherTask extends Component {
         };
     }
 
+    debounce(func, delay) {
+        let debounceTimer;
+        return function(...args) {
+          const context = this;
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(() => func.apply(context, args), delay);
+        };
+      }
+
     handleMatrixChange = (value, whichIn) => {
         if (whichIn === 1) {
             this.setState({ in1: value[0] });
@@ -109,22 +118,24 @@ class OtherTask extends Component {
         }
     }
 
-    handleAngleChange = this.throttle((value) => {
+    handleAngleChange = (value) => {
         this.setState({ in1: value[0] });
+        this.throttle((value) => {
         const message = JSON.stringify({ header: 'angle_change', task_name: this.props.type, task_id: this.props.customId, angle: value});
         this.ws.send(message);
-    }, 500)
+    }, 500)}
 
-    handleWeightChange = this.throttle((value) => {
+    handleWeightChange = (value) => {
         if (this.props.type === 'ManualPCA') {this.setState({ in1: value[0] })};
         value = value[0] * Math.PI / 180;
         value = Math.tan(value);
         value = parseFloat(value.toFixed(3));
         if (this.props.type === 'ManualLinReg') {this.setState({ in1: value })};
+        this.debounce((value) => {
         // Send a message through the WebSocket
         const message = JSON.stringify({ header: 'weight_change', task_name: this.props.type, task_id: this.props.customId, a: value, b: this.state.in2});
         this.ws.send(message);
-    }, 200)
+    }, 100)}
 
     handleBiasChange = this.throttle((value) => {
         this.setState({ in2: value[0] });

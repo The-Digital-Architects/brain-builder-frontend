@@ -284,19 +284,19 @@ class Model extends React.Component {
     buttonPosition = Math.round(0.92 * (window.innerHeight-140))
 
     sliderPosition = (index) => {
-        return (0.14 + 0.12*index) * (window.innerHeight-140)
+        return Math.round((0.14 + 0.12*index) * (window.innerHeight-140))
     }
 
     inputFieldPosition = (index) => {
-        return this.sliderPosition(Object.keys(this.sliders).length) + this.textHeight*index  // (0.14 + 0.12*Object.keys(this.sliders).length)*(window.innerHeight-140) + this.textHeight*index
+        return Math.round(this.sliderPosition(Object.keys(this.sliders).length) + this.textHeight*index)  // (0.14 + 0.12*Object.keys(this.sliders).length)*(window.innerHeight-140) + this.textHeight*index
     }
 
     dropdownPosition = (index) => {
-        return this.inputFieldPosition(Object.keys(this.inputFields).length) + this.textHeight*index
+        return Math.round(this.inputFieldPosition(Object.keys(this.inputFields).length) + this.textHeight*index)
     }
 
     checkboxPosition = (index) => {
-        return this.dropdownPosition(Object.keys(this.dropdowns).length) + 1.2*this.textHeight*index
+        return Math.round(this.dropdownPosition(Object.keys(this.dropdowns).length) + 1.2*this.textHeight*index)
     }
 
     renderModel = () => {
@@ -421,7 +421,7 @@ class Model extends React.Component {
 
                         {Object.entries(this.inputFields).map(([name, inputField], index) => (
                             this.props.inputFieldVisibilities[name] ?
-                            (<Box style={{ position:"absolute", top: this.inputFieldPosition(index), left: Math.round(0.74 * (window.innerWidth * 0.97)), alignItems: 'start', justifyContent: 'end', fontFamily:'monospace'  }}>
+                            (<Box style={{ position:"absolute", top: this.inputFieldPosition(index), left: Math.round(0.7 * (window.innerWidth * 0.97)), alignItems: 'start', justifyContent: 'end', fontFamily:'monospace'  }}>
                                 <div className={name}>
                                 {this.inputNames[name]}: {inputField}
                                 </div>
@@ -430,7 +430,7 @@ class Model extends React.Component {
 
                         {Object.entries(this.dropdowns).map(([name, dropdown], index) => (
                             this.props.dropdownVisibilities[name] ?
-                            (<Box style={{ position:"absolute", top: this.dropdownPosition(index), left: Math.round(0.74 * (window.innerWidth * 0.97)), alignItems: 'start', justifyContent: 'end', fontFamily:'monospace'  }}>
+                            (<Box style={{ position:"absolute", top: this.dropdownPosition(index), left: Math.round(0.7 * (window.innerWidth * 0.97)), alignItems: 'start', justifyContent: 'end', fontFamily:'monospace'  }}>
                                 <div className={name}>
                                 {this.inputNames[name]}: {dropdown}
                                 </div>

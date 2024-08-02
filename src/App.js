@@ -223,7 +223,7 @@ function App() {
   let accuracyColor = 'var(--slate-11)';
 
   // this is for all the tasks
-  const defaultTaskIds = [11, 12, 13, 21, 22, 61];
+  const defaultTaskIds = [11, 12, 13, 21, 22, 31, 41, 51, 61, 71];
   const [taskData, setTaskData] = useState([]);
   const [taskNames, setTaskNames] = useState({})
   const [taskIds, setTaskIds] = useState(defaultTaskIds);
@@ -520,6 +520,27 @@ function App() {
         setLoadedTasks(true);
       })
       .catch(error => {
+        setLoadedTasks(false);
+        setIterationsSliderVisibility(prev => {
+          const updated = [...prev];
+          updated[5] = true;
+          return updated;
+        });
+        setLRSliderVisibility(prev => {
+          const updated = [...prev];
+          updated[5] = true;
+          return updated;
+        });
+        setAfOptions(prev => {
+          const updated = [...prev];
+          updated[5] = ['linear', 'relu', 'sigmoid', 'tanh'];
+          return updated;
+        });
+        setOptimOptions(prev => {
+          const updated = [...prev];
+          updated[5] = ['SGD', 'Adam'];
+          return updated;
+        });
         console.error('Error fetching tasks:', error);
       });
 
@@ -593,7 +614,7 @@ function App() {
       // cytoLayers is not empty, proceed as usual
       cytoLayers.forEach((cytoLayer, index) => {
         localStorage.setItem(`cytoLayers${NNTaskIds[index]}`, JSON.stringify(cytoLayer));  // TODO: check if this works
-        if (isTraining[taskIds.indexOf(NNTaskIds[index])] !== -1) {
+        if (isTraining[taskIds.indexOf(NNTaskIds[index])] !== -1 && isTraining[taskIds.indexOf(NNTaskIds[index])] !== 0) {
         setIsTraining(prevIsTraining => {
         const newIsTraining = [...prevIsTraining];
         newIsTraining[taskIds.indexOf(NNTaskIds[index])] = 0;

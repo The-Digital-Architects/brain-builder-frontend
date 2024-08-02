@@ -318,7 +318,7 @@ class Building extends Model {
         style={{ width: Math.round(0.19 * (window.innerWidth * 0.97)) }}
         disabled={this.props.isTraining[this.props.index] === 1}
       >
-        <Slider.Track className="SliderTrack" style={{ height: 3 }}>
+        <Slider.Track className="SliderTrack" style={{ height: 3.5 }}>
           <Slider.Range className="SliderRange" />
         </Slider.Track>
         <Slider.Thumb className="SliderThumb" aria-label="Iterations" />
@@ -343,7 +343,7 @@ class Building extends Model {
         style={{ width: Math.round(0.19 * (window.innerWidth * 0.97)) }}
         disabled={this.props.isTraining[this.props.index] === 1}
       >
-        <Slider.Track className="SliderTrack" style={{ height: 3 }}>
+        <Slider.Track className="SliderTrack" style={{ height: 3.5 }}>
           <Slider.Range className="SliderRange" />
         </Slider.Track>
         <Slider.Thumb className="SliderThumb" aria-label="Learning Rate" />
