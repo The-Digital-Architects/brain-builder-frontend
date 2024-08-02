@@ -60,6 +60,7 @@ function updateWeightsIfNeeded(data, params) {
 
     if (params?.weights?.length !== undefined && data?.network_weights?.[0]?.[0] !== undefined && params?.weights?.[0]?.[0] !== undefined) {
       if (params.weights.length === 0 || data.network_weights[0][0] !== params.weights[0][0]) {
+          console.log("updating weights");  // for debugging
           params.setWeights(prevWeights => {
             const newWeights = [...prevWeights];
             newWeights[params.index] = data.network_weights;
@@ -89,6 +90,7 @@ function updateImagesIfNeeded(data, params) {
     /*decompress and parse the images in 'plots', but only if it's not empty or the same as the current params.imgs*/
 
     if (data?.plot) {
+        console.log("updating images");  // for debugging
         params.setImgs(prevImgs => {
           const newImgs = [...prevImgs];
           const binaryString = atob(data.plot);  // decode from base64 to binary string

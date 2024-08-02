@@ -291,14 +291,6 @@ class DataFromExcel(Dataset):
                                 ax[row, col].scatter(self.data.iloc[:, i], self.data.iloc[:, j], c=(4/255, 151/255, 185/255))
                                 ax[row, col].set_xlabel(self.data.columns[i].replace('_', ' '))
                                 ax[row, col].set_ylabel(self.data.columns[j].replace('_', ' '))
-                            
-                            step = min(0.1*abs(self.minima[i]-self.maxima[i]), 0.1*abs(self.minima[j]-self.maxima[j]))
-                            if self.normalization:
-                                ax.set_xlim(-0.1, 1.1)
-                                ax.set_ylim(-0.1, 1.1)
-                            else:
-                                ax.set_xlim(self.minima[i]-abs(self.minima[i])*step, self.maxima[i]-abs(self.maxima[i])*step)
-                                ax.set_ylim(self.minima[j]-abs(self.minima[j])*step, self.maxima[j]-abs(self.maxima[j])*step)
                             k += 1
 
         fig.tight_layout()
@@ -338,9 +330,9 @@ class DataFromExcel(Dataset):
                 if self.normalization:
                     ax.set_xlim(-0.1, 1.1)
                     ax.set_ylim(-0.1, 1.1)
-                else:
-                    ax.set_xlim(self.minima[0]-abs(self.minima[0])*step, self.maxima[0]-abs(self.maxima[0])*step)
-                    ax.set_ylim(self.minima[1]-abs(self.minima[1])*step, self.maxima[1]-abs(self.maxima[1])*step)
+                # else:
+                #     ax.set_xlim(self.minima[0]-abs(self.minima[0])*step, self.maxima[0]-abs(self.maxima[0])*step)
+                #     ax.set_ylim(self.minima[1]-abs(self.minima[1])*step, self.maxima[1]-abs(self.maxima[1])*step)
                 img = BytesIO()
                 fig.tight_layout()
                 fig.savefig(img, format='png')
@@ -385,6 +377,21 @@ class DataFromExcel(Dataset):
                 img.seek(0)
                 self.images.append(img.getvalue())
                 fig.clear()
+
+
+
+"""
+# _________________________________________________________________
+# TESTING
+d = DataFromExcel('TestR.csv', normalize=True, data_type=1)
+
+print(d.label_name(0))
+print(d.minima)
+norm = d.normalize([89, 20])
+print(norm)
+norm = [1, 1]
+print(d.denormalize(norm))
+"""
 
 
 class DataFromSklearn1(Dataset):  # this one is for load_wine(), etc.
@@ -489,14 +496,6 @@ class DataFromSklearn1(Dataset):  # this one is for load_wine(), etc.
                             ax[row, col].scatter(self.data[:, i], self.data[:, j], c=self.targets)
                             ax[row, col].set_xlabel(self.feature_names[i].replace('_', ' '))
                             ax[row, col].set_ylabel(self.feature_names[j].replace('_', ' '))
-                        
-                        step = min(0.1*abs(self.minima[i]-self.maxima[i]), 0.1*abs(self.minima[j]-self.maxima[j]))
-                        if self.normalization:
-                            ax.set_xlim(-0.1, 1.1)
-                            ax.set_ylim(-0.1, 1.1)
-                        else:
-                            ax.set_xlim(self.minima[i]-abs(self.minima[i])*step, self.maxima[i]-abs(self.maxima[i])*step)
-                            ax.set_ylim(self.minima[j]-abs(self.minima[j])*step, self.maxima[j]-abs(self.maxima[j])*step)
                         k += 1
         
         fig.tight_layout()
@@ -544,6 +543,14 @@ class DataFromSklearn1(Dataset):  # this one is for load_wine(), etc.
                                 ax.scatter(self.data[:, i], self.data[:, j], c=self.targets)
                                 ax.set_xlabel(self.feature_names[i].replace('_', ' '))
                                 ax.set_ylabel(self.feature_names[j].replace('_', ' '))
+                                
+                                if self.normalization:
+                                    ax.set_xlim(-0.1, 1.1)
+                                    ax.set_ylim(-0.1, 1.1)
+                                # else:
+                                #     ax.set_xlim(self.minima[i], self.maxima[i])
+                                #     ax.set_ylim(self.minima[j], self.maxima[j])
+
                             elif n_rows == 1:
                                 ax[col].contourf(mesh[i][0],
                                                 mesh[j][0],
@@ -559,12 +566,6 @@ class DataFromSklearn1(Dataset):  # this one is for load_wine(), etc.
                                 ax[row, col].set_xlabel(self.feature_names[i].replace('_', ' '))
                                 ax[row, col].set_ylabel(self.feature_names[j].replace('_', ' '))
                             k += 1
-                            if self.normalization:
-                                ax.set_xlim(-0.1, 1.1)
-                                ax.set_ylim(-0.1, 1.1)
-                            else:
-                                ax.set_xlim(self.minima[0]-abs(self.minima[0])*step, self.maxima[0]-abs(self.maxima[0])*step)
-                                ax.set_ylim(self.minima[1]-abs(self.minima[1])*step, self.maxima[1]-abs(self.maxima[1])*step)
 
             img = BytesIO()
             fig.tight_layout()
@@ -715,14 +716,6 @@ class DataFromSklearn2(Dataset):  # this one is for make_moons(n_samples, noise)
                                 ax[row, col].scatter(self.data[:, i], self.data[:, j], c=self.targets)
                                 ax[row, col].xlabel(self.feature_names[i].replace('_', ' '))
                                 ax[row, col].ylabel(self.feature_names[j].replace('_', ' '))
-                                                        
-                            step = min(0.1*abs(self.minima[i]-self.maxima[i]), 0.1*abs(self.minima[j]-self.maxima[j]))
-                            if self.normalization:
-                                ax.set_xlim(-0.1, 1.1)
-                                ax.set_ylim(-0.1, 1.1)
-                            else:
-                                ax.set_xlim(self.minima[i]-abs(self.minima[i])*step, self.maxima[i]-abs(self.maxima[i])*step)
-                                ax.set_ylim(self.minima[j]-abs(self.minima[j])*step, self.maxima[j]-abs(self.maxima[j])*step)
                             k += 1
 
         else:
@@ -795,9 +788,9 @@ class DataFromSklearn2(Dataset):  # this one is for make_moons(n_samples, noise)
                 if self.normalization:
                     ax.set_xlim(-0.1, 1.1)
                     ax.set_ylim(-0.1, 1.1)
-                else:
-                    ax.set_xlim(self.minima[0]-abs(self.minima[0])*step, self.maxima[0]-abs(self.maxima[0])*step)
-                    ax.set_ylim(self.minima[1]-abs(self.minima[1])*step, self.maxima[1]-abs(self.maxima[1])*step)
+                # else:
+                #     ax.set_xlim(self.minima[0], self.maxima[0])
+                #     ax.set_ylim(self.minima[1], self.maxima[1])
         
         elif self.data_type == 2:
             if self.n_features == 1 and self.n_targets == 1:
@@ -822,9 +815,9 @@ class DataFromSklearn2(Dataset):  # this one is for make_moons(n_samples, noise)
                 if self.normalization:
                     ax.set_xlim(-0.1, 1.1)
                     ax.set_ylim(-0.1, 1.1)
-                else:
-                    ax.set_xlim(self.minima[0]-abs(self.minima[0])*step, self.maxima[0]-abs(self.maxima[0])*step)
-                    ax.set_ylim(self.target_minima[0]-abs(self.target_minima[0])*step, self.target_maxima[0]-abs(self.target_maxima[0])*step)
+                # else:
+                #     ax.set_xlim(mini, maxi)
+                #     ax.set_ylim(self.target_minima[0], self.target_maxima[0])
 
         img = BytesIO()
         fig.tight_layout()
@@ -925,15 +918,6 @@ class DataFromFunction(Dataset):  # this one is for one to one regression on sim
         ax.scatter(self.data, self.targets, color=(4/255, 151/255, 185/255))
         ax.set_xlabel(self.feature_names[0].replace('_', ' '))
         ax.set_ylabel(self.target_names[0].replace('_', ' '))
-
-                                    
-        step = min(0.1*abs(self.minima-self.maxima), 0.1*abs(self.target_minima-self.target_maxima))
-        if self.normalization:
-            ax.set_xlim(-0.1, 1.1)
-            ax.set_ylim(-0.1, 1.1)
-        else:
-            ax.set_xlim(self.minima-abs(self.minima)*step, self.maxima-abs(self.maxima)*step)
-            ax.set_ylim(self.target_minima-abs(self.target_minima)*step, self.target_maxima-abs(self.target_maxima)*step)
         
         fig.tight_layout()
         fig.savefig(img, format='png')
@@ -966,9 +950,9 @@ class DataFromFunction(Dataset):  # this one is for one to one regression on sim
         if self.normalization:
             ax.set_xlim(-0.1, 1.1)
             ax.set_ylim(-0.1, 1.1)
-        else:
-            ax.set_xlim(self.minima-abs(self.minima)*step, self.maxima-abs(self.maxima)*step)
-            ax.set_ylim(self.target_minima-abs(self.target_minima)*step, self.target_maxima-abs(self.target_maxima)*step)
+        # else:
+        #     ax.set_xlim(mini, maxi)
+        #     ax.set_ylim(self.target_minima, self.target_maxima)
 
         img = BytesIO()
         fig.tight_layout()

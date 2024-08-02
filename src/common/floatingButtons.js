@@ -61,10 +61,11 @@ function LayerAddButton({setCytoLayers, index, taskId, cytoLayers, nOfOutputs, m
 
     // function to add a layer
     const addLayer = useCallback((setCytoLayers, nOfOutputs, index, max_layers) => {
-        const newLayer = [...cytoLayers];
+        let newLayer = [...cytoLayers];
         console.log('CytoLayers for NNTask ', index, ': ', newLayer);  // TODO remove
         if (newLayer.length < max_layers) {
           newLayer.push(nOfOutputs)
+          console.log('which is now changed to: ', newLayer);  // TODO remove 
           setCytoLayers(prevLayers => {
             const newLayers = [...prevLayers];
             newLayers[index] = newLayer;

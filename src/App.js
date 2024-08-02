@@ -387,7 +387,7 @@ function App() {
         currentNormalizationVisibility.push(nnDescription.normalization_visibility);
         currentAfVisibility.push(nnDescription.af_visibility);
         currentAfOptions.push(convertToList(nnDescription.af_options));
-        currentOptimOptions.push(convertToList(nnDescription.optim_options));
+        currentOptimOptions.push(convertToList(nnDescription.optimizer_options));
         currentIterationsSliderVisibility.push(nnDescription.iterations_slider_visibility);
         currentLRSliderVisibility.push(nnDescription.lr_slider_visibility);
         currentImageVisibility.push(nnDescription.decision_boundary_visibility);
@@ -618,14 +618,14 @@ function App() {
         localStorage.setItem(`cytoLayers${NNTaskIds[index]}`, JSON.stringify(cytoLayer));  // TODO: check if this works
         if (isTraining[taskIds.indexOf(NNTaskIds[index])] !== -1 && isTraining[taskIds.indexOf(NNTaskIds[index])] !== 0) {
         setIsTraining(prevIsTraining => {
-        const newIsTraining = [...prevIsTraining];
-        newIsTraining[taskIds.indexOf(NNTaskIds[index])] = 0;
-        return newIsTraining;
-      });
-    }
+          const newIsTraining = [...prevIsTraining];
+          newIsTraining[taskIds.indexOf(NNTaskIds[index])] = 0;
+          return newIsTraining;
+        });
+      }
     });
     }
-  }, [cytoLayers, NNTaskIds, nInputs, nOutputs, taskIds, isTraining]);
+  }, [cytoLayers, NNTaskIds, nInputs, nOutputs, taskIds]);
 
   
   const loadLastCytoLayers = (setCytoLayers, apiData, setApiData, propertyName, taskId, index, NNIndex, nInputs, nOutputs) => {

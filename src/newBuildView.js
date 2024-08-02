@@ -122,8 +122,6 @@ class Building extends Model {
         this.inputFields = {
         }
 
-        console.log('Rendering newBuildView; these are the dropdown options: ', this.props.dropdownOptions)  // TODO remove
-
     };
 
     dropdowns = {
@@ -134,8 +132,8 @@ class Building extends Model {
     }
 
     checkboxes = {
-      'NormCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('NormCheckbox')} />,
       'AFCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleAFChange('AFCheckbox')} />,
+      'NormCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('NormCheckbox')} />,
       // 'ResizeCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('ResizeCheckbox')} checked={this.state.checkboxValues['ResizeCheckbox']} />,
       // 'ColorCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('ColorCheckbox')} checked={this.state.checkboxValues['ColorCheckbox']} />,
       // 'HeightCheckbox': <Checkbox disabled = { this.props.isTraining===1 } onClick={() => this.handleCheckboxChange('HeightCheckbox')} checked={this.state.checkboxValues['HeightCheckbox']} />,
