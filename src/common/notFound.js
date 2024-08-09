@@ -22,7 +22,7 @@ function NotFound() {
             alignItems: 'center',
             display: 'flex', // Ensure content is centered
         }}>
-            <Box style={{ boxShadow: '0 2px 8px var(--slate-a11)', borderRadius: "var(--radius-3)", padding: '30px 50px', textAlign: 'center', color: 'var(--cyan-11)', backgroundColor: 'rgba(255, 255, 255, 0.3)' }}>
+            <Box style={{ boxShadow: '0 2px 8px var(--slate-a11)', borderRadius: "var(--radius-3)", padding: '60px 100px', textAlign: 'center', alignItems: 'center', justifyContent: "center", color: 'var(--slate-12)', backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
                 <Heading style={{ fontSize:90 }}>404</Heading>
                 <p style={{ fontSize:48 }}>Page not found : ( </p>
             </Box>
