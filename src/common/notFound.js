@@ -28,15 +28,15 @@ function NotFound() {
                 padding: '60px 100px', 
                 textAlign: 'center', 
                 color: 'var(--slate-12)', 
-                backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                backgroundColor: 'rgba(255, 255, 255, 0.75)',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center', // Center items horizontally
                 justifyContent: 'center', // Center items vertically
                 gap: '20px'
             }}>
-                <Heading style={{ fontSize:90 }}>404</Heading>
-                <p style={{ fontSize:48, fontWeight:"bold" }}>Page not found : (</p>
+                <label style={{ fontSize:72 }}>404</label>
+                <label style={{ fontSize:36, fontWeight:"bold" }}>Page not found :(</label>
             </Box>
         </main>
     );

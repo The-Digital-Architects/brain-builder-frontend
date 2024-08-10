@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import Header from './common/header';
 import { Flex, Button } from '@radix-ui/themes';
-import { init, step, restart } from './utils/clusteringUtils';
+import { init, step, restart } from './utils/clustering/clusteringUtils';
 
 function draw(svg, lineg, dotg, centerg, groups, dots) {
     console.log("draw");

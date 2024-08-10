@@ -1,5 +1,5 @@
 import { act } from 'react';
-import getCookie from '../cookieUtils';
+import getCookie from '../../cookieUtils';
 
 // Extracted task-specific configurations for better separation of concerns
 const getTaskConfiguration = (taskId) => ({

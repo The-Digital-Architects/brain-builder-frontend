@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './css/App.css';
 import { Theme, Box, Heading, Grid, IconButton } from '@radix-ui/themes';
-import * as Slider from '@radix-ui/react-slider';
 import '@radix-ui/themes/styles.css';
 import tu_delft_pic from './images/tud_black_new.png';
 import { Link, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -16,7 +15,6 @@ import Tutorial from './tutorial';
 import FeedbackApp from './feedback';
 import LinksPage from './links';
 import NotFound from './common/notFound';
-import { DefaultView } from './common/viewTemplate';
 import SvmView from './svmView';
 import ConstructionView from './common/constructionView';
 import NotebookView from './notebookView';
@@ -24,7 +22,7 @@ import JupyterLite from './jupyterLiteView';
 import StartPage from './startpage/startPage';
 import { generateCytoElements, generateCytoStyle } from './utils/cytoUtils';
 import getCookie from './utils/cookieUtils';
-import putRequest from './utils/websocketUtils';
+import putRequest from './utils/websockets/websocketUtils';
 import ClusteringTest from './clustering'
 import sensitiveDataPlot from './images/sensitive_kerbals.png';
 
