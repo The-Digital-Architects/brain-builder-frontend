@@ -33,10 +33,9 @@ function NotFound() {
                 flexDirection: 'column',
                 alignItems: 'center', // Center items horizontally
                 justifyContent: 'center', // Center items vertically
-                gap: '20px'
             }}>
                 <label style={{ fontSize:72 }}>404</label>
-                <label style={{ fontSize:36, fontWeight:"bold" }}>Page not found :(</label>
+                <label style={{ fontSize:36 }}>Page not found :(</label>
             </Box>
         </main>
     );
