@@ -5,7 +5,7 @@ function init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, 
     const N = numPoints;
     const K = numClusters;
 
-    setGroups([]);
+    let newGroups = [];
 
     for (let i = 0; i < K; i++) {
       let g = {
@@ -23,11 +23,11 @@ function init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, 
         x: g.center.x,
         y: g.center.y
       };
-      setGroups(currentGroups => [...currentGroups, g]);
+      newGroups.push(g);
     }
-  
+    setGroups(newGroups);
 
-    setDots([]);
+    let newDots = [];
     setFlag(false);
 
     for (let i = 0; i < N; i++) {
@@ -41,8 +41,9 @@ function init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, 
         y: dot.y,
         group: dot.group
       };
-      setDots(currentGroups => [...currentGroups, dot]);
+      newDots.push(dot);
     }
+    setDots(newDots);
 }
 
 function step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots) {

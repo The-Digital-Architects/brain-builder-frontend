@@ -134,41 +134,45 @@ function KMeansClusteringVisualization() {
     };
 
     return (
-        <Flex direction="column" gap="2" style={{padding: '10px'}}>
+        <Flex direction="column" gap="1">
 
             <Header showHomeButton={true} />
 
-            <Flex gap="1">
-                <label>
-                    Number of Points:{" "}
-                    <input
-                        type="number"
-                        value={numPoints}
-                        onChange={(e) => setNumPoints(Number(e.target.value))}
-                    />
-                </label>
-                <label>
-                    Number of Clusters:{" "}
-                    <input
-                        type="number"
-                        value={numClusters}
-                        onChange={(e) => setNumClusters(Number(e.target.value))}
-                    />
-                </label>
-            </Flex>
+            <Flex gap="3" direction="column" style={{padding: '10px'}}>
+            
+                <Flex gap="1">
+                    <label>
+                        Number of Points:{" "}
+                        <input
+                            type="number"
+                            value={numPoints}
+                            onChange={(e) => setNumPoints(Number(e.target.value))}
+                        />
+                    </label>
+                    <label>
+                        Number of Clusters:{" "}
+                        <input
+                            type="number"
+                            value={numClusters}
+                            onChange={(e) => setNumClusters(Number(e.target.value))}
+                        />
+                    </label>
+                </Flex>
 
-            <div id="kmeans"/>
+                <div id="kmeans"/>
 
-            <Flex gap="1">
-                <Button id="run" onClick={handleReset}>
-                    Reset
-                </Button>
-                <Button id="step" onClick={handleStep}>
-                    Step
-                </Button>
-                <Button id="restart" onClick={handleRestart} disabled={isRestartDisabled}>
-                    Restart
-                </Button>
+                <Flex gap="1">
+                    <Button id="run" onClick={handleReset}>
+                        Reset
+                    </Button>
+                    <Button id="step" onClick={handleStep}>
+                        Step
+                    </Button>
+                    <Button id="restart" onClick={handleRestart} disabled={isRestartDisabled}>
+                        Restart
+                    </Button>
+                </Flex>
+
             </Flex>
 
         </Flex>
