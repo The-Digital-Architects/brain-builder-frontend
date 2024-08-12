@@ -5,7 +5,7 @@ import { Flex, Button } from '@radix-ui/themes';
 import { init, step, restart } from './utils/clustering/clusteringUtils';
 
 function draw(svg, lineg, dotg, centerg, groups, dots) {
-    console.log("draw");
+    console.log("draw", { groups, dots });
 
     let circles = dotg.selectAll('circle')
       .data(dots);
@@ -21,7 +21,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
       .attr('r', 5);
   
     if (dots[0]?.group) {
-      console.log("draw lines");
+      console.log("draw lines", { dots });
       let l = lineg.selectAll('line')
         .data(dots);
       const updateLine = function(lines) {
@@ -100,21 +100,22 @@ function KMeansClusteringVisualization() {
 
         handleReset();
 
+        console.log("initialization completed")
+
         // Cleanup function
         return () => {
             if (svgRef.current) {
                 svgRef.current.on('click', null); // Remove click event listener
             }
         };
-
-        console.log("initialization completed")
     }, []); // this runs only once on mount
     
     const handleReset = () => {
         console.log("handleReset");
 
-        // Use refs to access SVG and groups
         init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height);
+        console.log("Groups & dots after init", { groups, dots });
+        // Use refs to access SVG and groups
         draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
     };
 
@@ -128,11 +129,12 @@ function KMeansClusteringVisualization() {
         console.log("handleRestart");
 
         restart(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
+        console.log("Groups & dots after restart", { groups, dots });
         draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
     };
 
     return (
-        <Flex direction="column" gap="2">
+        <Flex direction="column" gap="2" style={{padding: '10px'}}>
 
             <Header showHomeButton={true} />
 

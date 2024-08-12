@@ -49,14 +49,14 @@ function step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgR
   console.log(`step, flag: ${flag} which means we are ${flag ? "moving the center" : "updating the groups"}`);
   setIsRestartDisabled(false);
   if (flag) {
-    console.log("groups before moveCenter", groups);
+    console.log("Groups & dots before moveCenter", { groups, dots });
     moveCenter(groups, setGroups);
-    console.log("groups after moveCenter", groups);
+    console.log("Groups & dots after moveCenter", { groups, dots });
     draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
   } else {
-    console.log("groups before updateGroups", groups);
+    console.log("Groups & dots before updateGroups", { groups, dots });
     updateGroups(dots, setDots, groups, setGroups);
-    console.log("groups after updateGroups", groups);
+    console.log("Groups & dots after updateGroups", { groups, dots });
     draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
   }
   setFlag(!flag);
