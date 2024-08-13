@@ -113,10 +113,10 @@ function KMeansClusteringVisualization() {
     const handleReset = () => {
         console.log("handleReset");
 
-        init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height);
-        console.log("Groups & dots after init", { groups, dots });
+        const initOutput = init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height);
+        console.log("Groups & dots after init", initOutput);
         // Use refs to access SVG and groups
-        draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
+        draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, initOutput.newGroups, initOutput.newDots);
     };
 
     const handleStep = () => {

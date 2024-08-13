@@ -2,48 +2,50 @@ function init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, 
   console.log("init");  
   setIsRestartDisabled(false);
 
-    const N = numPoints;
-    const K = numClusters;
+  const N = numPoints;
+  const K = numClusters;
 
-    let newGroups = [];
+  let newGroups = [];
 
-    for (let i = 0; i < K; i++) {
-      let g = {
-        dots: [],
-        color: 'hsl(' + (i * 360 / K) + ',100%,50%)',
-        center: {
-          x: Math.random() * width,
-          y: Math.random() * height
-        },
-        init: {
-          center: {}
-        }
-      };
-      g.init.center = {
-        x: g.center.x,
-        y: g.center.y
-      };
-      newGroups.push(g);
-    }
-    setGroups(newGroups);
-
-    let newDots = [];
-    setFlag(false);
-
-    for (let i = 0; i < N; i++) {
-      let dot ={
+  for (let i = 0; i < K; i++) {
+    let g = {
+      dots: [],
+      color: 'hsl(' + (i * 360 / K) + ',100%,50%)',
+      center: {
         x: Math.random() * width,
-        y: Math.random() * height,
-        group: undefined
-      };
-      dot.init = {
-        x: dot.x,
-        y: dot.y,
-        group: dot.group
-      };
-      newDots.push(dot);
-    }
-    setDots(newDots);
+        y: Math.random() * height
+      },
+      init: {
+        center: {}
+      }
+    };
+    g.init.center = {
+      x: g.center.x,
+      y: g.center.y
+    };
+    newGroups.push(g);
+  }
+  setGroups(newGroups);
+
+  let newDots = [];
+  setFlag(false);
+
+  for (let i = 0; i < N; i++) {
+    let dot ={
+      x: Math.random() * width,
+      y: Math.random() * height,
+      group: undefined
+    };
+    dot.init = {
+      x: dot.x,
+      y: dot.y,
+      group: dot.group
+    };
+    newDots.push(dot);
+  }
+  setDots(newDots);
+
+  return { newGroups, newDots };
 }
 
 function step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots) {
