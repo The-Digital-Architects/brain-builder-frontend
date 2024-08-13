@@ -86,6 +86,8 @@ function restart(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled
     }));
 
     setDots(updatedDots);
+
+    return { newGroups: updatedGroups, newDots: updatedDots };
 }
 
 function moveCenter(groups, setGroups) {

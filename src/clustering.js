@@ -128,9 +128,9 @@ function KMeansClusteringVisualization() {
     const handleRestart = () => {
         console.log("handleRestart");
 
-        restart(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
-        console.log("Groups & dots after restart", { groups, dots });
-        draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
+        const restartOutput = restart(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
+        console.log("Groups & dots after restart", restartOutput);
+        draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, restartOutput.newGroups, restartOutput.newDots);
     };
 
     return (
