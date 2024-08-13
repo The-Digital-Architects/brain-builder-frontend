@@ -51,16 +51,30 @@ function init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, 
 function step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots) {
   console.log(`step, flag: ${flag} which means we are ${flag ? "moving the center" : "updating the groups"}`);
   setIsRestartDisabled(false);
+
+  let newGroups = null
+  let newDots = null;
+  let updateOutput = null;
+
   if (flag) {
     console.log("Groups & dots before moveCenter", { groups, dots });
-    moveCenter(groups, setGroups);
-    console.log("Groups & dots after moveCenter", { groups, dots });
-    draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
+
+    newGroups = moveCenter(groups, setGroups);
+    newDots = dots;
+
+    console.log("Groups & dots after moveCenter", { newGroups, newDots });
+
+    draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, newGroups, newDots);
   } else {
     console.log("Groups & dots before updateGroups", { groups, dots });
-    updateGroups(dots, setDots, groups, setGroups);
-    console.log("Groups & dots after updateGroups", { groups, dots });
-    draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
+
+    updateOutput = updateGroups(dots, setDots, groups, setGroups);
+    newGroups = updateOutput.newGroups;
+    newDots = updateOutput.newDots;
+
+    console.log("Groups & dots after updateGroups", { newGroups, newDots });
+    
+    draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, newGroups, newDots);
   }
   setFlag(!flag);
 }
@@ -113,6 +127,7 @@ function moveCenter(groups, setGroups) {
 
   setGroups(newGroups);
   
+  return newGroups;
 }
 
 function updateGroups(dots, setDots, groups, setGroups) {
@@ -155,6 +170,8 @@ function updateGroups(dots, setDots, groups, setGroups) {
   // Step 5: Update the states
   setDots(newDots);
   setGroups(updatedGroups);
+
+  return { newGroups: updatedGroups, newDots };
 }
 
 export { init, step, restart };
