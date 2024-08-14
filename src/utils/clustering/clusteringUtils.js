@@ -12,8 +12,8 @@ function init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, 
       dots: [],
       color: 'hsl(' + (i * 360 / K) + ',100%,50%)',
       center: {
-        x: Math.random() * width,
-        y: Math.random() * height
+        x: Math.random() * (width - 30) + 5,
+        y: Math.random() * (height - 30) + 5,
       },
       init: {
         center: {}
@@ -32,8 +32,8 @@ function init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, 
 
   for (let i = 0; i < N; i++) {
     let dot ={
-      x: Math.random() * width,
-      y: Math.random() * height,
+      x: Math.random() * (width - 20),
+      y: Math.random() * (height - 20),
       group: undefined
     };
     dot.init = {

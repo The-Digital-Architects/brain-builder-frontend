@@ -51,7 +51,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
     c.exit().remove();
     updateCenters(c.enter()
       .append('path')
-      .attr('d', d3.symbol().type(d3.symbolCross))
+      .attr('d', d3.symbol().type(d3.symbolCross)).size(20)
       .attr('stroke', '#aabbcc'));
     updateCenters(c
       .transition()
@@ -65,6 +65,7 @@ function KMeansClusteringVisualization() {
     const [flag, setFlag] = useState(false);
     const [groups, setGroups] = useState([]);
     const [dots, setDots] = useState([]);
+    const [nOfSteps, setNOfSteps] = useState(0);
     const [width, setWidth] = useState(500);
     const [height, setHeight] = useState(500);
 
@@ -115,6 +116,8 @@ function KMeansClusteringVisualization() {
     const handleReset = () => {
         console.log("handleReset");
 
+        setNOfSteps(0);
+
         const initOutput = init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height);
         console.log("Groups & dots after init", initOutput);
         // Use refs to access SVG and groups
@@ -124,16 +127,28 @@ function KMeansClusteringVisualization() {
     const handleStep = () => {
         console.log("handleStep");
 
+        setNOfSteps(nOfSteps + 1);
+
         step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots);
     };
     
     const handleRestart = () => {
         console.log("handleRestart");
 
+        setNOfSteps(0);
+
         const restartOutput = restart(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
         console.log("Groups & dots after restart", restartOutput);
         draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, restartOutput.newGroups, restartOutput.newDots);
     };
+
+    const SSE = groups.reduce((acc, group) => {
+        const groupWCSS = group.dots.reduce((groupAcc, dot) => {
+          const distanceSquared = Math.pow(dot.x - group.center.x, 2) + Math.pow(dot.y - group.center.y, 2);
+          return groupAcc + distanceSquared;
+        }, 0);
+        return acc + groupWCSS;
+      }, 0);
 
     return (
         <Flex direction="column" gap="1">
@@ -144,9 +159,9 @@ function KMeansClusteringVisualization() {
             
                 <Flex gap="3">
 
-                    <Flex gap="1">
-                        <label>
-                            Number of points:{" "}
+                    <Flex gap="2" style={{ alignItems: 'center' }}>
+                        <label style={{ verticalAlign: 'middle', fontSize: "var(--font-size-2)" }}>
+                            Number of points:
                         </label>
                         
                         <Box maxWidth="15vw">
@@ -156,9 +171,9 @@ function KMeansClusteringVisualization() {
                         </Box>
                     </Flex>
 
-                    <Flex gap="1">
-                        <label>
-                            Number of clusters:{" "}
+                    <Flex gap="2" style={{ alignItems: 'center' }}>
+                        <label style={{ verticalAlign: 'middle', fontSize: "var(--font-size-2)" }}>
+                            Number of clusters:
                         </label>
 
                         <Box maxWidth="15vw">
@@ -172,7 +187,7 @@ function KMeansClusteringVisualization() {
 
                 <div id="kmeans"/>
 
-                <Flex gap="1">
+                <Flex gap="2">
                     <Button id="run" onClick={handleReset}>
                         Generate new points
                     </Button>
@@ -183,6 +198,14 @@ function KMeansClusteringVisualization() {
                         Restart
                     </Button>
                 </Flex>
+
+                <label style={{ fontSize: "var(--font-size-2)" }}>
+                    Steps: {nOfSteps}
+                </label>
+
+                <label style={{ fontSize: "var(--font-size-2)" }}>
+                    SSE(WCSS): {SSE.toFixed(3)}
+                </label>
 
             </Flex>
 
