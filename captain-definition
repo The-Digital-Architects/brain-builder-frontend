@@ -11,7 +11,7 @@
     "RUN pip install -r requirements.txt",
     "WORKDIR /app/frontend",
     "RUN npm install",
-    "RUN NODE_OPTIONS=\"--max_old_space_size=2560\" npm run build"
+    "RUN NODE_OPTIONS=\"--max_old_space_size=2560\" npm run build",
     "RUN npm prune --production",
     "WORKDIR /app",
     "RUN python manage.py collectstatic --noinput",
