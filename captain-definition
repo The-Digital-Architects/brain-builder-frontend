@@ -1,23 +1,21 @@
 {
   "schemaVersion": 2,
   "captainVersion": "1.0",
-  "description": "Django and React application with PgBouncer",
+  "description": "Django and React application",
   "language": "python-django",
   "dockerfileLines": [
     "FROM python:3.10-slim",
     "WORKDIR /app",
     "COPY . /app",
-    "RUN apt-get update && apt-get install -y pgbouncer nodejs npm libpq-dev",
+    "RUN apt-get update && apt-get install -y nodejs npm libpq-dev",
     "RUN pip install -r requirements.txt",
-    "COPY pgbouncer.ini /etc/pgbouncer/pgbouncer.ini",
-    "COPY userlist.txt /etc/pgbouncer/userlist.txt",
     "WORKDIR /app/frontend",
     "RUN npm install",
     "RUN npm run build",
     "RUN npm prune --production",
     "WORKDIR /app",
     "RUN python manage.py collectstatic --noinput",
-    "CMD /app/bin/start-pgbouncer && daphne django_react_proj.asgi:application --port $PORT --bind 0.0.0.0 -u none"
+    "CMD daphne django_react_proj.asgi:application --port $PORT --bind 0.0.0.0 -u none"
   ],
   "caproverOneClickApp": {
     "instructions": {

@@ -51,7 +51,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
     c.exit().remove();
     updateCenters(c.enter()
       .append('path')
-      .attr('d', d3.symbol().type(d3.symbolCross).size(20))
+      .attr('d', d3.symbol().type(d3.symbolCross).size(200))
       .attr('stroke', '#aabbcc'));
     updateCenters(c
       .transition()
@@ -144,7 +144,7 @@ function KMeansClusteringVisualization() {
 
     const SSE = groups.reduce((acc, group) => {
         const groupWCSS = group.dots.reduce((groupAcc, dot) => {
-          const distanceSquared = Math.pow(dot.x - group.center.x, 2) + Math.pow(dot.y - group.center.y, 2);
+          const distanceSquared = (Math.pow(dot.x - group.center.x, 2) + Math.pow(dot.y - group.center.y, 2))/2500; // divided by 50 squared to change svg size from 500x500 to 10x10
           return groupAcc + distanceSquared;
         }, 0);
         return acc + groupWCSS;
