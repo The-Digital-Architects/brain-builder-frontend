@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import Header from './common/header';
-import { Flex, Button } from '@radix-ui/themes';
+import { Flex, Button, TextField, Box } from '@radix-ui/themes';
 import { init, step, restart } from './utils/clustering/clusteringUtils';
 
 function draw(svg, lineg, dotg, centerg, groups, dots) {
@@ -99,6 +99,8 @@ function KMeansClusteringVisualization() {
         }
 
         handleReset();
+        //not elegant but fixes the issue of not rendering the dots on the first render
+        handleReset();
 
         console.log("initialization completed")
 
@@ -109,12 +111,6 @@ function KMeansClusteringVisualization() {
             }
         };
     }, []); // this runs only once on mount
-
-    useEffect(() => {
-        if (groups && dots) {
-            draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
-        }
-    }, [groups, dots]);
     
     const handleReset = () => {
         console.log("handleReset");
@@ -155,6 +151,11 @@ function KMeansClusteringVisualization() {
                             onChange={(e) => setNumPoints(Number(e.target.value))}
                         />
                     </label>
+                    <Box maxWidth="15vw">
+                        <TextField.Root size="1">
+                            <TextField.Input type="number" value={numPoints} onChange={(e) => setNumPoints(Number(e.target.value))} />
+                        </TextField.Root>
+                    </Box>
                     <label>
                         Number of Clusters:{" "}
                         <input
