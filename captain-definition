@@ -4,26 +4,36 @@
   "description": "Django and React application",
   "language": "python-django",
   "dockerfileLines": [
-    "FROM node:14 AS build",
+    "# Stage 1: Build the React frontend",
+    "FROM node:14 AS frontend-build",
     "WORKDIR /app",
-    "COPY ./frontend /app/frontend",
-    "WORKDIR /app/frontend",
+    "COPY package.json package-lock.json ./",
     "RUN npm install",
+    "COPY . ./",
     "RUN NODE_OPTIONS=\"--max_old_space_size=4096\" npm run build",
-    "RUN npm prune --production",
     
-    "FROM python:3.10-slim",
+    "# Stage 2: Build the Django backend",
+    "FROM python:3.10-slim AS backend-build",
     "WORKDIR /app",
-    "COPY . /app",
-    "COPY --from=build /app/frontend/build /app/frontend/build",
+    "COPY requirements.txt ./",
     "RUN apt-get update && apt-get install -y libpq-dev",
     "RUN pip install -r requirements.txt",
+    "COPY . ./",
+    "COPY --from=frontend-build /app/build /app/build",
     "RUN python manage.py collectstatic --noinput",
+    
+    "# Final Stage: Combine everything",
+    "FROM python:3.10-slim",
+    "WORKDIR /app",
+    "COPY requirements.txt ./",
+    "RUN apt-get update && apt-get install -y libpq-dev",
+    "RUN pip install -r requirements.txt",
+    "COPY --from=backend-build /app /app",
     "CMD daphne django_react_proj.asgi:application --port $PORT --bind 0.0.0.0 -u none"
   ],
   "caproverOneClickApp": {
     "instructions": {
-      "start": "python manage.py migrate && /app/bin/start-pgbouncer && daphne django_react_proj.asgi:application --port $PORT --bind 0.0.0.0 -u none"
+      "start": "python manage.py migrate && daphne django_react_proj.asgi:application --port $PORT --bind 0.0.0.0 -u none"
     }
   }
 }
