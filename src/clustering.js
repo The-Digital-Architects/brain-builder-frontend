@@ -88,7 +88,7 @@ function KMeansClusteringVisualization() {
                 .style('user-select', 'none')
                 .on('click', function(event) {
                     event.preventDefault();
-                    handleStep();
+                    //handleStep();
                 });
             svgRef.current = svg;
 
@@ -109,6 +109,12 @@ function KMeansClusteringVisualization() {
             }
         };
     }, []); // this runs only once on mount
+
+    useEffect(() => {
+        if (groups && dots) {
+            draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, groups, dots);
+        }
+    }, [groups, dots]);
     
     const handleReset = () => {
         console.log("handleReset");
