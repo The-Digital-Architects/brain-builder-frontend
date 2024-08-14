@@ -142,35 +142,39 @@ function KMeansClusteringVisualization() {
 
             <Flex gap="3" direction="column" style={{padding: '10px'}}>
             
-                <Flex gap="1">
-                    <label>
-                        Number of Points:{" "}
-                        <input
-                            type="number"
-                            value={numPoints}
-                            onChange={(e) => setNumPoints(Number(e.target.value))}
-                        />
-                    </label>
-                    <Box maxWidth="15vw">
-                        <TextField.Root size="1">
-                            <TextField.Input type="number" value={numPoints} onChange={(e) => setNumPoints(Number(e.target.value))} />
-                        </TextField.Root>
-                    </Box>
-                    <label>
-                        Number of Clusters:{" "}
-                        <input
-                            type="number"
-                            value={numClusters}
-                            onChange={(e) => setNumClusters(Number(e.target.value))}
-                        />
-                    </label>
+                <Flex gap="3">
+
+                    <Flex gap="1">
+                        <label>
+                            Number of points:{" "}
+                        </label>
+                        
+                        <Box maxWidth="15vw">
+                            <TextField.Root size="2">
+                                <TextField.Input type="number" value={numPoints} onChange={(e) => setNumPoints(Number(e.target.value))} />
+                            </TextField.Root>
+                        </Box>
+                    </Flex>
+
+                    <Flex gap="1">
+                        <label>
+                            Number of clusters:{" "}
+                        </label>
+
+                        <Box maxWidth="15vw">
+                            <TextField.Root size="2">
+                                <TextField.Input type="number" value={numClusters} onChange={(e) => setNumClusters(Number(e.target.value))} />
+                            </TextField.Root>
+                        </Box>
+                    </Flex>
+
                 </Flex>
 
                 <div id="kmeans"/>
 
                 <Flex gap="1">
                     <Button id="run" onClick={handleReset}>
-                        Reset
+                        Generate new points
                     </Button>
                     <Button id="step" onClick={handleStep}>
                         Step
