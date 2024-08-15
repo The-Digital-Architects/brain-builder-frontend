@@ -27,6 +27,9 @@
     "FROM python:3.10-slim",
     "WORKDIR /app",
     "COPY --from=backend-build /app /app",
+    "RUN apt-get update && apt-get install -y libpq-dev gcc",
+    "RUN pip install daphne psycopg2-binary",
+    "RUN pip install -r requirements.txt",
     "CMD daphne django_react_proj.asgi:application --port $PORT --bind 0.0.0.0 -u none"
   ],
   "caproverOneClickApp": {
