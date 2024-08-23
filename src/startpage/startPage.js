@@ -71,9 +71,9 @@ class StartPage extends React.Component {
                 if (!progressData[type][level]) {
                     progressData[type][level] = [];
                 }
-                // First item 'open', rest 'disabled'
+                // First item 'open', rest 'disabled' ---> not anymore, now everything is open
                 progressData[type][level] = byLevel[level].map((item, index) => 
-                    index === 0 ? 'completed' : 'open');  // other option is 'disabled'
+                    'open');  // other option is 'disabled'
             });
         });
     
@@ -82,9 +82,9 @@ class StartPage extends React.Component {
             if (!progressData.intros[level]) {
                 progressData.intros[level] = [];
             }
-            // First intro 'open', rest 'disabled'
+            // First intro 'open', rest 'disabled' ---> not anymore, now everything is open
             progressData.intros[level] = introsByLevel[level].map((intro, index) => 
-                index === 0 ? 'open' : 'disabled');
+                'open');
         });
     
         console.log('Final progressData:', progressData);
@@ -170,7 +170,7 @@ class StartPage extends React.Component {
 
             <Flex direction='column' gap='3' style={{ flex:1 }}>
 
-                <ProgressBox progress={this.state.percentCompleted} />
+                {/*<ProgressBox progress={this.state.percentCompleted} /> --> disabled because we're not tracking progress*/}
 
                 {/* 
                 <GettingStarted showContent={this.state.showContent[this.state.showContent.length-1]} handleShowContent={this.handleShowContent} />  
