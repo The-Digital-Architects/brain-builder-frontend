@@ -846,16 +846,6 @@ function App() {
             />
           }/>
 
-          <Route path="/notebookTest" element={
-            <NotebookView
-            host = {window.location.host}
-            notebookPath = {'test.ipynb'}
-            userId = {getCookie('user_id')}
-            />
-          } />
-
-          <Route path="/jupyterLite" element={<JupyterLite />}/>
-
           <Route path="/clusteringTest" element={<ClusteringTest />}/>
 
           <Route path={`/exercise${customClusteringId/10}`} element={<ClusteringTest />} />
@@ -1015,27 +1005,9 @@ function App() {
 
           <Route path={`/feedback`} element={
             <div className="App">
-            <Box py="2" style={{ backgroundColor: "var(--cyan-10)"}}>
-            <Grid columns='3' mt='1'>
-              <Box ml='3' style={{display:"flex"}}>  
-                <Link to="/">
-                  <IconButton aria-label="navigate to home" height='21' style={{ marginLeft: 'auto', color: 'inherit', textDecoration: 'none' }}>
-                    <HomeIcon color="white" height='18' style={{ marginTop: 2 }} />
-                  </IconButton>
-                </Link>
-              </Box>
-              <Link to={window.location.origin} style={{ textDecoration: 'none' }}>
-              <Heading as='h1' align='center' size='6' style={{ color: 'var(--gray-1)', marginTop: 2, marginBottom: 0, textDecoration: 'none', fontFamily:'monospace, Courier New, Courier' }}>brAIn builder</Heading>
-              </Link>
-              <Box align='end' mr='3' >
-                  <Link to="https://www.tudelft.nl/en/" target="_blank" style={{ textDecoration: 'none'}}>
-                  <img src={tu_delft_pic} alt='Tu Delft Logo' width='auto' height='30'/>
-                  </Link>
-              </Box>
-            </Grid>
-            </Box>
-            <FeedbackApp host={window.location.origin} cookie={getCookie('csrftoken')} />
-          </div>
+              <Header showHomeButton={true}/>
+              <FeedbackApp host={window.location.origin} cookie={getCookie('csrftoken')} />
+            </div>
           } />
           <Route path={`/links`} element={
             <LinksPage/>
