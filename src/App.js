@@ -15,6 +15,7 @@ import Tutorial from './tutorial';
 import FeedbackApp from './feedback';
 import LinksPage from './links';
 import NotFound from './common/notFound';
+import Header from './common/header';
 import SvmView from './svmView';
 import ConstructionView from './common/constructionView';
 import NotebookView from './notebookView';
