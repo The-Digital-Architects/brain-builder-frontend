@@ -124,7 +124,6 @@ function App() {
           throw new Error('No Record in /api/backend');
         };
       }).catch((error) => {
-        console.error(error);
         if (error.message === 'No Record in /api/backend' || error.code === 'ECONNABORTED') {
           // If the record doesn't exist or the GET times out, post a new record
           console.log('No record found, creating a new one'); 
@@ -671,9 +670,6 @@ function App() {
               newApiData[index] = response.data[0];
               return newApiData;
             });
-            if (typeof response.data[0] === 'undefined' || !response.data[0]["in_out"] || JSON.parse(response.data[0]["in_out"]).length === 0) {
-              throw new Error('response.data[0] is undefined or in_out is empty');
-            }
             setCytoLayers(prevCytoLayers => {
               const newCytoLayers = [...prevCytoLayers];
               newCytoLayers[NNIndex] = JSON.parse(response.data[0]["in_out"]);
