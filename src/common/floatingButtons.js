@@ -162,7 +162,7 @@ function GenerateFloatingButtons({top, left, dist, isItPlus, nLayers, cytoLayers
             <FloatingButton
             variant="outline"
             disabled={(isItPlus && cytoLayers[i+1] >= maxNodes) || (!isItPlus && cytoLayers[i+1] < 2) || isTraining[index] === 1}
-            onClick = {taskId !== 0 ? (isItPlus ? () => addNode(i+1, setCytoLayers, taskId, index, maxNodes) : () => removeNode(i+1, setCytoLayers, taskId, NNIndex)) : () => {}}
+            onClick = {taskId !== 0 ? (isItPlus ? () => addNode(i+1, setCytoLayers, taskId, NNIndex, maxNodes) : () => removeNode(i+1, setCytoLayers, taskId, NNIndex)) : () => {}}
             style={{ position: 'absolute', top: window.innerHeight - 178 - 45*isItPlus, left: left + (i+1) * dist }}
             >
             {isItPlus ? <PlusIcon /> : <MinusIcon />}
