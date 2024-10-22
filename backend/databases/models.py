@@ -174,3 +174,10 @@ class Feedback(models.Model):
 
     def __str__(self):
         return str(self.timestamp)
+
+class LevelState(models.Model):
+    level = models.IntegerField()
+    active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "Level " + str(self.level) + " - " + str(self.active)

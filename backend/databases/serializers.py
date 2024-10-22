@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Row, Progress, TaskDescription, ExternalLink, NeuralNetworkDescription, ClusteringDescription, BasicsDescription, SVMDescription, Quiz, Intro, Feedback
+from .models import Row, Progress, TaskDescription, ExternalLink, NeuralNetworkDescription, ClusteringDescription, BasicsDescription, SVMDescription, Quiz, Intro, Feedback, LevelState
 
 class RowSerializer(serializers.ModelSerializer):
     class Meta:
@@ -69,3 +69,9 @@ class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         fields = ['feedback']
+
+
+class LevelStateSerializer(serializers.Serializer):
+    class Meta:
+        model = LevelState
+        fields = '__all__'
