@@ -9,6 +9,8 @@ const colorScale = chroma.scale(['#49329b', '#5e5cc2', '#8386d8', '#afb0e1', '#d
 export function generateCytoElements(list, apiData, isTraining, weights, biases) {
   const cElements = [];
 
+  console.log("the cyto list (for debugging):", list);
+
   // Generate nodes
   list.forEach((nodesPerLayer, i) => {
     for (let j = 0; j < nodesPerLayer; j++) {
