@@ -9,7 +9,7 @@ class Row(models.Model):
     timestamp = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.in_out
+        return self.user_id + " - task " + str(self.task_id) + " - action " + str(self.action)
 
 
 class Progress(models.Model):
