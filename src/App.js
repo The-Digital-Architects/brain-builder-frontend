@@ -614,7 +614,8 @@ function App() {
       // cytoLayers is not empty, proceed as usual
       cytoLayers.forEach((cytoLayer, index) => {
         localStorage.setItem(`cytoLayers${NNTaskIds[index]}`, JSON.stringify(cytoLayer));  // TODO: check if this works
-        if (isTraining[taskIds.indexOf(NNTaskIds[index])] !== -1 && isTraining[taskIds.indexOf(NNTaskIds[index])] !== 0) {
+        const taskIndex = taskIds.indexOf(NNTaskIds[index]);
+        if (isTraining[taskIndex] !== 0 && isTraining[taskIndex] !== -1) {
         setIsTraining(prevIsTraining => {
           const newIsTraining = [...prevIsTraining];
           newIsTraining[taskIds.indexOf(NNTaskIds[index])] = 0;

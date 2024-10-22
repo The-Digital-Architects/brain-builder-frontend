@@ -27,11 +27,11 @@ function LayerRemoveButton({setCytoLayers, index, taskId, cytoLayers, isTraining
     const removeLayer = useCallback((setCytoLayers, index) => {
       const newLayer = [...cytoLayers];
       if (newLayer.length > 2) {newLayer.splice(-2, 1)}
-        setCytoLayers(prevLayers => {
-          const newLayers = [...prevLayers];
-          newLayers[index] = newLayer;
-          return newLayers;
-        });
+      setCytoLayers(prevLayers => {
+        const newLayers = [...prevLayers];
+        newLayers[index] = newLayer;
+        return newLayers;
+      });
     }, [cytoLayers]);
 
     return (
@@ -63,7 +63,9 @@ function LayerAddButton({setCytoLayers, index, taskId, cytoLayers, nOfOutputs, m
     const addLayer = useCallback((setCytoLayers, nOfOutputs, index, max_layers) => {
         let newLayer = [...cytoLayers];
         console.log('CytoLayers for NNTask ', index, ': ', newLayer);  // TODO remove
-        if (newLayer.length < max_layers) {
+        console.log(`checking if ${cytoLayers.length} < ${max_layers}`);  // TODO remove
+        if (cytoLayers.length < max_layers) {
+          console.log('it is!');  // TODO remove
           newLayer.push(nOfOutputs)
           console.log('which is now changed to: ', newLayer);  // TODO remove 
           setCytoLayers(prevLayers => {
@@ -71,7 +73,9 @@ function LayerAddButton({setCytoLayers, index, taskId, cytoLayers, nOfOutputs, m
             newLayers[index] = newLayer;
             return newLayers;
           });
-        };
+        } else {
+          console.log('it is not!');  // TODO remove
+        }
     }, [cytoLayers]);
 
     return (
