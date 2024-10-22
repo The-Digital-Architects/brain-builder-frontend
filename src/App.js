@@ -697,10 +697,13 @@ function App() {
   // Update the state when the dependencies change
   useEffect(() => {
     if (Array.isArray(cytoLayers)) {
-    setCytoElements(NNTaskIds.map((taskId, index) => {
-      return generateCytoElements(cytoLayers[index], apiData[index], isTraining[taskIds.indexOf(NNTaskIds[index])], weights[index], biases[index])
+      console.log("cytoLayers changed, updating cytoElements");
+      console.log("cytoLayers: ", cytoLayers);
+      setCytoElements(NNTaskIds.map((taskId, index) => {
+        return generateCytoElements(cytoLayers[index], apiData[index], isTraining[taskIds.indexOf(NNTaskIds[index])], weights[index], biases[index])
+      }
+      ));
     }
-    ));}
   }, [NNTaskIds, cytoLayers, apiData, weights, biases, isTraining, taskIds]);
 
   useEffect(() => {
