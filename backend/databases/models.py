@@ -9,7 +9,7 @@ class Row(models.Model):
     timestamp = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.network_input
+        return self.in_out
 
 
 class Progress(models.Model):
