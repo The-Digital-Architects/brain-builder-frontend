@@ -68,25 +68,29 @@ function App() {
 
     normalization = false;  // TODO: make this an actual variable
 
-    const inData = {
-      learning_rate: 0,
-      epochs: 0,
-      normalization: normalization, 
-      activations_on: true,
-      network_input: JSON.stringify([]),
-      games_data: gamesData,
-    }
-    
-    const dataData = {
-      action: 0,
-      user_id: userId,
-      task_id: taskId,
-      in_out: JSON.stringify(inData),
-    };
-
     const checkGamesData = () => {
       if (gamesData !== "") {
-        // first, set up the websocket
+        const inData = {
+          learning_rate: 0,
+          epochs: 0,
+          normalization: normalization, 
+          activations_on: true,
+          network_input: JSON.stringify([]),
+          games_data: gamesData,
+        }
+    
+        console.log(`inData: ${inData}`)
+        
+        const dataData = {
+          action: 0,
+          user_id: userId,
+          task_id: taskId,
+          in_out: JSON.stringify(inData),
+        };
+    
+        console.log(`dataData: ${dataData}`)
+
+        // set up the websocket
         const ws = new WebSocket(`wss://${window.location.host}/ws/${userId}/`);
         let timeoutId;
 
