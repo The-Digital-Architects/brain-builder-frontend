@@ -47,7 +47,7 @@ async def process(req):
             print(f"Games DataFrame:\n{gd}")
             
             if tag not in gd.index:
-                logger.error(f"Task ID {tag} not found in games data index.")
+                print(f"Task ID {tag} not found in games data index.")
                 raise KeyError(f"Task ID {tag} not found in games data index.")
             
             dataset = gd.loc[tag, 'dataset']
