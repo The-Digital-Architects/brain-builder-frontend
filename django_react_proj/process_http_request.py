@@ -45,7 +45,12 @@ async def process(req):
         dataset = gd.loc[tag, 'dataset']
         normalization = bool(inputs['normalization'])
 
+        print(f"Loading data for task {task_id} with dataset {dataset} and normalization {normalization}")
+
         data = df.get_data(dataset=dataset, normalization=normalization, typ=gd.loc[tag, 'type'])
+
+        print(f"If we got here, the above line worked and typ is {gd.loc[tag, 'type']}")
+
         cache.set(f'{user_id}_data', pickle.dumps(data), 10*60)  # cache the data for 10 minutes
         print("Data loaded and stored in cache")
 
