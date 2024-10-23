@@ -46,7 +46,8 @@ function Tutorial({ nOfInputs,
   setErrorList,
   setWeights,
   setBiases,
-  maxNodes}) {
+  maxNodes,
+  gamesData}) {
   
   const [tutorialCytoElements, setTutorialCytoElements] = useState([]);
   const [tutorialCytoStyle, setTutorialCytoStyle] = useState([]);
@@ -142,6 +143,7 @@ function Tutorial({ nOfInputs,
         setWeights={setWeights}
         setBiases={setBiases}
         maxNodes={maxNodes}
+        gamesData={gamesData}
     />
   );
 }

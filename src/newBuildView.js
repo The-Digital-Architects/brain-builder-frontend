@@ -156,7 +156,7 @@ class Building extends Model {
           });
         }
         else {
-        this.props.loadData(this.props.taskId, this.props.index)  // let the backend load the data, then set the images and feature names
+      this.props.loadData(this.props.taskId, this.props.index, this.props.gamesData)  // let the backend load the data, then set the images and feature names
         this.props.loadLastCytoLayers(this.props.setCytoLayers, this.props.apiData, this.props.setApiData, 'cytoLayers' + this.props.taskId, this.props.taskId, this.props.index, this.props.NNIndex, this.props.nOfInputs, this.props.nOfOutputs);
         this.props.updateCytoLayers(this.props.setCytoLayers, this.props.nOfInputs, this.props.nOfOutputs, this.props.NNIndex);
         }

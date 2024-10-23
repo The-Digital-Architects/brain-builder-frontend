@@ -55,7 +55,7 @@ function App() {
     };
   }, []);
 
-  const loadData = (taskId, index, normalization) => {
+  const loadData = (taskId, index, normalization, gamesData) => {
     // TODO: INDICES !!!
 
     setIsTraining(prevIsTraining => {
@@ -853,6 +853,7 @@ function App() {
               setWeights={null}
               setBiases={null}
               maxNodes={maxNodes}
+              gamesData={gamesData}
             />
           }/>
 
@@ -901,7 +902,7 @@ function App() {
                   nOfInputs={nInputs[taskIds.indexOf(taskId)]} nOfOutputs={nOutputs[taskIds.indexOf(taskId)]} maxLayers={maxLayers[taskIds.indexOf(taskId)]} taskId={taskId} NNIndex={NNIndex} index={taskIds.indexOf(taskId)} cytoElements={cytoElements[NNIndex]} cytoStyle={cytoStyle[NNIndex]} cytoLayers={cytoLayers[NNIndex]} setCytoLayers={setCytoLayers} updateCytoLayers={updateCytoLayers} loadLastCytoLayers={loadLastCytoLayers} 
                   isTraining={isTraining[taskIds.indexOf(taskId)]} setIsTraining={setIsTraining} apiData={apiData[taskIds.indexOf(taskId)]} setApiData={setApiData} accuracy={accuracy[NNIndex]} setAccuracy={setAccuracy} accuracyColor={accuracyColor} handleSubmit={handleSubmit} isResponding={isResponding[taskIds.indexOf(taskId)]} setIsResponding={setIsResponding} loadData={loadData} pendingTime={pendingTime} intervalTimeout={intervalTimeout} cancelRequestRef={cancelRequestRef}
                   progress={NNProgress[NNIndex]} setProgress={setNNProgress} featureNames={featureNames[taskIds.indexOf(taskId)]} errorList={errorList[NNIndex]} setErrorList={setErrorList} weights={weights[NNIndex]} setWeights={setWeights} biases={biases[NNIndex]} setBiases={setBiases} img={imgs[taskIds.indexOf(taskId)]} setImgs={setImgs} userId={getCookie('user_id')}
-                  fileName={fileNames[taskIds.indexOf(taskId)]} functionName={functionNames[taskIds.indexOf(taskId)]} maxNodes={maxNodes[NNIndex]} maxEpochs={maxEpochs[NNIndex]} typ={typ[taskIds.indexOf(taskId)]} dataset={dataset[taskIds.indexOf(taskId)]} name={taskNames[taskId]} startTraining={putRequest} imageVisibility={imageVisibility[NNIndex]}
+                  fileName={fileNames[taskIds.indexOf(taskId)]} functionName={functionNames[taskIds.indexOf(taskId)]} maxNodes={maxNodes[NNIndex]} maxEpochs={maxEpochs[NNIndex]} typ={typ[taskIds.indexOf(taskId)]} dataset={dataset[taskIds.indexOf(taskId)]} name={taskNames[taskId]} startTraining={putRequest} imageVisibility={imageVisibility[NNIndex]} gamesData={gamesData}
                   initPlot={sensitiveDataPlot}
                   tabs={['data', 'training']} sliderVisibilities={{}} inputFieldVisibilities={{}} dropdownVisibilities={{}} dropdownOptions={{'AFDropdown': afOptions[NNIndex], 'OptimizerDropdown': optimOptions[NNIndex]}} checkboxVisibilities={{'ColorCheckbox': true, 'HeightCheckbox': true, 'ResizeCheckbox': true}}
                 />
@@ -972,6 +973,7 @@ function App() {
                   dropdownVisibilities={{'AFDropdown': !!afOptions[NNIndex].length, 'OptimizerDropdown': !!optimOptions[NNIndex].length}}
                   dropdownOptions={{'AFDropdown': afOptions[NNIndex], 'OptimizerDropdown': optimOptions[NNIndex]}}
                   checkboxVisibilities={{'AFCheckbox': afVisibility[NNIndex], 'NormCheckbox': normalizationVisibility[NNIndex]}}
+                  gamesData={gamesData}
                 />
                 </>
               }
