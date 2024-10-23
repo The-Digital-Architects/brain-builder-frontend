@@ -217,7 +217,6 @@ function App() {
           newApiData[index] = response.data[0];
           return newApiData;
         });
-        console.log(response.data[0]);
       })
       .catch((error) => {
         console.error(`Error fetching API data: ${error}`);
@@ -467,7 +466,6 @@ function App() {
         setFileNames(currentFileNames);
         setFunctionNames(currentFunctionNames);
         setGamesData(JSON.stringify(currentTaskData));
-        console.log("gamesData: " + JSON.stringify(currentTaskData)); // TODO: remove
         setNInputs(currentNInputs);
         setNOutputs(currentNOutputs);
         setNObjects(currentTaskIds.map(() => 0));
@@ -655,11 +653,9 @@ function App() {
               const newCytoLayers = [...prevCytoLayers];
               console.log("setting cytoLayers to saved setting");
               newCytoLayers[NNIndex] = cytoLayersSetting;
-              // console.log("saved setting:", cytoLayersSetting);
               // make the number of nodes in the first and last layer match the number of inputs and outputs
               newCytoLayers[NNIndex][0] = nInputs;  
               newCytoLayers[NNIndex][newCytoLayers[NNIndex].length - 1] = nOutputs;
-              // console.log("new setting: ", newCytoLayers)  // for debugging
               return newCytoLayers;
             });
         }
@@ -721,7 +717,6 @@ function App() {
   // Update the state when the dependencies change
   useEffect(() => {
     if (Array.isArray(cytoLayers)) {
-      console.log("cytoLayers changed, updating cytoElements");
       console.log("cytoLayers: ", cytoLayers);
       setCytoElements(NNTaskIds.map((taskId, index) => {
         return generateCytoElements(cytoLayers[index], apiData[index], isTraining[taskIds.indexOf(NNTaskIds[index])], weights[index], biases[index])

@@ -152,14 +152,10 @@ class StartPage extends React.Component {
             index = this.state.showContent.length + index;
         }
 
-        console.log('Expanding:', index, expand);
-
         this.setState({
             showContent: this.state.showContent.map((value, i) => 
                 i === index ? expand : (expand ? false : value)
             )
-        }, () => {
-            console.log('Show content:', this.state.showContent);
         });
     };
 
