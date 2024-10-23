@@ -102,41 +102,50 @@ function App() {
     ws.onopen = () => {
       console.log('WebSocket connection opened');
 
-      // now, check if there is an entry in /api/backend:
-      axios.get(window.location.origin + `/api/backend/?user_id=${userId}&task_id=${taskId}`, {
-        headers: {
-          'X-CSRFToken': csrftoken
-        }
-      }).then((response) => {
-        if (response.data.length > 0) {
-          // If the record exists, update it
-          let pk = response.data[0].pk;
-          axios.put(window.location.origin + `/api/backend/${pk}`, dataData, {
+      const checkGamesData = () => {
+        if (gamesData !== "") {
+          // now, check if there is an entry in /api/backend:
+          axios.get(window.location.origin + `/api/backend/?user_id=${userId}&task_id=${taskId}`, {
             headers: {
               'X-CSRFToken': csrftoken
-            }, 
-            timeout: pendingTime
+            }
+          }).then((response) => {
+            if (response.data.length > 0) {
+              // If the record exists, update it
+              let pk = response.data[0].pk;
+              axios.put(window.location.origin + `/api/backend/${pk}`, dataData, {
+                headers: {
+                  'X-CSRFToken': csrftoken
+                }, 
+                timeout: pendingTime
+              }).catch((error) => {
+                console.error(error);
+              });
+            } else {
+              // If the record does not exist, throw an error
+              throw new Error('No Record in /api/backend');
+            };
           }).catch((error) => {
-            console.error(error);
+            if (error.message === 'No Record in /api/backend' || error.code === 'ECONNABORTED') {
+              // If the record doesn't exist or the GET times out, post a new record
+              console.log('No record found, creating a new one'); 
+              axios.post(window.location.origin + "/api/backend/", dataData, {
+                headers: {
+                  'X-CSRFToken': csrftoken
+                }, 
+                timeout: pendingTime
+              }).catch((error) => {
+                console.error(error);
+              })
+            }
           });
         } else {
-          // If the record does not exist, throw an error
-          throw new Error('No Record in /api/backend');
-        };
-      }).catch((error) => {
-        if (error.message === 'No Record in /api/backend' || error.code === 'ECONNABORTED') {
-          // If the record doesn't exist or the GET times out, post a new record
-          console.log('No record found, creating a new one'); 
-          axios.post(window.location.origin + "/api/backend/", dataData, {
-            headers: {
-              'X-CSRFToken': csrftoken
-            }, 
-            timeout: pendingTime
-          }).catch((error) => {
-            console.error(error);
-          })
+          console.log('Waiting for gamesData to be populated...');
+          setTimeout(checkGamesData, 500); // Check again after 0.5 second
         }
-      });
+      };
+
+      checkGamesData();
     };
     timeoutId = setTimeout(() => {
       ws.close();
@@ -228,7 +237,7 @@ function App() {
   const [taskIcons, setTaskIcons] = useState(defaultTaskIds.map(() => null));
   const [fileNames, setFileNames] = useState(defaultTaskIds.map(() => ''));
   const [functionNames, setFunctionNames] = useState(defaultTaskIds.map(() => ''));
-  const [gamesData, setGamesData] = useState(JSON.stringify([{task_id: 11, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'Clas2.csv'}, {task_id: 12, n_inputs: 4, n_outputs: 3, type: 1, dataset: 'load_iris()'}]));
+  const [gamesData, setGamesData] = useState("");
   const [typ, setTyp] = useState(defaultTaskIds.map(() => 1));
   const [dataset, setDataset] = useState(defaultTaskIds.map(() => 'Clas2.csv'));
   const [featureNames, setFeatureNames] = useState(defaultTaskIds.map(() => []));
