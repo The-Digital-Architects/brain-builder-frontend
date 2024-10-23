@@ -464,6 +464,7 @@ function App() {
         setFileNames(currentFileNames);
         setFunctionNames(currentFunctionNames);
         setGamesData(JSON.stringify(currentTaskData));
+        console.log('gamesData: ', gamesData)  // TODO remove
         setNInputs(currentNInputs);
         setNOutputs(currentNOutputs);
         setNObjects(currentTaskIds.map(() => 0));
