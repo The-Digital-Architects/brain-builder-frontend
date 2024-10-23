@@ -640,6 +640,7 @@ function App() {
     // Check localStorage for a saved setting
     const savedSetting = localStorage.getItem(propertyName);
     let goToStep2 = false;
+    let goToStep3 = false;
 
     if (savedSetting && savedSetting !== '[]' && !JSON.parse(savedSetting).some(element => element === undefined)) {
         try {
@@ -659,7 +660,7 @@ function App() {
             });
         }
         catch (error) {
-            console.error(error);
+            console.print(`getting the saved setting didn't work: ${error}`);
             goToStep2 = true;
         }
     }
@@ -675,6 +676,7 @@ function App() {
         }
       })
       .then((response) => {
+        try {
             setApiData(prevApiData => {
               const newApiData = [...prevApiData];
               newApiData[index] = response.data[0];
@@ -688,16 +690,24 @@ function App() {
               newCytoLayers[NNIndex][newCytoLayers[NNIndex].length - 1] = nOutputs;
               return newCytoLayers;
             });
+          } catch (error) {
+            console.print(`the db record didn't have a cytoLayers setting: ${error}`);
+            goToStep3 = true;
+          }
       })
       .catch((error) => {
-        console.error(error);
-        console.log("setting cytoLayers to default");
-            setCytoLayers(prevCytoLayers => {
-              const newCytoLayers = [...prevCytoLayers];
-              newCytoLayers[NNIndex] = [nInputs, nOutputs];
-              return newCytoLayers;
-            });
+        console.print(`getting cytoLayers from db failed: ${error}`);
+        goToStep3 = true;
       });
+
+      if (goToStep3) {
+        console.log("setting cytoLayers to default");
+        setCytoLayers(prevCytoLayers => {
+          const newCytoLayers = [...prevCytoLayers];
+          newCytoLayers[NNIndex] = [nInputs, nOutputs];
+          return newCytoLayers;
+        });
+      }
     }
   };
 
