@@ -39,35 +39,47 @@ async def process(req):
     if req['action'] == 0:  # load the data and send the feature names and images to the frontend
         d = {}
         tag = int(req['task_id'])
-        gd = json.loads(inputs['games_data'])
-        gd = pd.DataFrame(gd).set_index('task_id')
-        
-        dataset = gd.loc[tag, 'dataset']
-        normalization = bool(inputs['normalization'])
+        try:
+            gd = json.loads(inputs['games_data'])
+            print(f"Games data loaded: {gd}")
+            
+            gd = pd.DataFrame(gd).set_index('task_id')
+            print(f"Games DataFrame:\n{gd}")
+            
+            if tag not in gd.index:
+                logger.error(f"Task ID {tag} not found in games data index.")
+                raise KeyError(f"Task ID {tag} not found in games data index.")
+            
+            dataset = gd.loc[tag, 'dataset']
+            print(f"Dataset: {dataset}")
+            
+            normalization = bool(inputs['normalization'])
+            print(f"Normalization: {normalization}")
+            
+            data = df.get_data(dataset=dataset, normalization=normalization, typ=gd.loc[tag, 'type'])
+            print(f"Data loaded: {data}")
+            
+            cache.set(f'{user_id}_data', pickle.dumps(data), 10*60)  # cache the data for 10 minutes
+            print("Data loaded and stored in cache")
 
-        print(f"Loading data for task {task_id} with dataset {dataset} and normalization {normalization}")
+            d['header'] = 'data'
+            d['feature_names'] = [x.replace('_', ' ') for x in data.feature_names]
+            d['plot'] = b64encode(data.images[-1]).decode()  # base64 encoded image, showing pyplot of the data
+            d['n_objects'] = data.n_objects
 
-        data = df.get_data(dataset=dataset, normalization=normalization, typ=gd.loc[tag, 'type'])
-
-        print(f"If we got here, the above line worked and typ is {gd.loc[tag, 'type']}")
-
-        cache.set(f'{user_id}_data', pickle.dumps(data), 10*60)  # cache the data for 10 minutes
-        print("Data loaded and stored in cache")
-
-        d['header'] = 'data'
-        d['feature_names'] = [x.replace('_', ' ') for x in data.feature_names]
-        d['plot'] = b64encode(data.images[-1]).decode()  # base64 encoded image, showing pyplot of the data
-        d['n_objects'] = data.n_objects
-
-        tc = Transceiver.connections.get((str(user_id)))
-        t = 0
-        while tc is None and t < 10:
-            time.sleep(0.1)
-            print("Waiting for switchboard")
-            t += 0.1
-        if tc is not None:
-            #print('Sending data to switchboard')
-            await tc.send_data(d)
+            tc = Transceiver.connections.get((str(user_id)))
+            t = 0
+            while tc is None and t < 10:
+                time.sleep(0.1)
+                print("Waiting for switchboard")
+                t += 0.1
+            if tc is not None:
+                print('Sending data to switchboard')
+                await tc.send_data(d)
+        except KeyError as e:
+            print(f"KeyError: {e}")
+        except Exception as e:
+            print(f"Unexpected error: {e}")
 
 
     elif req['action'] == 2:  # classify a given input
