@@ -18,8 +18,6 @@ import NotFound from './common/notFound';
 import Header from './common/header';
 import SvmView from './svmView';
 import ConstructionView from './common/constructionView';
-import NotebookView from './notebookView';
-import JupyterLite from './jupyterLiteView';
 import StartPage from './startpage/startPage';
 import { generateCytoElements, generateCytoStyle } from './utils/cytoUtils';
 import getCookie from './utils/cookieUtils';
@@ -85,25 +83,25 @@ function App() {
       task_id: taskId,
       in_out: JSON.stringify(inData),
     };
-    // first, set up the websocket
-    const ws = new WebSocket(`wss://${window.location.host}/ws/${userId}/`);
-    let timeoutId;
 
-    ws.onclose = () => {
+    const checkGamesData = () => {
+      if (gamesData !== "") {
+        // first, set up the websocket
+        const ws = new WebSocket(`wss://${window.location.host}/ws/${userId}/`);
+        let timeoutId;
 
-      setIsTraining(prevIsTraining => {
-        const newIsTraining = [...prevIsTraining];
-        newIsTraining[index] = 0;
-        return newIsTraining;
-      });
-      console.log('WebSocket connection closed');
-    };
+        ws.onclose = () => {
 
-    ws.onopen = () => {
-      console.log('WebSocket connection opened');
+          setIsTraining(prevIsTraining => {
+            const newIsTraining = [...prevIsTraining];
+            newIsTraining[index] = 0;
+            return newIsTraining;
+          });
+          console.log('WebSocket connection closed');
+        };
 
-      const checkGamesData = () => {
-        if (gamesData !== "") {
+        ws.onopen = () => {
+          console.log('WebSocket connection opened');
           // now, check if there is an entry in /api/backend:
           axios.get(window.location.origin + `/api/backend/?user_id=${userId}&task_id=${taskId}`, {
             headers: {
@@ -139,65 +137,66 @@ function App() {
               })
             }
           });
-        } else {
-          console.log('Waiting for gamesData to be populated...');
-          setTimeout(checkGamesData, 500); // Check again after 0.5 second
-        }
-      };
+        };
 
-      checkGamesData();
-    };
-    timeoutId = setTimeout(() => {
-      ws.close();
-      console.log('Failed to load data for exercise ' + taskId/10);
-      alert("Failed to load data for exercise " + taskId/10 + ". Try reloading the page, if the problem persists, please contact us.");
-    }, intervalTimeout); // stop after n milliseconds
-
-    ws.onmessage = function(event) {
-      const data = JSON.parse(event.data);
-      if (data.header === "data") { 
-
-        setFeatureNames(prevFeatureNames => {
-          const newFeatureNames = [...prevFeatureNames];
-          newFeatureNames[index] = data.feature_names;
-          return newFeatureNames;
-        });
-
-        setNObjects(prevNObjects => {
-          const newNObjects = [...prevNObjects];
-          newNObjects[index] = data.n_objects;
-          return newNObjects;
-        });
-
-        // decompress and parse the images in 'plot'
-        setInitPlots(prevInitPlots => {
-          const newInitPlots = [...prevInitPlots];
-          if (newInitPlots[index]) {URL.revokeObjectURL(newInitPlots[index])};  // revoke the old URL
-
-          const binaryString = atob(data.plot);  // decode from base64 to binary string
-          const bytes = new Uint8Array(binaryString.length);  // convert from binary string to byte array
-          for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);  // now bytes contains the binary image data
+        timeoutId = setTimeout(() => {
+          ws.close();
+          console.log('Failed to load data for exercise ' + taskId/10);
+          alert("Failed to load data for exercise " + taskId/10 + ". Try reloading the page, if the problem persists, please contact us.");
+        }, intervalTimeout); // stop after n milliseconds
+    
+        ws.onmessage = function(event) {
+          const data = JSON.parse(event.data);
+          if (data.header === "data") { 
+    
+            setFeatureNames(prevFeatureNames => {
+              const newFeatureNames = [...prevFeatureNames];
+              newFeatureNames[index] = data.feature_names;
+              return newFeatureNames;
+            });
+    
+            setNObjects(prevNObjects => {
+              const newNObjects = [...prevNObjects];
+              newNObjects[index] = data.n_objects;
+              return newNObjects;
+            });
+    
+            // decompress and parse the images in 'plot'
+            setInitPlots(prevInitPlots => {
+              const newInitPlots = [...prevInitPlots];
+              if (newInitPlots[index]) {URL.revokeObjectURL(newInitPlots[index])};  // revoke the old URL
+    
+              const binaryString = atob(data.plot);  // decode from base64 to binary string
+              const bytes = new Uint8Array(binaryString.length);  // convert from binary string to byte array
+              for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);  // now bytes contains the binary image data
+              }
+              const blob = new Blob([bytes.buffer], { type: 'image/jpeg' });
+              const url = URL.createObjectURL(blob);
+              // now images can be accessed with <img src={url} />
+              newInitPlots[index] = url;
+              return newInitPlots;
+            });
+            console.log(`Data for exercise ${taskId/10} loaded`)
+            ws.close();
+            clearTimeout(timeoutId);
+          } else {
+            console.log("Received unexpected message from backend: ", data);
           }
-          const blob = new Blob([bytes.buffer], { type: 'image/jpeg' });
-          const url = URL.createObjectURL(blob);
-          // now images can be accessed with <img src={url} />
-          newInitPlots[index] = url;
-          return newInitPlots;
-        });
-        console.log(`Data for exercise ${taskId/10} loaded`)
-        ws.close();
-        clearTimeout(timeoutId);
+        };
+    
+        ws.onerror = function(event) {
+          alert("Failed to load data for exercise " + taskId/10 + ". Try reloading the page, if the problem persists, please contact us.");
+          console.error('Error:', event);
+        };
       } else {
-        console.log("Received unexpected message from backend: ", data);
+        console.log('Waiting for gamesData to be populated...');
+        setTimeout(checkGamesData, 500); // Check again after 0.5 second
       }
     };
 
-    ws.onerror = function(event) {
-      alert("Failed to load data for exercise " + taskId/10 + ". Try reloading the page, if the problem persists, please contact us.");
-      console.error('Error:', event);
-    };
-    };
+    checkGamesData();
+  };
 
   const fetchQueryResponse = (setApiData, setIsResponding, taskId, index) => {  // updates the apiData state with the response from the backend
     var userId = getCookie('user_id');
