@@ -69,7 +69,7 @@ function App() {
     normalization = false;  // TODO: make this an actual variable
 
     const checkGamesData = () => {
-      if (gamesData !== "") {
+      if (gamesData) {
         console.log(`found it! gamesData is ${gamesData}`) // TODO: remove this
 
         const inData = {
@@ -81,7 +81,7 @@ function App() {
           games_data: gamesData,
         }
     
-        console.log(`inData: ${inData}`)
+        console.log('inData:', JSON.stringify(inData, null, 2));
         
         const dataData = {
           action: 0,
@@ -90,7 +90,7 @@ function App() {
           in_out: JSON.stringify(inData),
         };
     
-        console.log(`dataData: ${dataData}`)
+        console.log('dataData:', JSON.stringify(dataData, null, 2));
 
         // set up the websocket
         const ws = new WebSocket(`wss://${window.location.host}/ws/${userId}/`);
