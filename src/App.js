@@ -617,26 +617,32 @@ function App() {
   }, {});
   
   useEffect(() => { 
-    if (cytoLayers.every(subArray => subArray.length === 0)) {
-      console.log("cytoLayers is empty, setting to default.");
-      // cytoLayers is empty, set it to a default value
-      NNTaskIds.forEach((taskId, index) => {
-        localStorage.setItem(`cytoLayers${taskId}`, JSON.stringify([nInputs[index], nOutputs[index]]));
-      });
-    } else {
-      // cytoLayers is not empty, proceed as usual
-      cytoLayers.forEach((cytoLayer, index) => {
-        localStorage.setItem(`cytoLayers${NNTaskIds[index]}`, JSON.stringify(cytoLayer));  // TODO: check if this works
-        const taskIndex = taskIds.indexOf(NNTaskIds[index]);
-        if (isTraining[taskIndex] !== 0 && isTraining[taskIndex] !== -1) {
+    const newCytoLayers = [...cytoLayers];
+    let shouldUpdateCytoLayers = false;
+
+    newCytoLayers.forEach((cytoLayer, index) => {
+      if (cytoLayer.length === 0) {
+        console.log(`cytoLayer at index ${index} is empty, setting to default.`);
+        newCytoLayers[index] = [nInputs[index], nOutputs[index]];
+        shouldUpdateCytoLayers = true;
+      }
+      localStorage.setItem(`cytoLayers${NNTaskIds[index]}`, JSON.stringify(newCytoLayers[index]));
+    });
+
+    if (shouldUpdateCytoLayers) {
+      setCytoLayers(newCytoLayers);
+    }
+
+    newCytoLayers.forEach((cytoLayer, index) => {
+      const taskIndex = taskIds.indexOf(NNTaskIds[index]);
+      if (isTraining[taskIndex] !== -1) {
         setIsTraining(prevIsTraining => {
           const newIsTraining = [...prevIsTraining];
-          newIsTraining[taskIds.indexOf(NNTaskIds[index])] = 0;
+          newIsTraining[taskIndex] = 0;
           return newIsTraining;
         });
       }
     });
-    }
   }, [cytoLayers, NNTaskIds, nInputs, nOutputs, taskIds]);
 
   
