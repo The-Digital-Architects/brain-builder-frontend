@@ -70,6 +70,8 @@ function App() {
 
     const checkGamesData = () => {
       if (gamesData !== "") {
+        console.log(`found it! gamesData is ${gamesData}`) // TODO: remove this
+
         const inData = {
           learning_rate: 0,
           epochs: 0,
