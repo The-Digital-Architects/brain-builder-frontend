@@ -663,7 +663,7 @@ function App() {
             // try to set the cytoLayers to the saved setting, if there is an error, set it to default
             setCytoLayers(prevCytoLayers => {
               const newCytoLayers = [...prevCytoLayers];
-              console.log("setting cytoLayers to saved setting");
+              console.log(`setting cytoLayers to saved setting: ${cytoLayersSetting}`);
               newCytoLayers[NNIndex] = cytoLayersSetting;
               // make the number of nodes in the first and last layer match the number of inputs and outputs
               newCytoLayers[NNIndex][0] = nInputs;  
