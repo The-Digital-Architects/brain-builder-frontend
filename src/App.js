@@ -246,8 +246,8 @@ function App() {
   const [dataset, setDataset] = useState(defaultTaskIds.map(() => 'Clas2.csv'));
   const [featureNames, setFeatureNames] = useState(defaultTaskIds.map(() => []));
   const [initPlots, setInitPlots] = useState(defaultTaskIds.map(() => null));
-  const [nInputs, setNInputs] = useState(defaultTaskIds.map(() => 4));
-  const [nOutputs, setNOutputs] = useState(defaultTaskIds.map(() => 3));
+  const [nInputs, setNInputs] = useState(defaultTaskIds.map(() => 1));
+  const [nOutputs, setNOutputs] = useState(defaultTaskIds.map(() => 1));
   const [nObjects, setNObjects] = useState(defaultTaskIds.map(() => 0));  // TODO are we using this?
   const [isResponding, setIsResponding] = useState(defaultTaskIds.map(() => 0));
   const [isTraining, setIsTraining] = useState(defaultTaskIds.map(() => false));
