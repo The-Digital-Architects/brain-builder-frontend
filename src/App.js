@@ -626,7 +626,11 @@ function App() {
         newCytoLayers[index] = [nInputs[index], nOutputs[index]];
         shouldUpdateCytoLayers = true;
       }
-      localStorage.setItem(`cytoLayers${NNTaskIds[index]}`, JSON.stringify(newCytoLayers[index]));
+      const localStorageKey = `cytoLayers${NNTaskIds[index]}`;
+      const newCytoLayerString = JSON.stringify(newCytoLayers[index]);
+      if (newCytoLayerString !== localStorage.getItem(localStorageKey)) {
+        localStorage.setItem(localStorageKey, newCytoLayerString);
+      }
     });
 
     if (shouldUpdateCytoLayers) {

@@ -87,8 +87,6 @@ class StartPage extends React.Component {
                 'open');
         });
     
-        console.log('Final progressData:', progressData);
-    
         return progressData;
     }
 
@@ -123,8 +121,6 @@ class StartPage extends React.Component {
             introsByLevel,
             progressData,
             percentCompleted: this.countPercentCompleted(progressData)
-        }, () => {
-            console.log('Progress data initialized:', this.state.progressData);
         });
 
     }
