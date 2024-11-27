@@ -1,5 +1,5 @@
 import { PlayIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
-import { Flex, IconButton, TextField } from '@radix-ui/themes';
+import { Flex, IconButton, TextField, RadioGroup } from '@radix-ui/themes';
 import * as Select  from '@radix-ui/react-select';
 
 const EI = 0.3;  // gCO2e/Wh, carbon intensity of electricity in the EU (source: https://ourworldindata.org/grapher/carbon-intensity-electricity?tab=chart&country=EU-27~OWID_EU27~OWID_WRL)
@@ -75,9 +75,15 @@ function renderEmissions( result, setResult, ins, updateTime, updateWords, writi
     
     if (writing) {
     if (ins[1] === null) {ins[1] = [null, null]};
+    
+    const options = ['a sentence (~30 words)', 'a paragraph (~100 words)', 'a page (~400 words)'];
 
     const inputs = [
-        <Dropdown label="TextType" options={['a sentence (~30 words)', 'a paragraph (~100 words)', 'a page (~400 words)']} onChange={(value) => updateWords(value)} placeholder="..." />,
+        <RadioGroup.Root defaultValue="1" name="text-length-dropdown" onValueChange={(value) => updateWords(options[value-1])}>
+            {options.map((option, index) => (
+                <RadioGroup.Item value={index+1}>{option}</RadioGroup.Item>
+            ))}
+        </RadioGroup.Root>,
         <TextField.Root size="2">
             <TextField.Input type="number" onChange={(event) => updateTime(event.target.value, ins[1][1])} />
         </TextField.Root>,
