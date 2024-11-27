@@ -196,7 +196,7 @@ function App() {
           console.error('Error:', event);
         };
       } else {
-        console.log('Waiting for gamesData to be populated...');
+        console.log(`Waiting for gamesData to be populated... (it's now ${gamesData})`)
         setTimeout(checkGamesData, 500); // Check again after 0.5 second
       }
     };
