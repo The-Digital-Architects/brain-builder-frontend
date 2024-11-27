@@ -79,7 +79,7 @@ function renderEmissions( result, setResult, ins, updateTime, updateWords, writi
     const options = ['a sentence (~30 words)', 'a paragraph (~100 words)', 'a page (~400 words)'];
 
     const inputs = [
-        <RadioGroup.Root defaultValue="1" name="text-length-dropdown" onValueChange={(value) => updateWords(options[value-1])}>
+        <RadioGroup.Root defaultValue="1" name="text-length-dropdown" onValueChange={(value) => updateWords(options[parseInt(value, 10)-1])}>
             <RadioGroup.Item value="1">{options[0]}</RadioGroup.Item>
             <RadioGroup.Item value="2">{options[1]}</RadioGroup.Item>
             <RadioGroup.Item value="3">{options[2]}</RadioGroup.Item>
