@@ -512,8 +512,6 @@ function App() {
         setImgs(currentTaskIds.map(() => null));
         setInitPlots(currentTaskIds.map(() => null));
 
-        console.log('currentNNTaskIds: ', currentNNTaskIds)  // TODO: for debugging
-
         setCytoLayers(currentNNTaskIds.map(() => []));
 
         setAccuracy(currentNNTaskIds.map(() => 0));
