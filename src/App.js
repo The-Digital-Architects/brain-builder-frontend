@@ -467,6 +467,7 @@ function App() {
         setTaskIds(currentTaskIds);
         setFileNames(currentFileNames);
         setFunctionNames(currentFunctionNames);
+        console.log('about to set gamesData: ', JSON.stringify(currentTaskData))
         setGamesData(JSON.stringify(currentTaskData));
         setNInputs(currentNInputs);
         setNOutputs(currentNOutputs);
