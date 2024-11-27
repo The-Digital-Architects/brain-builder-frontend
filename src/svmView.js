@@ -59,7 +59,7 @@ class SvmView extends Model {
     // CUSTOMIZABLE FUNCTIONS
 
     continueComponentDidMount = () => {
-        this.props.loadData(this.props.taskId, this.props.index, this.props.gamesData)  // let the backend load the data  // TODO
+        this.props.loadData(this.props.taskId, this.props.index, this.props.normalization, this.props.gamesData)  // let the backend load the data  // TODO
     }
 
     componentWillUnmount() {
