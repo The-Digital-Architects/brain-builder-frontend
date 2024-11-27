@@ -81,7 +81,7 @@ function renderEmissions( result, setResult, ins, updateTime, updateWords, writi
     const inputs = [
         <RadioGroup.Root defaultValue="1" name="text-length-dropdown" onValueChange={(value) => updateWords(options[value-1])}>
             {options.map((option, index) => (
-                <RadioGroup.Item value={index+1}>{option}</RadioGroup.Item>
+                <RadioGroup.Item key={index} value={index+1}>{option}</RadioGroup.Item>
             ))}
         </RadioGroup.Root>,
         <TextField.Root size="2">
