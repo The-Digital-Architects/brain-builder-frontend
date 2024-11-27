@@ -473,7 +473,6 @@ function App() {
         setNObjects(currentTaskIds.map(() => 0));
         setTaskNames(currentTaskNames);
         setTaskIcons(currentIcons);
-        console.log('currentIcon: ', currentIcons)  // TODO remove
 
         // Set neural network states
         setNNTaskIds(currentNNTaskIds);
@@ -625,9 +624,8 @@ function App() {
 
     newCytoLayers.forEach((cytoLayer, index) => {
       if (cytoLayer.length === 0) {
-        console.log(`cytoLayer at index ${index} is empty, setting to default.`);
-        const correspondingTaskIndex = taskIds.indexOf(NNTaskIds[index]);
-        newCytoLayers[index] = [nInputs[correspondingTaskIndex], nOutputs[correspondingTaskIndex]]; // TODO: BUG HERE?
+        const taskIndex = taskIds.indexOf(NNTaskIds[index]);
+        newCytoLayers[index] = [nInputs[taskIndex], nOutputs[taskIndex]];
         shouldUpdateCytoLayers = true;
       }
       const localStorageKey = `cytoLayers${NNTaskIds[index]}`;
@@ -667,7 +665,6 @@ function App() {
             // try to set the cytoLayers to the saved setting, if there is an error, set it to default
             setCytoLayers(prevCytoLayers => {
               const newCytoLayers = [...prevCytoLayers];
-              console.log(`setting cytoLayers to saved setting: ${cytoLayersSetting}`);
               newCytoLayers[NNIndex] = cytoLayersSetting;
               // make the number of nodes in the first and last layer match the number of inputs and outputs
               newCytoLayers[NNIndex][0] = nInputs;  
@@ -717,7 +714,6 @@ function App() {
       });
 
       if (goToStep3) {
-        console.log("setting cytoLayers to default");
         setCytoLayers(prevCytoLayers => {
           const newCytoLayers = [...prevCytoLayers];
           newCytoLayers[NNIndex] = [nInputs, nOutputs];
@@ -733,7 +729,6 @@ function App() {
   // Update the state when the dependencies change
   useEffect(() => {
     if (Array.isArray(cytoLayers)) {
-      console.log("cytoLayers: ", cytoLayers);
       setCytoElements(NNTaskIds.map((taskId, index) => {
         return generateCytoElements(cytoLayers[index], apiData[index], isTraining[taskIds.indexOf(NNTaskIds[index])], weights[index], biases[index])
       }
