@@ -473,7 +473,6 @@ function App() {
         setNNTaskIds(currentNNTaskIds);
         setSensitiveIds(currentSensitiveIds);
         setMaxEpochs(currentMaxEpochs);
-        console.log(`setting maxLayers to ${currentMaxLayers}`);  // TODO remove
         setMaxLayers(currentMaxLayers);
         setMaxNodes(currentMaxNodes);
         setWeights(currentWeights);
@@ -938,7 +937,7 @@ function App() {
                   nOfInputs={nInputs[taskIds.indexOf(taskId)]}
                   nOfOutputs={nOutputs[taskIds.indexOf(taskId)]}
                   // nOfObjects={nObjects[taskIds.indexOf(taskId)]}
-                  maxLayers={maxLayers[taskIds.indexOf(taskId)]}
+                  maxLayers={maxLayers[NNIndex]}
                   taskId={taskId}
                   NNIndex={NNIndex}
                   index={taskIds.indexOf(taskId)}
