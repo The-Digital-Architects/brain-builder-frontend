@@ -462,7 +462,6 @@ function App() {
         setTaskIds(currentTaskIds);
         setFileNames(currentFileNames);
         setFunctionNames(currentFunctionNames);
-        console.log('about to set gamesData: ', JSON.stringify(currentTaskData))
         setGamesData(JSON.stringify(currentTaskData));
         setNInputs(currentNInputs);
         setNOutputs(currentNOutputs);
@@ -474,6 +473,7 @@ function App() {
         setNNTaskIds(currentNNTaskIds);
         setSensitiveIds(currentSensitiveIds);
         setMaxEpochs(currentMaxEpochs);
+        console.log(`setting maxLayers to ${currentMaxLayers}`);  // TODO remove
         setMaxLayers(currentMaxLayers);
         setMaxNodes(currentMaxNodes);
         setWeights(currentWeights);
