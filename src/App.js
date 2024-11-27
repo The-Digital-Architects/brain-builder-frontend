@@ -70,7 +70,6 @@ function App() {
 
     const checkGamesData = () => {
       if (gamesData) {
-        console.log(`found it! gamesData is ${gamesData}`) // TODO: remove this
 
         const inData = {
           learning_rate: 0,
@@ -79,9 +78,7 @@ function App() {
           activations_on: true,
           network_input: JSON.stringify([]),
           games_data: gamesData,
-        }
-    
-        console.log('inData:', JSON.stringify(inData, null, 2));
+        };
         
         const dataData = {
           action: 0,
@@ -89,8 +86,6 @@ function App() {
           task_id: taskId,
           in_out: JSON.stringify(inData),
         };
-    
-        console.log('dataData:', JSON.stringify(dataData, null, 2));
 
         // set up the websocket
         const ws = new WebSocket(`wss://${window.location.host}/ws/${userId}/`);

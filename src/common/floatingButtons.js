@@ -59,40 +59,46 @@ function LayerRemoveButton({setCytoLayers, index, taskId, cytoLayers, isTraining
 
 function LayerAddButton({setCytoLayers, index, taskId, cytoLayers, nOfOutputs, maxLayers, isTraining}) {
 
-    // function to add a layer
-    const addLayer = useCallback((setCytoLayers, nOfOutputs, index, max_layers) => {
-        let newLayer = [...cytoLayers];
-        if (cytoLayers.length < max_layers) {
-          newLayer.push(nOfOutputs)
-          setCytoLayers(prevLayers => {
-            const newLayers = [...prevLayers];
-            newLayers[index] = newLayer;
-            return newLayers;
-          });
-        }
-    }, [cytoLayers]);
+  // function to add a layer
+  const addLayer = useCallback((setCytoLayers, nOfOutputs, index, max_layers) => {
+      let newLayer = [...cytoLayers];
+      console.log('CytoLayers for NNTask ', index, ': ', newLayer);  // TODO remove
+      console.log(`checking if ${cytoLayers.length} < ${max_layers}`);  // TODO remove
+      if (cytoLayers.length < max_layers) {
+        console.log('it is!');  // TODO remove
+        newLayer.push(nOfOutputs)
+        console.log('which is now changed to: ', newLayer);  // TODO remove 
+        setCytoLayers(prevLayers => {
+          const newLayers = [...prevLayers];
+          newLayers[index] = newLayer;
+          return newLayers;
+        });
+      } else {
+        console.log('it is not!');  // TODO remove
+      }
+  }, [cytoLayers]);
 
-    return (
-        <FloatingButton
-            variant="outline"
-            onClick = {taskId !== 0 ? () => addLayer(setCytoLayers, nOfOutputs, index, maxLayers) : () => {}}
-            size="0"
-            disabled={cytoLayers.length>maxLayers-1 || isTraining===1}
-            style={{top: window.innerHeight*0.285, 
-                    left: window.innerWidth*0.60, 
-                    position: 'absolute',
-                    zIndex: 9999,
-                    borderRadius: 'var(--radius-5)',
-                    width: 35,
-                    height: 60,
-                    boxShadow: '0 2px 8px var(--slate-a11)'
-            }}
-            >
+  return (
+    <FloatingButton
+      variant="outline"
+      onClick = {taskId !== 0 ? () => addLayer(setCytoLayers, nOfOutputs, index, maxLayers) : () => {}}
+      size="0"
+      disabled={cytoLayers.length>maxLayers-1 || isTraining===1}
+      style={{top: window.innerHeight*0.285, 
+              left: window.innerWidth*0.60, 
+              position: 'absolute',
+              zIndex: 9999,
+              borderRadius: 'var(--radius-5)',
+              width: 35,
+              height: 60,
+              boxShadow: '0 2px 8px var(--slate-a11)'
+      }}
+      >
 
-            {<ChevronRightIcon style={{height: 30, width: 30}}/> }
+      {<ChevronRightIcon style={{height: 30, width: 30}}/> }
 
-        </FloatingButton>
-    );
+    </FloatingButton>
+  );
 }
 
 
