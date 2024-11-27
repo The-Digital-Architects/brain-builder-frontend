@@ -626,7 +626,8 @@ function App() {
     newCytoLayers.forEach((cytoLayer, index) => {
       if (cytoLayer.length === 0) {
         console.log(`cytoLayer at index ${index} is empty, setting to default.`);
-        newCytoLayers[index] = [nInputs[index], nOutputs[index]];
+        const correspondingTaskIndex = taskIds.indexOf(NNTaskIds[index]);
+        newCytoLayers[index] = [nInputs[correspondingTaskIndex], nOutputs[correspondingTaskIndex]]; // TODO: BUG HERE?
         shouldUpdateCytoLayers = true;
       }
       const localStorageKey = `cytoLayers${NNTaskIds[index]}`;
@@ -732,10 +733,9 @@ function App() {
   // Update the state when the dependencies change
   useEffect(() => {
     if (Array.isArray(cytoLayers)) {
-      console.log("cytoLayers before change: ", cytoLayers);
-      const correspondingMainIndices = NNTaskIds.map(taskId => taskIds.indexOf(taskId));
-      setCytoElements(correspondingMainIndices.map((index, NNIndex) => {
-        return generateCytoElements(cytoLayers[NNIndex], apiData[index], isTraining[index], weights[index], biases[index])
+      console.log("cytoLayers: ", cytoLayers);
+      setCytoElements(NNTaskIds.map((taskId, index) => {
+        return generateCytoElements(cytoLayers[index], apiData[index], isTraining[taskIds.indexOf(NNTaskIds[index])], weights[index], biases[index])
       }
       ));
     }
