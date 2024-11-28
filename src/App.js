@@ -759,7 +759,7 @@ function App() {
       }
     })
     .then((response) => {
-      const networkData = JSON.parse(response.data[0]);
+      const networkData = response.data[0];
       const formData = new FormData(event.target);
       const values = Array.from(formData.values()).map((value) => Number(value));
       networkData.in_out['model_input'] = JSON.stringify(values);
