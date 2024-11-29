@@ -48,7 +48,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
           .attr('y2', function(d) { return d.group.center.y; })
           .attr('stroke', function(d) { return d.group.color; });
       };
-      //updateLine(l.enter().append('line').merge(l)); // Ensure merge is used to update existing elements
+      updateLine(l.enter().append('line')); // Ensure merge is used to update existing elements
       updateLine(l.transition().duration(transitionDuration));
       l.exit().remove();
     } else {
@@ -74,8 +74,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
     updateCenters(c.enter()
       .append('path')
       .attr('d', d3.symbol().type(d3.symbolCross).size(200))
-      .attr('stroke', '#aabbcc')
-      .merge(c)); // Ensure merge is used to update existing elements
+      .attr('stroke', '#aabbcc'));
     updateCenters(c.transition().duration(transitionDuration));
 }
 
