@@ -1,4 +1,4 @@
-function init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height) {
+function initKMeans(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height) {
   console.log("init");  
   setIsRestartDisabled(false);
 
@@ -48,7 +48,7 @@ function init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, 
   return { newGroups, newDots };
 }
 
-function step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots) {
+function stepKMeans(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots) {
   console.log(`step, flag: ${flag} which means we are ${flag ? "moving the center" : "updating the groups"}`);
   setIsRestartDisabled(false);
 
@@ -79,7 +79,7 @@ function step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgR
   setFlag(!flag);
 }
 
-function restart(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled) {
+function restartKMeans(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled) {
     console.log("restart");
     setFlag(false);
     setIsRestartDisabled(true);
@@ -174,4 +174,4 @@ function updateGroups(dots, setDots, groups, setGroups) {
   return { newGroups: updatedGroups, newDots };
 }
 
-export { init, step, restart };
+export { initKMeans, stepKMeans, restartKMeans };

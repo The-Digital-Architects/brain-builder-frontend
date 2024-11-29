@@ -2,10 +2,13 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import Header from './common/header';
 import { Flex, Button, TextField, Box } from '@radix-ui/themes';
-import { init, step, restart } from './utils/clustering/clusteringUtils';
+import { initKMeans, stepKMeans, restartKMeans } from './utils/clustering/kmeansUtils';
+import { initAgglo, stepAgglo, restartAgglo } from './utils/clustering/aggloUtils';
 
 function draw(svg, lineg, dotg, centerg, groups, dots) {
     console.log("draw", { groups, dots });
+
+    const transitionDuration = 1000; // Set the transition duration in milliseconds
 
     let circles = dotg.selectAll('circle')
       .data(dots);
@@ -14,7 +17,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
     circles.exit().remove();
     circles
       .transition()
-      .duration(500)
+      .duration(transitionDuration)
       .attr('cx', function(d) { return d.x; })
       .attr('cy', function(d) { return d.y; })
       .attr('fill', function(d) { return d.group ? d.group.color : '#ffffff'; })
@@ -33,7 +36,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
           .attr('stroke', function(d) { return d.group.color; });
       };
       updateLine(l.enter().append('line'));
-      updateLine(l.transition().duration(500));
+      updateLine(l.transition().duration(transitionDuration));
       l.exit().remove();
     } else {
       console.log("remove lines");
@@ -55,10 +58,11 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
       .attr('stroke', '#aabbcc'));
     updateCenters(c
       .transition()
-      .duration(500));
+      .duration(transitionDuration));
 }
 
-function KMeansClusteringVisualization(clusteringId) {
+function ClusteringVisualization({clusteringId}) {
+    const [clusteringMethod, setClusteringMethod] = useState(clusteringId===71 ? "agglo" : "kmeans"); // TODO handle this through a property in the database
     const [numPoints, setNumPoints] = useState(200);
     const [numClusters, setNumClusters] = useState(2);
     const [isRestartDisabled, setIsRestartDisabled] = useState(true);
@@ -119,7 +123,12 @@ function KMeansClusteringVisualization(clusteringId) {
 
         setNOfSteps(0);
 
-        const initOutput = init(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height);
+        let initOutput;
+        if (clusteringMethod === 'kmeans') {
+            initOutput = initKMeans(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height);
+        } else {
+            initOutput = initAgglo(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height);
+        }
         console.log("Groups & dots after init", initOutput);
         // Use refs to access SVG and groups
         draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, initOutput.newGroups, initOutput.newDots);
@@ -130,7 +139,11 @@ function KMeansClusteringVisualization(clusteringId) {
 
         setNOfSteps(nOfSteps + 1);
 
-        step(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots);
+        if (clusteringMethod === 'kmeans') {
+            stepKMeans(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots);
+        } else {
+            stepAgglo(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots);
+        }
     };
     
     const handleRestart = () => {
@@ -138,7 +151,12 @@ function KMeansClusteringVisualization(clusteringId) {
 
         setNOfSteps(0);
 
-        const restartOutput = restart(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
+        let restartOutput;
+        if (clusteringMethod === 'kmeans') {
+            restartOutput = restartKMeans(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
+        } else {
+            restartOutput = restartAgglo(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
+        }
         console.log("Groups & dots after restart", restartOutput);
         draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, restartOutput.newGroups, restartOutput.newDots);
     };
@@ -214,4 +232,4 @@ function KMeansClusteringVisualization(clusteringId) {
     );
 }
 
-export default KMeansClusteringVisualization;
+export default ClusteringVisualization;
