@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as d3 from 'd3';
+import ClusteringVisualization from '../../clustering';
 
 function initAgglo(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height) {
   console.log("initAgglo");
@@ -41,7 +42,7 @@ function initAgglo(numPoints, numClusters, setGroups, setIsRestartDisabled, setF
   return { newGroups, newDots };
 }
 
-function stepAgglo(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots) {
+function stepAgglo(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots) {
   console.log("stepAgglo");
   setIsRestartDisabled(false);
 
@@ -95,7 +96,7 @@ function stepAgglo(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, 
   newGroups.push(mergedGroup);
 
   setGroups(newGroups);
-  draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, newGroups, dots);
+  draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, newGroups, dots, "agglo");
 }
 
 function restartAgglo(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled) {

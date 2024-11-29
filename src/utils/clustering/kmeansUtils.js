@@ -64,7 +64,7 @@ function stepKMeans(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef,
 
     console.log("Groups & dots after moveCenter", { newGroups, newDots });
 
-    draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, newGroups, newDots);
+    draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, newGroups, newDots, "kmeans");
   } else {
     console.log("Groups & dots before updateGroups", { groups, dots });
 
@@ -74,7 +74,7 @@ function stepKMeans(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef,
 
     console.log("Groups & dots after updateGroups", { newGroups, newDots });
     
-    draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, newGroups, newDots);
+    draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, newGroups, newDots, "kmeans");
   }
   setFlag(!flag);
 }

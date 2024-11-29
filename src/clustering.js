@@ -5,28 +5,41 @@ import { Flex, Button, TextField, Box } from '@radix-ui/themes';
 import { initKMeans, stepKMeans, restartKMeans } from './utils/clustering/kmeansUtils';
 import { initAgglo, stepAgglo, restartAgglo } from './utils/clustering/aggloUtils';
 
-function draw(svg, lineg, dotg, centerg, groups, dots) {
+function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
     console.log("draw", { groups, dots });
 
     const transitionDuration = 1000; // Set the transition duration in milliseconds
 
-    let circles = dotg.selectAll('circle')
-      .data(dots, d => d.id); // Use unique identifier for data binding
+    let circles;
+    if (clusteringMethod === 'kmeans') {
+        circles = dotg.selectAll('circle')
+            .data(dots);
+    } else {
+        circles = dotg.selectAll('circle')
+            .data(dots, d => d.id); // Use unique identifier for data binding
+    }
+
     circles.enter()
       .append('circle')
-      .merge(circles) // Ensure merge is used to update existing elements
+    circles.exit().remove();
+    circles
       .transition()
       .duration(transitionDuration)
       .attr('cx', function(d) { return d.x; })
       .attr('cy', function(d) { return d.y; })
       .attr('fill', function(d) { return d.group ? d.group.color : '#ffffff'; })
       .attr('r', 5);
-    circles.exit().remove();
   
     if (dots[0]?.group) {
       console.log("draw lines", { dots });
-      let l = lineg.selectAll('line')
-        .data(dots, d => d.id); // Use unique identifier for data binding
+      let l;
+      if (clusteringMethod === 'kmeans') {
+        l = lineg.selectAll('line')
+            .data(dots);
+      } else {
+        l = lineg.selectAll('line')
+            .data(dots, d => d.id); // Use unique identifier for data binding
+      }
       const updateLine = function(lines) {
         lines
           .attr('x1', function(d) { return d.x; })
@@ -35,7 +48,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
           .attr('y2', function(d) { return d.group.center.y; })
           .attr('stroke', function(d) { return d.group.color; });
       };
-      updateLine(l.enter().append('line').merge(l)); // Ensure merge is used to update existing elements
+      //updateLine(l.enter().append('line').merge(l)); // Ensure merge is used to update existing elements
       updateLine(l.transition().duration(transitionDuration));
       l.exit().remove();
     } else {
@@ -43,8 +56,14 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
       lineg.selectAll('line').remove();
     }
   
-    let c = centerg.selectAll('path')
-      .data(groups, d => d.id); // Use unique identifier for data binding
+    let c;
+    if (clusteringMethod === 'kmeans') {
+        c = centerg.selectAll('path')
+            .data(groups);
+    } else {
+        c = centerg.selectAll('path')
+            .data(groups, d => d.id); // Use unique identifier for data binding
+    }
     const updateCenters = function(centers) {
       centers
         .attr('transform', function(d) { return "translate(" + d.center.x + "," + d.center.y + ") rotate(45)";})
@@ -141,7 +160,7 @@ function ClusteringVisualization({clusteringId}) {
         if (clusteringMethod === 'kmeans') {
             stepKMeans(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots);
         } else {
-            stepAgglo(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots);
+            stepAgglo(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots);
         }
     };
     
