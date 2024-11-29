@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 function initAgglo(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height) {
   console.log("initAgglo");
   setIsRestartDisabled(false);
@@ -14,6 +16,7 @@ function initAgglo(numPoints, numClusters, setGroups, setIsRestartDisabled, setF
       x: Math.random() * (width - 20),
       y: Math.random() * (height - 20),
       group: {
+        id: uuidv4(),
         dots: [],
         color: 'hsl(' + (i * 360 / N) + ',100%,50%)',
         center: {}
@@ -63,6 +66,7 @@ function stepAgglo(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, 
   // Merge the two closest groups
   let [i, j] = closestPair;
   let mergedGroup = {
+    id: uuidv4(),
     dots: [...groups[i].dots, ...groups[j].dots],
     color: groups[i].color,
     center: {}
@@ -99,6 +103,7 @@ function restartAgglo(groups, setGroups, dots, setDots, setFlag, setIsRestartDis
   setIsRestartDisabled(true);
 
   const updatedGroups = dots.map(dot => ({
+    id: uuidv4(),
     dots: [dot],
     color: dot.group.color,
     center: { x: dot.init.x, y: dot.init.y }

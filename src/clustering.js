@@ -63,7 +63,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
 
 function ClusteringVisualization({clusteringId}) {
     const [clusteringMethod, setClusteringMethod] = useState(clusteringId===71 ? "agglo" : "kmeans"); // TODO handle this through a property in the database
-    const [numPoints, setNumPoints] = useState(200);
+    const [numPoints, setNumPoints] = useState(clusteringId===71 ? 10 : 200);
     const [numClusters, setNumClusters] = useState(2);
     const [isRestartDisabled, setIsRestartDisabled] = useState(true);
     const [flag, setFlag] = useState(false);
@@ -190,17 +190,19 @@ function ClusteringVisualization({clusteringId}) {
                         </Box>
                     </Flex>
 
-                    <Flex gap="2" style={{ alignItems: 'center' }}>
-                        <label style={{ verticalAlign: 'middle', fontSize: "var(--font-size-2)" }}>
-                            Number of clusters:
-                        </label>
+                    {clusteringId!==71 && (
+                        <Flex gap="2" style={{ alignItems: 'center' }}>
+                            <label style={{ verticalAlign: 'middle', fontSize: "var(--font-size-2)" }}>
+                                Number of clusters:
+                            </label>
 
-                        <Box maxWidth="15vw">
-                            <TextField.Root size="2">
-                                <TextField.Input type="number" value={numClusters} onChange={(e) => setNumClusters(Number(e.target.value))} />
-                            </TextField.Root>
-                        </Box>
-                    </Flex>
+                            <Box maxWidth="15vw">
+                                <TextField.Root size="2">
+                                    <TextField.Input type="number" value={numClusters} onChange={(e) => setNumClusters(Number(e.target.value))} />
+                                </TextField.Root>
+                            </Box>
+                        </Flex>
+                    )}
 
                 </Flex>
 
