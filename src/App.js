@@ -283,8 +283,6 @@ function App() {
 
   // this is for the clustering tasks
   const [clusteringTaskIds, setClusteringIds] = useState([]);
-  // TODO
-  const customClusteringId = 72  // TODO: remove this after the demo
 
   // this is for the external links
   const [linkIds, setLinkIds] = useState([]);
@@ -870,9 +868,9 @@ function App() {
             />
           }/>
 
-          <Route path="/clusteringTest" element={<ClusteringTest />}/>
-
-          <Route path={`/exercise${customClusteringId/10}`} element={<ClusteringTest />} />
+          {clusteringTaskIds.map((clusteringId, index) => (
+            <Route path={`/exercise${clusteringId/10}`} element={<ClusteringTest clusteringId={clusteringId} />} />
+          ))}
 
           {Object.entries(otherTasks).map(([taskId, taskName], index) => (
             <>

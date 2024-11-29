@@ -58,7 +58,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
       .duration(500));
 }
 
-function KMeansClusteringVisualization() {
+function KMeansClusteringVisualization(clusteringId) {
     const [numPoints, setNumPoints] = useState(200);
     const [numClusters, setNumClusters] = useState(2);
     const [isRestartDisabled, setIsRestartDisabled] = useState(true);
@@ -77,6 +77,7 @@ function KMeansClusteringVisualization() {
 
     useEffect(() => {
         console.log("useEffect (initialization)");
+        console.log("clusteringId", clusteringId);
 
         if (!svgRef.current) {
             // Initialize SVG and groups if not already initialized
