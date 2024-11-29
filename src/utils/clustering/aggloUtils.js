@@ -13,10 +13,11 @@ function initAgglo(numPoints, numClusters, setGroups, setIsRestartDisabled, setF
   // Initialize each point as its own cluster
   for (let i = 0; i < N; i++) {
     let dot = {
+      id: uuidv4(), // Add unique identifier for each dot
       x: Math.random() * (width - 20),
       y: Math.random() * (height - 20),
       group: {
-        id: uuidv4(),
+        id: uuidv4(), // Add unique identifier for each group
         dots: [],
         color: 'hsl(' + (i * 360 / N) + ',100%,50%)',
         center: {}
