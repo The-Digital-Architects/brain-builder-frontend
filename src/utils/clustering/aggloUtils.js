@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
+import * as d3 from 'd3';
 
 function initAgglo(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height) {
   console.log("initAgglo");
   setIsRestartDisabled(false);
 
   const N = numPoints;
-  const K = numClusters;
 
   let newGroups = [];
   let newDots = [];
@@ -68,7 +68,7 @@ function stepAgglo(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, 
   let mergedGroup = {
     id: uuidv4(),
     dots: [...groups[i].dots, ...groups[j].dots],
-    color: groups[i].color,
+    color: averageColor(groups[i].color, groups[j].color),
     center: {}
   };
 
@@ -120,6 +120,17 @@ function restartAgglo(groups, setGroups, dots, setDots, setFlag, setIsRestartDis
   setDots(updatedDots);
 
   return { newGroups: updatedGroups, newDots: updatedDots };
+}
+
+function averageColor(color1, color2) {
+  const hsl1 = d3.hsl(color1);
+  const hsl2 = d3.hsl(color2);
+
+  const avgH = (hsl1.h + hsl2.h) / 2;
+  const avgS = (hsl1.s + hsl2.s) / 2;
+  const avgL = (hsl1.l + hsl2.l) / 2;
+
+  return d3.hsl(avgH, avgS, avgL).toString();
 }
 
 export { initAgglo, stepAgglo, restartAgglo };
