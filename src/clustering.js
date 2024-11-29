@@ -11,22 +11,22 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
     const transitionDuration = 1000; // Set the transition duration in milliseconds
 
     let circles = dotg.selectAll('circle')
-      .data(dots);
+      .data(dots, d => d.id); // Use unique identifier for data binding
     circles.enter()
-      .append('circle');
-    circles.exit().remove();
-    circles
+      .append('circle')
+      .merge(circles) // Ensure merge is used to update existing elements
       .transition()
       .duration(transitionDuration)
       .attr('cx', function(d) { return d.x; })
       .attr('cy', function(d) { return d.y; })
       .attr('fill', function(d) { return d.group ? d.group.color : '#ffffff'; })
       .attr('r', 5);
+    circles.exit().remove();
   
     if (dots[0]?.group) {
       console.log("draw lines", { dots });
       let l = lineg.selectAll('line')
-        .data(dots);
+        .data(dots, d => d.id); // Use unique identifier for data binding
       const updateLine = function(lines) {
         lines
           .attr('x1', function(d) { return d.x; })
@@ -35,7 +35,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
           .attr('y2', function(d) { return d.group.center.y; })
           .attr('stroke', function(d) { return d.group.color; });
       };
-      updateLine(l.enter().append('line'));
+      updateLine(l.enter().append('line').merge(l)); // Ensure merge is used to update existing elements
       updateLine(l.transition().duration(transitionDuration));
       l.exit().remove();
     } else {
@@ -44,7 +44,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
     }
   
     let c = centerg.selectAll('path')
-      .data(groups);
+      .data(groups, d => d.id); // Use unique identifier for data binding
     const updateCenters = function(centers) {
       centers
         .attr('transform', function(d) { return "translate(" + d.center.x + "," + d.center.y + ") rotate(45)";})
@@ -55,10 +55,9 @@ function draw(svg, lineg, dotg, centerg, groups, dots) {
     updateCenters(c.enter()
       .append('path')
       .attr('d', d3.symbol().type(d3.symbolCross).size(200))
-      .attr('stroke', '#aabbcc'));
-    updateCenters(c
-      .transition()
-      .duration(transitionDuration));
+      .attr('stroke', '#aabbcc')
+      .merge(c)); // Ensure merge is used to update existing elements
+    updateCenters(c.transition().duration(transitionDuration));
 }
 
 function ClusteringVisualization({clusteringId}) {
