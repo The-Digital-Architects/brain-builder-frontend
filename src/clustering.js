@@ -10,6 +10,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
 
     const transitionDuration = 500; // transition duration in milliseconds
 
+    // Update circles
     let circles;
     if (clusteringMethod === 'kmeans') {
         circles = dotg.selectAll('circle')
@@ -21,15 +22,19 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
 
     circles.enter()
       .append('circle')
+      .attr('cx', function(d) { return d.x; })
+      .attr('cy', function(d) { return d.y; })
+      .attr('fill', function(d) { return d.group ? d.group.color : '#ffffff'; })
+      .attr('r', 5)
       .merge(circles) // Ensure merge is used to update existing elements
       .transition()
       .duration(transitionDuration)
       .attr('cx', function(d) { return d.x; })
       .attr('cy', function(d) { return d.y; })
-      .attr('fill', function(d) { return d.group ? d.group.color : '#ffffff'; })
-      .attr('r', 5);
+      .attr('fill', function(d) { return d.group ? d.group.color : '#ffffff'; });
     circles.exit().remove();
-  
+
+    // Update lines
     if (dots[0]?.group) {
       console.log("draw lines", { dots });
       let l;
@@ -55,7 +60,8 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
       console.log("remove lines");
       lineg.selectAll('line').remove();
     }
-  
+    
+    // Update centers
     let c;
     if (clusteringMethod === 'kmeans') {
         c = centerg.selectAll('path')
