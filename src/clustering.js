@@ -55,7 +55,6 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
       .attr('d', d3.symbol().type(d3.symbolCross).size(200))
       .attr('stroke', '#aabbcc'));
     updateCenters(c
-      .merge(c.enter())
       .transition()
       .duration(500));
 }
