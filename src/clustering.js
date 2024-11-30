@@ -11,90 +11,62 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
     const transitionDuration = 500; // transition duration in milliseconds
 
     // Update circles
-    let circles;
-    if (clusteringMethod === 'kmeans') {
-        circles = dotg.selectAll('circle')
-            .data(dots);
-    } else {
-        circles = dotg.selectAll('circle')
-            .data(dots, d => d.id); // Use unique identifier for data binding
-    }
+    let circles = dotg.selectAll('circle')
+        .data(dots, d => d.id); // Use unique identifier for data binding
 
     circles.enter()
       .append('circle')
-      .attr('cx', function(d) { return d.x; })
-      .attr('cy', function(d) { return d.y; })
-      .attr('fill', function(d) { return d.group ? d.group.color : '#ffffff'; })
+      .attr('cx', d => d.x)
+      .attr('cy', d => d.y)
+      .attr('fill', d => d.group ? d.group.color : '#ffffff')
       .attr('r', 5)
       .merge(circles) // Ensure merge is used to update existing elements
       .transition()
       .duration(transitionDuration)
-      .attr('cx', function(d) { return d.x; })
-      .attr('cy', function(d) { return d.y; })
-      .attr('fill', function(d) { return d.group ? d.group.color : '#ffffff'; });
+      .attr('cx', d => d.x)
+      .attr('cy', d => d.y)
+      .attr('fill', d => d.group ? d.group.color : '#ffffff');
     circles.exit().remove();
 
     // Update lines
     if (dots[0]?.group) {
       console.log("draw lines", { dots });
-      let l;
-      if (clusteringMethod === 'kmeans') {
-        l = lineg.selectAll('line')
-            .data(dots);
-      } else {
-        l = lineg.selectAll('line')
-            .data(dots, d => d.id); // Use unique identifier for data binding
-      }
-      const updateLine = function(lines) {
-        lines
-          .attr('x1', function(d) { return d.x; })
-          .attr('y1', function(d) { return d.y; })
-          .attr('x2', function(d) { return d.group.center.x; })
-          .attr('y2', function(d) { return d.group.center.y; })
-          .attr('stroke', function(d) { return d.group.color; });
-      };
-      updateLine(l.enter().append('line').merge(l)); // Ensure merge is used to update existing elements
-      l.transition().duration(transitionDuration).attrTween('x2', function(d) {
-        return function(t) {
-          return d.group.center.x;
-        };
-      }).attrTween('y2', function(d) {
-        return function(t) {
-          return d.group.center.y;
-        };
-      }).call(updateLine);
-      l.exit().remove();
+      let lines = lineg.selectAll('line')
+          .data(dots, d => d.id); // Use unique identifier for data binding
+
+      lines.enter()
+        .append('line')
+        .attr('x1', d => d.x)
+        .attr('y1', d => d.y)
+        .attr('x2', d => d.group.center.x)
+        .attr('y2', d => d.group.center.y)
+        .attr('stroke', d => d.group.color)
+        .merge(lines) // Ensure merge is used to update existing elements
+        .transition()
+        .duration(transitionDuration)
+        .attr('x2', d => d.group.center.x)
+        .attr('y2', d => d.group.center.y);
+      lines.exit().remove();
     } else {
       console.log("remove lines");
       lineg.selectAll('line').remove();
     }
-    
+
     // Update centers
-    let c;
-    if (clusteringMethod === 'kmeans') {
-        c = centerg.selectAll('path')
-            .data(groups);
-    } else {
-        c = centerg.selectAll('path')
-            .data(groups, d => d.id); // Use unique identifier for data binding
-    }
-    const updateCenters = function(centers) {
-      centers
-        .attr('transform', function(d) { return "translate(" + d.center.x + "," + d.center.y + ") rotate(45)";})
-        .attr('fill', function(d,i) { return d.color; })
-        .attr('stroke', '#aabbcc');
-    };
-    c.exit().remove();
-    updateCenters(c.enter()
+    let centers = centerg.selectAll('path')
+        .data(groups, d => d.id); // Use unique identifier for data binding
+
+    centers.enter()
       .append('path')
       .attr('d', d3.symbol().type(d3.symbolCross).size(200))
       .attr('stroke', '#aabbcc')
-      .merge(c)); // Ensure merge is used to update existing elements
-    c.transition().duration(transitionDuration).attrTween('transform', function(d) {
-      return function(t) {
-        return "translate(" + d.center.x + "," + d.center.y + ") rotate(45)";
-      };
-    }).call(updateCenters);
+      .attr('fill', d => d.color)
+      .attr('transform', d => `translate(${d.center.x},${d.center.y}) rotate(45)`)
+      .merge(centers) // Ensure merge is used to update existing elements
+      .transition()
+      .duration(transitionDuration)
+      .attr('transform', d => `translate(${d.center.x},${d.center.y}) rotate(45)`);
+    centers.exit().remove();
 }
 
 function ClusteringVisualization({clusteringId}) {
