@@ -47,8 +47,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
       centers
         .attr('transform', d => "translate(" + d.center.x + "," + d.center.y + ") rotate(45)")
         .attr('fill', d => d.color)
-        .attr('stroke', '#aabbcc')
-        .merge(centers);
+        .attr('stroke', '#aabbcc');
     };
     c.exit().remove();
     updateCenters(c.enter()
@@ -56,6 +55,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
       .attr('d', d3.symbol().type(d3.symbolCross).size(200))
       .attr('stroke', '#aabbcc'));
     updateCenters(c
+      .merge(c.enter())
       .transition()
       .duration(500));
 }
