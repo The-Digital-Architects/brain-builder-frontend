@@ -16,9 +16,9 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
     circles
       .transition()
       .duration(500)
-      .attr('cx', function(d) { return d.x; })
-      .attr('cy', function(d) { return d.y; })
-      .attr('fill', function(d) { return d.group ? d.group.color : '#ffffff'; })
+      .attr('cx', d => d.x)
+      .attr('cy', d => d.y)
+      .attr('fill', d => d.group ? d.group.color : '#ffffff')
       .attr('r', 5);
   
     if (dots[0]?.group) {
@@ -27,11 +27,11 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
         .data(dots);
       const updateLine = function(lines) {
         lines
-          .attr('x1', function(d) { return d.x; })
-          .attr('y1', function(d) { return d.y; })
-          .attr('x2', function(d) { return d.group.center.x; })
-          .attr('y2', function(d) { return d.group.center.y; })
-          .attr('stroke', function(d) { return d.group.color; });
+          .attr('x1', d => d.x)
+          .attr('y1', d => d.y)
+          .attr('x2', d => d.group.center.x)
+          .attr('y2', d => d.group.center.y)
+          .attr('stroke', d => d.group.color);
       };
       updateLine(l.enter().append('line'));
       updateLine(l.transition().duration(500));
@@ -45,9 +45,10 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
       .data(groups, d => d.id);
     const updateCenters = function(centers) {
       centers
-        .attr('transform', function(d) { return "translate(" + d.center.x + "," + d.center.y + ") rotate(45)";})
-        .attr('fill', function(d,i) { return d.color; })
-        .attr('stroke', '#aabbcc');
+        .attr('transform', d => "translate(" + d.center.x + "," + d.center.y + ") rotate(45)")
+        .attr('fill', d => d.color)
+        .attr('stroke', '#aabbcc')
+        .merge(centers);
     };
     c.exit().remove();
     updateCenters(c.enter()
