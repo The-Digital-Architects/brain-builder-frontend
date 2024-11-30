@@ -8,7 +8,7 @@ import { initAgglo, stepAgglo, restartAgglo } from './utils/clustering/aggloUtil
 function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
     console.log("draw", { groups, dots });
 
-    const transitionDuration = 1000; // Set the transition duration in milliseconds
+    const transitionDuration = 500; // transition duration in milliseconds
 
     let circles;
     if (clusteringMethod === 'kmeans') {
@@ -21,14 +21,14 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
 
     circles.enter()
       .append('circle')
-    circles.exit().remove();
-    circles
+      .merge(circles) // Ensure merge is used to update existing elements
       .transition()
       .duration(transitionDuration)
       .attr('cx', function(d) { return d.x; })
       .attr('cy', function(d) { return d.y; })
       .attr('fill', function(d) { return d.group ? d.group.color : '#ffffff'; })
       .attr('r', 5);
+    circles.exit().remove();
   
     if (dots[0]?.group) {
       console.log("draw lines", { dots });
@@ -48,7 +48,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
           .attr('y2', function(d) { return d.group.center.y; })
           .attr('stroke', function(d) { return d.group.color; });
       };
-      updateLine(l.enter().append('line')); // Ensure merge is used to update existing elements
+      updateLine(l.enter().append('line').merge(l)); // Ensure merge is used to update existing elements
       updateLine(l.transition().duration(transitionDuration));
       l.exit().remove();
     } else {
@@ -74,7 +74,8 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
     updateCenters(c.enter()
       .append('path')
       .attr('d', d3.symbol().type(d3.symbolCross).size(200))
-      .attr('stroke', '#aabbcc'));
+      .attr('stroke', '#aabbcc')
+      .merge(c)); // Ensure merge is used to update existing elements
     updateCenters(c.transition().duration(transitionDuration));
 }
 
@@ -98,7 +99,6 @@ function ClusteringVisualization({clusteringId}) {
 
     useEffect(() => {
         console.log("useEffect (initialization)");
-        console.log("clusteringId", clusteringId);
 
         if (!svgRef.current) {
             // Initialize SVG and groups if not already initialized
