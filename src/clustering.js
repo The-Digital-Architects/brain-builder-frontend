@@ -23,7 +23,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
       .merge(circles) // Ensure merge is used to update existing elements
       .transition()
       .duration(transitionDuration)
-      .attr('transform', d => `translate(${d.center.x},${d.center.y})`);
+      .attr('transform', d => `translate(${d.x},${d.y})`);
     circles.exit().remove();
 
     // Update lines
