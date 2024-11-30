@@ -154,7 +154,7 @@ function ClusteringVisualization({clusteringId}) {
         }
         console.log("Groups & dots after init", initOutput);
         // Use refs to access SVG and groups
-        draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, initOutput.newGroups, initOutput.newDots);
+        draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, initOutput.newGroups, initOutput.newDots, clusteringMethod);
     };
 
     const handleStep = () => {
@@ -181,7 +181,7 @@ function ClusteringVisualization({clusteringId}) {
             restartOutput = restartAgglo(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
         }
         console.log("Groups & dots after restart", restartOutput);
-        draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, restartOutput.newGroups, restartOutput.newDots);
+        draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, restartOutput.newGroups, restartOutput.newDots, clusteringMethod);
     };
 
     const SSE = groups.reduce((acc, group) => {
