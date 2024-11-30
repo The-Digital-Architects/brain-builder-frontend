@@ -35,21 +35,22 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
       let lines = lineg.selectAll('line')
           .data(dots, d => d.id); // Use unique identifier for data binding
 
-      lines.enter()
+      const lineEnter = lines.enter()
         .append('line')
         .attr('x1', d => d.x)
         .attr('y1', d => d.y)
         .attr('x2', d => d.group.center.x)
         .attr('y2', d => d.group.center.y)
-        .attr('stroke', d => d.group.color)
-        .merge(lines) // Ensure merge is used to update existing elements
+        .attr('stroke', d => d.group.color);
+
+      lines.merge(lineEnter) // Ensure merge is used to update existing elements
         .transition()
         .duration(transitionDuration)
         .attr('x1', d => d.x)
         .attr('y1', d => d.y)
         .attr('x2', d => d.group.center.x)
         .attr('y2', d => d.group.center.y)
-        .attr('stroke', d => d.group.color)
+        .attr('stroke', d => d.group.color);
       lines.exit().remove();
     } else {
       console.log("remove lines");
@@ -68,10 +69,8 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
       .attr('transform', d => `translate(${d.center.x},${d.center.y}) rotate(45)`)
       .merge(centers) // Ensure merge is used to update existing elements
       .transition()
-      .attr('d', d3.symbol().type(d3.symbolCross).size(200))
-      .attr('stroke', '#aabbcc')
-      .attr('fill', d => d.color)
-      .attr('transform', d => `translate(${d.center.x},${d.center.y}) rotate(45)`)
+      .duration(transitionDuration)
+      .attr('transform', d => `translate(${d.center.x},${d.center.y}) rotate(45)`);
     centers.exit().remove();
 }
 
