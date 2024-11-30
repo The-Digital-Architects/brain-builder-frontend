@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as d3 from 'd3';
-import ClusteringVisualization from '../../clustering';
 
 function initAgglo(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height) {
   console.log("initAgglo");
@@ -128,9 +127,9 @@ function averageColor(color1, color2) {
   const hsl1 = d3.hsl(color1);
   const hsl2 = d3.hsl(color2);
 
-  const avgH = (hsl1.h + hsl2.h) / 2;
-  const avgS = (hsl1.s + hsl2.s) / 2;
-  const avgL = (hsl1.l + hsl2.l) / 2;
+  const avgH = (hsl1.h + hsl2.h) / 2 + (Math.random() - 0.5) * 30; // Add randomness to hue
+  const avgS = (hsl1.s + hsl2.s) / 2 + (Math.random() - 0.5) * 0.2; // Add randomness to saturation
+  const avgL = (hsl1.l + hsl2.l) / 2 + (Math.random() - 0.5) * 0.2; // Add randomness to lightness
 
   return d3.hsl(avgH, avgS, avgL).toString();
 }
