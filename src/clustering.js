@@ -54,7 +54,15 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
           .attr('stroke', function(d) { return d.group.color; });
       };
       updateLine(l.enter().append('line').merge(l)); // Ensure merge is used to update existing elements
-      updateLine(l.transition().duration(transitionDuration));
+      l.transition().duration(transitionDuration).attrTween('x2', function(d) {
+        return function(t) {
+          return d.group.center.x;
+        };
+      }).attrTween('y2', function(d) {
+        return function(t) {
+          return d.group.center.y;
+        };
+      }).call(updateLine);
       l.exit().remove();
     } else {
       console.log("remove lines");
@@ -82,7 +90,11 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
       .attr('d', d3.symbol().type(d3.symbolCross).size(200))
       .attr('stroke', '#aabbcc')
       .merge(c)); // Ensure merge is used to update existing elements
-    updateCenters(c.transition().duration(transitionDuration));
+    c.transition().duration(transitionDuration).attrTween('transform', function(d) {
+      return function(t) {
+        return "translate(" + d.center.x + "," + d.center.y + ") rotate(45)";
+      };
+    }).call(updateCenters);
 }
 
 function ClusteringVisualization({clusteringId}) {
