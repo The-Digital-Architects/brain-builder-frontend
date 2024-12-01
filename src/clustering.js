@@ -164,9 +164,9 @@ function ClusteringVisualization({clusteringId}) {
 
             <Header showHomeButton={true} />
 
-            <Box style={{ padding: '10px', position: 'relative' }}>
+            <Box style={{ padding: '10px', position: 'relative', width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 
-                <Card style={{ padding: '10px', maxWidth: '300px', position: 'absolute', top: '0px', left: '0px' }}>
+                <Card style={{ padding: '10px', maxWidth: '300px', position: 'absolute', top: '10px', left: '10px' }}>
                     <Flex direction="column" gap="3">
 
                         <Flex gap="2" style={{ alignItems: 'center' }}>
