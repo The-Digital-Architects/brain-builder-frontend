@@ -1,7 +1,4 @@
-function initKMeans(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height) {
-  console.log("init");  
-  setIsRestartDisabled(false);
-
+function initKMeans(numPoints, numClusters, setGroups, setFlag, setDots, width, height) {
   const N = numPoints;
   const K = numClusters;
 
@@ -48,41 +45,35 @@ function initKMeans(numPoints, numClusters, setGroups, setIsRestartDisabled, set
   return { newGroups, newDots };
 }
 
-function stepKMeans(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots) {
-  console.log(`step, flag: ${flag} which means we are ${flag ? "moving the center" : "updating the groups"}`);
-  setIsRestartDisabled(false);
-
-  let newGroups = null
+function stepKMeans(setIsStepDisabled, flag, setFlag, draw, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots) {
+  let newGroups = null;
   let newDots = null;
   let updateOutput = null;
+  let converged = false;
 
   if (flag) {
-    console.log("Groups & dots before moveCenter", { groups, dots });
-
-    newGroups = moveCenter(groups, setGroups);
+    const moveCenterOutput = moveCenter(groups, setGroups);
+    newGroups = moveCenterOutput.newGroups;
     newDots = dots;
+    converged = moveCenterOutput.converged;
 
-    console.log("Groups & dots after moveCenter", { newGroups, newDots });
-
-    draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, newGroups, newDots, "kmeans");
+    draw(linegRef.current, dotgRef.current, centergRef.current, newGroups, newDots);
   } else {
-    console.log("Groups & dots before updateGroups", { groups, dots });
-
     updateOutput = updateGroups(dots, setDots, groups, setGroups);
     newGroups = updateOutput.newGroups;
     newDots = updateOutput.newDots;
-
-    console.log("Groups & dots after updateGroups", { newGroups, newDots });
     
-    draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, newGroups, newDots, "kmeans");
+    draw(linegRef.current, dotgRef.current, centergRef.current, newGroups, newDots);
   }
+
   setFlag(!flag);
+  if (converged) {
+    setIsStepDisabled(true);
+  }
 }
 
-function restartKMeans(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled) {
-    console.log("restart");
+function restartKMeans(groups, setGroups, dots, setDots, setFlag) {
     setFlag(false);
-    setIsRestartDisabled(true);
   
     const updatedGroups = groups.map(g => ({
         ...g,
@@ -105,8 +96,7 @@ function restartKMeans(groups, setGroups, dots, setDots, setFlag, setIsRestartDi
 }
 
 function moveCenter(groups, setGroups) {
-  console.log("moveCenter");
-
+  let converged = true;
   const newGroups = groups.map(group => {
     if (group.dots.length === 0) return { ...group };
 
@@ -116,23 +106,27 @@ function moveCenter(groups, setGroups) {
       return acc;
     }, { x: 0, y: 0 });
 
+    const newCenter = {
+      x: x / group.dots.length,
+      y: y / group.dots.length,
+    };
+
+    if (newCenter.x !== group.center.x || newCenter.y !== group.center.y) {
+      converged = false;
+    }
+
     return {
       ...group,
-      center: {
-        x: x / group.dots.length,
-        y: y / group.dots.length,
-      },
+      center: newCenter,
     };
   });
 
   setGroups(newGroups);
   
-  return newGroups;
+  return { newGroups, converged };
 }
 
 function updateGroups(dots, setDots, groups, setGroups) {
-  console.log("updateGroups");
-  
   // Step 1: Reset the dots array in groups
   const resetGroups = groups.map(g => ({ ...g, dots: [] }));
 

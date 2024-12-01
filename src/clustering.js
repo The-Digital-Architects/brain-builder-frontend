@@ -5,8 +5,7 @@ import { Flex, Button, TextField, Box } from '@radix-ui/themes';
 import { initKMeans, stepKMeans, restartKMeans } from './utils/clustering/kmeansUtils';
 import { initAgglo, stepAgglo, restartAgglo } from './utils/clustering/aggloUtils';
 
-function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
-    console.log("draw", { groups, dots });
+function draw(lineg, dotg, centerg, groups, dots) {
 
     let circles = dotg.selectAll('circle')
       .data(dots);
@@ -23,7 +22,6 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
       .attr('r', 5);
   
     if (dots[0]?.group) {
-      console.log("draw lines", { dots });
       let l = lineg.selectAll('line')
         .data(dots);
       const updateLine = function(lines) {
@@ -38,7 +36,6 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
       updateLine(l.transition().duration(500));
       l.exit().remove();
     } else {
-      console.log("remove lines");
       lineg.selectAll('line').remove();
     }
   
@@ -63,6 +60,7 @@ function ClusteringVisualization({clusteringId}) {
     const [numPoints, setNumPoints] = useState(clusteringId===71 ? 10 : 200);
     const [numClusters, setNumClusters] = useState(2);
     const [isRestartDisabled, setIsRestartDisabled] = useState(true);
+    const [isStepDisabled, setIsStepDisabled] = useState(false);
     const [flag, setFlag] = useState(false);
     const [groups, setGroups] = useState([]);
     const [dots, setDots] = useState([]);
@@ -77,8 +75,6 @@ function ClusteringVisualization({clusteringId}) {
     const centergRef = useRef(null);
 
     useEffect(() => {
-        console.log("useEffect (initialization)");
-
         if (!svgRef.current) {
             // Initialize SVG and groups if not already initialized
             const svg = d3.select("#kmeans").append("svg")
@@ -104,8 +100,6 @@ function ClusteringVisualization({clusteringId}) {
         //not elegant but fixes the issue of not rendering the dots on the first render
         handleReset();
 
-        console.log("initialization completed")
-
         // Cleanup function
         return () => {
             if (svgRef.current) {
@@ -115,46 +109,46 @@ function ClusteringVisualization({clusteringId}) {
     }, []); // this runs only once on mount
     
     const handleReset = () => {
-        console.log("handleReset");
+        setIsStepDisabled(false);
+        setIsRestartDisabled(false);
 
         setNOfSteps(0);
 
         let initOutput;
         if (clusteringMethod === 'kmeans') {
-            initOutput = initKMeans(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height);
+            initOutput = initKMeans(numPoints, numClusters, setGroups, setFlag, setDots, width, height);
         } else {
-            initOutput = initAgglo(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height);
+            initOutput = initAgglo(numPoints, setGroups, setFlag, setDots, width, height);
         }
-        console.log("Groups & dots after init", initOutput);
         // Use refs to access SVG and groups
-        draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, initOutput.newGroups, initOutput.newDots, clusteringMethod);
+        draw(linegRef.current, dotgRef.current, centergRef.current, initOutput.newGroups, initOutput.newDots);
     };
 
     const handleStep = () => {
-        console.log("handleStep");
-
-        setNOfSteps(nOfSteps + 1);
+        setIsRestartDisabled(false);
 
         if (clusteringMethod === 'kmeans') {
-            stepKMeans(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots);
+            setNOfSteps(nOfSteps + 0.5);
+            stepKMeans(setIsStepDisabled, flag, setFlag, draw, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots);
         } else {
-            stepAgglo(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots);
+            setNOfSteps(nOfSteps + 1);
+            stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, groups, setGroups, dots);
         }
     };
     
     const handleRestart = () => {
-        console.log("handleRestart");
+        setIsRestartDisabled(true);
+        setIsStepDisabled(false);
 
         setNOfSteps(0);
 
         let restartOutput;
         if (clusteringMethod === 'kmeans') {
-            restartOutput = restartKMeans(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
+            restartOutput = restartKMeans(groups, setGroups, dots, setDots, setFlag);
         } else {
-            restartOutput = restartAgglo(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled);
+            restartOutput = restartAgglo(groups, setGroups, dots, setDots, setFlag);
         }
-        console.log("Groups & dots after restart", restartOutput);
-        draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, restartOutput.newGroups, restartOutput.newDots, clusteringMethod);
+        draw(linegRef.current, dotgRef.current, centergRef.current, restartOutput.newGroups, restartOutput.newDots);
     };
 
     const SSE = groups.reduce((acc, group) => {
@@ -208,8 +202,8 @@ function ClusteringVisualization({clusteringId}) {
                     <Button id="run" onClick={handleReset}>
                         Generate new points
                     </Button>
-                    <Button id="step" onClick={handleStep}>
-                        Step
+                    <Button id="step" onClick={handleStep} disabled={isStepDisabled}>
+                        {clusteringMethod === 'agglo' ? 'Step' : flag === true ? 'Update step' : 'Assignment step'}
                     </Button>
                     <Button id="restart" onClick={handleRestart} disabled={isRestartDisabled}>
                         Restart

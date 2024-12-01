@@ -1,10 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as d3 from 'd3';
 
-function initAgglo(numPoints, numClusters, setGroups, setIsRestartDisabled, setFlag, setDots, width, height) {
-  console.log("initAgglo");
-  setIsRestartDisabled(false);
-
+function initAgglo(numPoints, setGroups, setFlag, setDots, width, height) {
   const N = numPoints;
 
   let newGroups = [];
@@ -41,12 +38,9 @@ function initAgglo(numPoints, numClusters, setGroups, setIsRestartDisabled, setF
   return { newGroups, newDots };
 }
 
-function stepAgglo(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, dotgRef, centergRef, groups, setGroups, dots) {
-  console.log("stepAgglo");
-  setIsRestartDisabled(false);
-
+function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, groups, setGroups, dots) {
   if (groups.length <= 1) {
-    console.log("All points have been clustered into one group.");
+    setIsStepDisabled(true);
     return;
   }
 
@@ -95,13 +89,11 @@ function stepAgglo(setIsRestartDisabled, flag, setFlag, draw, svgRef, linegRef, 
   newGroups.push(mergedGroup);
 
   setGroups(newGroups);
-  draw(svgRef.current, linegRef.current, dotgRef.current, centergRef.current, newGroups, dots, "agglo");
+  draw(linegRef.current, dotgRef.current, centergRef.current, newGroups, dots);
 }
 
-function restartAgglo(groups, setGroups, dots, setDots, setFlag, setIsRestartDisabled) {
-  console.log("restartAgglo");
+function restartAgglo(groups, setGroups, dots, setDots, setFlag) {
   setFlag(false);
-  setIsRestartDisabled(true);
 
   const updatedGroups = dots.map(dot => ({
     id: uuidv4(),
