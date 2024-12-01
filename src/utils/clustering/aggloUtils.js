@@ -127,9 +127,9 @@ function averageColor(color1, color2) {
   const hsl1 = d3.hsl(color1);
   const hsl2 = d3.hsl(color2);
 
-  const avgH = (hsl1.h + hsl2.h) / 2 + (Math.random() - 0.5) * 30; // Add randomness to hue
-  const avgS = (hsl1.s + hsl2.s) / 2 + (Math.random() - 0.5) * 0.2; // Add randomness to saturation
-  const avgL = (hsl1.l + hsl2.l) / 2 + (Math.random() - 0.5) * 0.2; // Add randomness to lightness
+  const avgH = Math.max(0, Math.min(360, (hsl1.h + hsl2.h) / 2 + (Math.random() - 0.5) * 60)); // Add randomness to hue
+  const avgS = Math.max(0, Math.min(1, (hsl1.s + hsl2.s) / 2 + (Math.random() - 0.5) * 0.4)); // Add randomness to saturation
+  const avgL = Math.max(0, Math.min(1, (hsl1.l + hsl2.l) / 2 + (Math.random() - 0.5) * 0.4)); // Add randomness to lightness
 
   return d3.hsl(avgH, avgS, avgL).toString();
 }
