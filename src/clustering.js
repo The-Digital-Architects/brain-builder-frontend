@@ -160,11 +160,10 @@ function ClusteringVisualization({clusteringId}) {
       }, 0);
 
     return (
-        <Flex direction="column" gap="1" style={{ width: '100%', height: window.innerHeight - 54 }}>
-
+        <Flex direction="column" gap="1" style={{ width: '100%', height: '100%' }}>
             <Header showHomeButton={true} />
 
-            <Box style={{ padding: '10px', position: 'relative', width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box style={{ padding: '10px', position: 'relative', width: '100%', height: window.innerHeight - 54, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 
                 <Card style={{ padding: '10px', maxWidth: '300px', position: 'absolute', top: '15px', left: '17px' }}>
                     <Flex direction="column" gap="3">
