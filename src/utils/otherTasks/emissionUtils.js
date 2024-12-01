@@ -1,6 +1,8 @@
 import { PlayIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
-import { Flex, IconButton, TextField, RadioGroup } from '@radix-ui/themes';
+import { Flex, IconButton, TextField } from '@radix-ui/themes';
 import * as Select  from '@radix-ui/react-select';
+import '@radix-ui/themes/styles.css';
+import * as RadioGroup from '@radix-ui/react-radio-group';
 
 const EI = 0.3;  // gCO2e/Wh, carbon intensity of electricity in the EU (source: https://ourworldindata.org/grapher/carbon-intensity-electricity?tab=chart&country=EU-27~OWID_EU27~OWID_WRL)
 const CP = 20;  // Wh/h, average power consumption of a laptop per hour (source: specs of ZBook Power G9)
@@ -79,20 +81,18 @@ function renderEmissions( result, setResult, ins, updateTime, updateWords, writi
     const options = ['a sentence (~30 words)', 'a paragraph (~100 words)', 'a page (~400 words)'];
 
     const inputs = [
-        <RadioGroup.Root defaultValue="1" name="text-length-dropdown" onValueChange={(value) => updateWords(options[parseInt(value, 10)-1])}>
-        <RadioGroup.Item value="1" id="option-1">
-            <RadioGroup.Indicator />
-            <label htmlFor="option-1">{options[0]}</label>
-        </RadioGroup.Item>
-        <RadioGroup.Item value="2" id="option-2">
-            <RadioGroup.Indicator />
-            <label htmlFor="option-2">{options[1]}</label>
-        </RadioGroup.Item>
-        <RadioGroup.Item value="3" id="option-3">
-            <RadioGroup.Indicator />
-            <label htmlFor="option-3">{options[2]}</label>
-        </RadioGroup.Item>
-    </RadioGroup.Root>,
+        <RadioGroup.Root className="RadioGroupRoot" defaultValue="1" aria-label="Length of text" onValueChange={(value) => updateWords(options[parseInt(value, 10)-1])}>
+              {options.map((option, index) => (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <RadioGroup.Item value={index.toString()} key={index}>
+                    <RadioGroup.Indicator />
+                  </RadioGroup.Item>
+                  <label className="Label" htmlFor="r1">
+                    {option}
+                  </label>
+                </div>
+              ))}
+        </RadioGroup.Root>,
         <TextField.Root size="2">
             <TextField.Input type="number" onChange={(event) => updateTime(event.target.value, ins[1][1])} />
         </TextField.Root>,
