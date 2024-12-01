@@ -164,64 +164,67 @@ function ClusteringVisualization({clusteringId}) {
 
             <Header showHomeButton={true} />
 
-            <Card style={{ padding: '10px', maxWidth: '300px', marginRight: '20px' }}>
-                <Flex direction="column" gap="3">
+            <Box style={{ padding: '10px', position: 'relative' }}>
 
-                    <Flex gap="2" style={{ alignItems: 'center' }}>
-                        <label style={{ verticalAlign: 'middle', fontSize: "var(--font-size-2)" }}>
-                            Number of points:
-                        </label>
-                        
-                        <Box maxWidth="15vw">
-                            <TextField.Root size="2">
-                                <TextField.Input type="number" value={numPoints} onChange={(e) => setNumPoints(Number(e.target.value))} />
-                            </TextField.Root>
-                        </Box>
-                    </Flex>
+                <Card style={{ padding: '10px', maxWidth: '300px', position: 'absolute', top: '0px', left: '0px' }}>
+                    <Flex direction="column" gap="3">
 
-                    {clusteringId !== 71 && (
                         <Flex gap="2" style={{ alignItems: 'center' }}>
                             <label style={{ verticalAlign: 'middle', fontSize: "var(--font-size-2)" }}>
-                                Number of clusters:
+                                Number of points:
                             </label>
-
+                            
                             <Box maxWidth="15vw">
                                 <TextField.Root size="2">
-                                    <TextField.Input type="number" value={numClusters} onChange={(e) => setNumClusters(Number(e.target.value))} />
+                                    <TextField.Input type="number" value={numPoints} onChange={(e) => setNumPoints(Number(e.target.value))} />
                                 </TextField.Root>
                             </Box>
                         </Flex>
-                    )}
 
-                    <Flex gap="2">
-                        <Button id="run" onClick={handleReset}>
-                            Generate new points
-                        </Button>
-                        <Button id="restart" onClick={handleRestart} disabled={isRestartDisabled}>
-                            Restart
-                        </Button>
-                    </Flex>
+                        {clusteringId !== 71 && (
+                            <Flex gap="2" style={{ alignItems: 'center' }}>
+                                <label style={{ verticalAlign: 'middle', fontSize: "var(--font-size-2)" }}>
+                                    Number of clusters:
+                                </label>
 
-                </Flex>
-            </Card>
+                                <Box maxWidth="15vw">
+                                    <TextField.Root size="2">
+                                        <TextField.Input type="number" value={numClusters} onChange={(e) => setNumClusters(Number(e.target.value))} />
+                                    </TextField.Root>
+                                </Box>
+                            </Flex>
+                        )}
 
-            <Flex gap="3" direction="column" style={{ padding: '10px', justifyContent: 'center', alignItems: 'center' }}>
-                            
-                <div id="kmeans"/>
-                
-                <Button id="step" onClick={handleStep} disabled={isStepDisabled} size="3" style={{ width: `${width}px` }}>
-                    {clusteringMethod === 'agglo' ? 'Merge clusters' : flag === true ? 'Update centers' : 'Assign to clusters'}
-                </Button>
+                        <Flex gap="2">
+                            <Button id="run" onClick={handleReset}>
+                                Generate new points
+                            </Button>
+                            <Button id="restart" onClick={handleRestart} disabled={isRestartDisabled}>
+                                Restart
+                            </Button>
+                        </Flex>
 
-                <Card style={{ padding: '10px', marginTop: '20px', width: '100%', maxWidth: '500px' }}>
-                    <Flex direction="column" gap="2" align="center">
-                        <Text size="2" style={{ fontWeight: 'bold' }}>Steps: {nOfSteps}</Text>
-                        <Text size="2" style={{ fontWeight: 'bold' }}>SSE (WCSS): {SSE.toFixed(3)}</Text>
                     </Flex>
                 </Card>
 
-            </Flex>
+                <Flex gap="3" direction="column" style={{ padding: '10px', justifyContent: 'center', alignItems: 'center' }}>
+                   
+                    <div id="kmeans"/>
+                    
+                    <Button id="step" onClick={handleStep} disabled={isStepDisabled} size="3" style={{ width: `${width}px` }}>
+                        {clusteringMethod === 'agglo' ? 'Merge clusters' : flag === true ? 'Update centers' : 'Assign to clusters'}
+                    </Button>
 
+                    <Card style={{ padding: '10px', width: '100%', maxWidth: `${width}px` }}>
+                        <Flex direction="column" gap="2" align="center">
+                            <Text size="2" style={{ fontWeight: 'bold' }}>Steps: {nOfSteps}</Text>
+                            <Text size="2" style={{ fontWeight: 'bold' }}>SSE (WCSS): {SSE.toFixed(3)}</Text>
+                        </Flex>
+                    </Card>
+
+                </Flex>
+
+            </Box>
         </Flex>
     );
 }
