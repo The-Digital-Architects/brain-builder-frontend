@@ -39,8 +39,11 @@ function initAgglo(numPoints, setGroups, setFlag, setDots, width, height) {
 }
 
 function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, groups, setGroups, dots) {
-  if (groups.length <= 1) {
+  if (groups.length <= 2) {
     setIsStepDisabled(true);
+  }
+  
+  if (groups.length <= 1) {
     return;
   }
 

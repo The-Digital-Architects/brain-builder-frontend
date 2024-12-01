@@ -196,19 +196,20 @@ function ClusteringVisualization({clusteringId}) {
 
                 </Flex>
 
-                <div id="kmeans"/>
-
                 <Flex gap="2">
                     <Button id="run" onClick={handleReset}>
                         Generate new points
-                    </Button>
-                    <Button id="step" onClick={handleStep} disabled={isStepDisabled}>
-                        {clusteringMethod === 'agglo' ? 'Step' : flag === true ? 'Update step' : 'Assignment step'}
                     </Button>
                     <Button id="restart" onClick={handleRestart} disabled={isRestartDisabled}>
                         Restart
                     </Button>
                 </Flex>
+                
+                <div id="kmeans"/>
+
+                <Button id="step" onClick={handleStep} disabled={isStepDisabled} size="3">
+                    {clusteringMethod === 'agglo' ? 'Merge clusters' : flag === true ? 'Update centers' : 'Assign to clusters'}
+                </Button>
 
                 <label style={{ fontSize: "var(--font-size-2)" }}>
                     Steps: {nOfSteps}
