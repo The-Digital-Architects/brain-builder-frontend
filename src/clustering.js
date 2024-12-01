@@ -65,8 +65,8 @@ function ClusteringVisualization({clusteringId}) {
     const [groups, setGroups] = useState([]);
     const [dots, setDots] = useState([]);
     const [nOfSteps, setNOfSteps] = useState(0);
-    const [width, setWidth] = useState(window.innerHeight*0.7);
-    const [height, setHeight] = useState(window.innerHeight*0.7);
+    const [width, setWidth] = useState(window.innerHeight*0.6);
+    const [height, setHeight] = useState(window.innerHeight*0.6);
 
     // Refs for SVG and D3 groups
     const svgRef = useRef(null);
@@ -215,7 +215,7 @@ function ClusteringVisualization({clusteringId}) {
                         {clusteringMethod === 'agglo' ? 'Merge clusters' : flag === true ? 'Update centers' : 'Assign to clusters'}
                     </Button>
 
-                    <Card style={{ padding: '10px', width: '100%', maxWidth: `${width}px` }}>
+                    <Card style={{ padding: '10px', width: '100%', maxWidth: `${width}px`, fontSize: 'var(--font-size-2)' }}>
                         <Flex direction="column" gap="2" align="center">
                             <Text size="2" style={{ fontWeight: 'bold' }}>Steps: {nOfSteps}</Text>
                             <Text size="2" style={{ fontWeight: 'bold' }}>SSE (WCSS): {SSE.toFixed(3)}</Text>
