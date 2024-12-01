@@ -14,11 +14,12 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
       .append('circle');
     circles.exit().remove();
     circles
+        .attr('fill', d => d.group ? d.group.color : '#ffffff');
+    circles
       .transition()
       .duration(500)
       .attr('cx', d => d.x)
       .attr('cy', d => d.y)
-      .attr('fill', d => d.group ? d.group.color : '#ffffff')
       .attr('r', 5);
   
     if (dots[0]?.group) {
@@ -54,9 +55,7 @@ function draw(svg, lineg, dotg, centerg, groups, dots, clusteringMethod) {
       .append('path')
       .attr('d', d3.symbol().type(d3.symbolCross).size(200))
       .attr('stroke', '#aabbcc'));
-    updateCenters(c
-      .transition()
-      .duration(500));
+    updateCenters(c);
 }
 
 function ClusteringVisualization({clusteringId}) {
