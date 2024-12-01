@@ -1,7 +1,7 @@
 import { PlayIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 import { Flex, IconButton, TextField } from '@radix-ui/themes';
-import * as Select  from '@radix-ui/react-select';
 import '@radix-ui/themes/styles.css';
+import '../../css/App.css';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 
 const EI = 0.3;  // gCO2e/Wh, carbon intensity of electricity in the EU (source: https://ourworldindata.org/grapher/carbon-intensity-electricity?tab=chart&country=EU-27~OWID_EU27~OWID_WRL)
@@ -33,36 +33,6 @@ function calculateSearchingEmissions( n_searches, n_pages, mins_per_page, short=
 // note: in general, this is a rough estimate, but at least it gives people an idea
 // for more details on emissions calculation, see this blog post: https://medium.com/@chrispointon/the-carbon-footprint-of-chatgpt-e1bc14e4cc2a
 
-const Dropdown = ({ label, options, onChange, placeholder, disabled=false }) => (
-    <Select.Root onValueChange={onChange} disabled={disabled} >
-    <Select.Trigger className="SelectTrigger" aria-label={label}>
-        <Select.Value placeholder={placeholder} />
-        <Select.Icon className="SelectIcon">
-        <ChevronDownIcon />
-        </Select.Icon>
-    </Select.Trigger>
-    <Select.Portal>
-        <Select.Content className="SelectContent" >
-        <Select.ScrollUpButton className="SelectScrollButton">
-            <ChevronUpIcon />
-        </Select.ScrollUpButton>
-        <Select.Viewport className="SelectViewport">
-            <Select.Group>
-            {options.map((option) => (
-                <Select.Item key={option} value={option} className="SelectItem" style={{ margin: 5, marginLeft:10 }}>
-                    <Select.ItemText>{option}</Select.ItemText>
-                </Select.Item>
-            ))}
-            </Select.Group>
-        </Select.Viewport>
-        <Select.ScrollDownButton className="SelectScrollButton">
-            <ChevronDownIcon />
-        </Select.ScrollDownButton>
-        </Select.Content>
-    </Select.Portal>
-    </Select.Root>
-);
-
 function renderText( textList, inputFields ) {
     return (
         <div>
@@ -84,8 +54,8 @@ function renderEmissions( result, setResult, ins, updateTime, updateWords, writi
         <RadioGroup.Root className="RadioGroupRoot" defaultValue="1" aria-label="Length of text" onValueChange={(value) => updateWords(options[parseInt(value, 10)-1])}>
               {options.map((option, index) => (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <RadioGroup.Item value={index.toString()} key={index}>
-                    <RadioGroup.Indicator />
+                  <RadioGroup.Item className="RadioGroupItem" value={index.toString()} key={index}>
+                    <RadioGroup.Indicator className="RadioGroupIndicator" />
                   </RadioGroup.Item>
                   <label className="Label" htmlFor="r1">
                     {option}
