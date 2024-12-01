@@ -65,8 +65,8 @@ function ClusteringVisualization({clusteringId}) {
     const [groups, setGroups] = useState([]);
     const [dots, setDots] = useState([]);
     const [nOfSteps, setNOfSteps] = useState(0);
-    const [width, setWidth] = useState(window.innerHeight/2);
-    const [height, setHeight] = useState(window.innerHeight/2);
+    const [width, setWidth] = useState(window.innerHeight*0.7);
+    const [height, setHeight] = useState(window.innerHeight*0.7);
 
     // Refs for SVG and D3 groups
     const svgRef = useRef(null);
@@ -160,13 +160,13 @@ function ClusteringVisualization({clusteringId}) {
       }, 0);
 
     return (
-        <Flex direction="column" gap="1" style={{ width: '100%', height: '100%' }}>
+        <Flex direction="column" gap="1" style={{ width: '100%', height: window.innerHeight - 54 }}>
 
             <Header showHomeButton={true} />
 
             <Box style={{ padding: '10px', position: 'relative', width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 
-                <Card style={{ padding: '10px', maxWidth: '300px', position: 'absolute', top: '20px', left: '20px' }}>
+                <Card style={{ padding: '10px', maxWidth: '300px', position: 'absolute', top: '15px', left: '17px' }}>
                     <Flex direction="column" gap="3">
 
                         <Flex gap="2" style={{ alignItems: 'center' }}>
@@ -207,7 +207,7 @@ function ClusteringVisualization({clusteringId}) {
                     </Flex>
                 </Card>
 
-                <Flex gap="3" direction="column" style={{ padding: '10px', justifyContent: 'center', alignItems: 'center' }}>
+                <Flex gap="3" direction="column" style={{ padding: '5px', justifyContent: 'center', alignItems: 'center' }}>
                    
                     <div id="kmeans"/>
                     
