@@ -164,7 +164,7 @@ function ClusteringVisualization({clusteringId}) {
 
             <Header showHomeButton={true} />
 
-            <Flex gap="3" direction="column" style={{padding: '10px'}}>
+            <Flex gap="3" direction="column" style={{ padding: '10px', justifyContent: 'center', alignItems: 'center' }}>
             
                 <Flex gap="3">
 
@@ -206,8 +206,8 @@ function ClusteringVisualization({clusteringId}) {
                 </Flex>
                 
                 <div id="kmeans"/>
-
-                <Button id="step" onClick={handleStep} disabled={isStepDisabled} size="3">
+                
+                <Button id="step" onClick={handleStep} disabled={isStepDisabled} size="3" style={{ width: `${width}px` }}>
                     {clusteringMethod === 'agglo' ? 'Merge clusters' : flag === true ? 'Update centers' : 'Assign to clusters'}
                 </Button>
 
