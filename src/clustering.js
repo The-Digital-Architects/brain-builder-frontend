@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import Header from './common/header';
-import { Flex, Button, TextField, Box } from '@radix-ui/themes';
+import { Flex, Button, TextField, Box, Card, Text } from '@radix-ui/themes';
 import { initKMeans, stepKMeans, restartKMeans } from './utils/clustering/kmeansUtils';
 import { initAgglo, stepAgglo, restartAgglo } from './utils/clustering/aggloUtils';
 
@@ -164,9 +164,8 @@ function ClusteringVisualization({clusteringId}) {
 
             <Header showHomeButton={true} />
 
-            <Flex gap="3" direction="column" style={{ padding: '10px', justifyContent: 'center', alignItems: 'center' }}>
-            
-                <Flex gap="3">
+            <Card style={{ padding: '10px', maxWidth: '300px', marginRight: '20px' }}>
+                <Flex direction="column" gap="3">
 
                     <Flex gap="2" style={{ alignItems: 'center' }}>
                         <label style={{ verticalAlign: 'middle', fontSize: "var(--font-size-2)" }}>
@@ -180,7 +179,7 @@ function ClusteringVisualization({clusteringId}) {
                         </Box>
                     </Flex>
 
-                    {clusteringId!==71 && (
+                    {clusteringId !== 71 && (
                         <Flex gap="2" style={{ alignItems: 'center' }}>
                             <label style={{ verticalAlign: 'middle', fontSize: "var(--font-size-2)" }}>
                                 Number of clusters:
@@ -194,30 +193,32 @@ function ClusteringVisualization({clusteringId}) {
                         </Flex>
                     )}
 
-                </Flex>
+                    <Flex gap="2">
+                        <Button id="run" onClick={handleReset}>
+                            Generate new points
+                        </Button>
+                        <Button id="restart" onClick={handleRestart} disabled={isRestartDisabled}>
+                            Restart
+                        </Button>
+                    </Flex>
 
-                <Flex gap="2">
-                    <Button id="run" onClick={handleReset}>
-                        Generate new points
-                    </Button>
-                    <Button id="restart" onClick={handleRestart} disabled={isRestartDisabled}>
-                        Restart
-                    </Button>
                 </Flex>
-                
+            </Card>
+
+            <Flex gap="3" direction="column" style={{ padding: '10px', justifyContent: 'center', alignItems: 'center' }}>
+                            
                 <div id="kmeans"/>
                 
                 <Button id="step" onClick={handleStep} disabled={isStepDisabled} size="3" style={{ width: `${width}px` }}>
                     {clusteringMethod === 'agglo' ? 'Merge clusters' : flag === true ? 'Update centers' : 'Assign to clusters'}
                 </Button>
 
-                <label style={{ fontSize: "var(--font-size-2)" }}>
-                    Steps: {nOfSteps}
-                </label>
-
-                <label style={{ fontSize: "var(--font-size-2)" }}>
-                    SSE(WCSS): {SSE.toFixed(3)}
-                </label>
+                <Card style={{ padding: '10px', marginTop: '20px', width: '100%', maxWidth: '500px' }}>
+                    <Flex direction="column" gap="2" align="center">
+                        <Text size="2" style={{ fontWeight: 'bold' }}>Steps: {nOfSteps}</Text>
+                        <Text size="2" style={{ fontWeight: 'bold' }}>SSE (WCSS): {SSE.toFixed(3)}</Text>
+                    </Flex>
+                </Card>
 
             </Flex>
 
