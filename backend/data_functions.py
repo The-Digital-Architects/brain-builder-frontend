@@ -7,6 +7,7 @@
 import os
 from io import BytesIO  # for saving the images
 
+import numbers
 import numpy as np
 import pandas as pd
 import torch
@@ -110,7 +111,6 @@ class DataFromExcel(Dataset):
         if data_type == 1:
             self.feature_names = self.data.columns[~self.data.columns.str.contains('Target')]
             self.n_features = len(self.feature_names)
-            print("Feature names, n_features: ", self.feature_names, self.n_features)
 
             self.target_names = self.data.loc[:, 'Target'].unique()
             self.n_targets = len(self.target_names)
@@ -121,10 +121,6 @@ class DataFromExcel(Dataset):
             self.data.reset_index(drop=True, inplace=True)  # reset the index
 
             self.n_objects = len(self.data)
-            print("Number of objects: ", self.n_objects)
-            print("First object for each class: ", 
-                    self.data.groupby('Target').first().loc[:, self.feature_names].to_numpy()
-                  )
 
             self.minima = self.data.loc[:, self.feature_names].min(axis=0)
             self.maxima = self.data.loc[:, self.feature_names].max(axis=0)
@@ -150,7 +146,6 @@ class DataFromExcel(Dataset):
                 for i in range(self.n_features + self.n_targets):
                     self.data.iloc[:, i] = ((self.data.iloc[:, i] - self.minima.iloc[i]) /
                                             (self.maxima.iloc[i] - self.minima.iloc[i]))
-            print("First 5 rows: ", self.data.head(5))
 
         else:
             print("Data type not supported yet")
@@ -227,6 +222,11 @@ class DataFromExcel(Dataset):
         img = BytesIO()
 
         if self.data_type == 1:
+            data = np.array(self.data.loc[:, self.feature_names]).copy()
+            if self.normalization: # denormalize before plotting
+                for i, f in enumerate(self.feature_names):
+                    data[:, i] = self.data.loc[:, f] * (self.maxima.iloc[i] - self.minima.iloc[i]) + self.minima.iloc[i]
+
             n_plots = self.n_features * (self.n_features - 1) // 2
             n_cols = 2
             n_rows = int(np.ceil(n_plots / n_cols))
@@ -237,22 +237,22 @@ class DataFromExcel(Dataset):
             ax = fig.subplots(n_rows, n_cols)
             k = 0
 
-            for i in range(self.n_features):
-                if type(self.data.iloc[0, i]) is not str and self.data.columns[i] != 'Target':
-                    for j in range(i+1, self.n_features+1):
-                        if type(self.data.iloc[0, j]) is not str and self.data.columns[j] != 'Target':
+            for i in range(self.n_features-1):
+                if type(self.data.iloc[0, i]) is not str:
+                    for j in range(i+1, self.n_features):
+                        if type(self.data.iloc[0, j]) is not str:
                             row = k // n_cols
                             col = k % n_cols
                             if n_plots == 1:
-                                scatter = ax.scatter(self.data.iloc[:, i], self.data.iloc[:, j], c=self.data.loc[:, 'Target'])
+                                scatter = ax.scatter(data[:, i], data[:, j], c=self.data.loc[:, 'Target'])
                                 ax.set_xlabel(self.data.columns[i].replace('_', ' '))
                                 ax.set_ylabel(self.data.columns[j].replace('_', ' '))
                             elif n_rows == 1:
-                                scatter = ax[col].scatter(self.data.iloc[:, i], self.data.iloc[:, j], c=self.data.loc[:, 'Target'])
+                                scatter = ax[col].scatter(data[:, i], data[:, j], c=self.data.loc[:, 'Target'])
                                 ax[col].set_xlabel(self.data.columns[i].replace('_', ' '))
                                 ax[col].set_ylabel(self.data.columns[j].replace('_', ' '))
                             else: 
-                                scatter = ax[row, col].scatter(self.data.iloc[:, i], self.data.iloc[:, j], c=self.data.loc[:, 'Target'])
+                                scatter = ax[row, col].scatter(data[:, i], data[:, j], c=self.data.loc[:, 'Target'])
                                 ax[row, col].set_xlabel(self.data.columns[i].replace('_', ' '))
                                 ax[row, col].set_ylabel(self.data.columns[j].replace('_', ' '))
                             k += 1
@@ -264,6 +264,11 @@ class DataFromExcel(Dataset):
             fig.legend(handles=legend_elements, labels=list(self.target_names), loc='lower left', bbox_to_anchor=(1, 0), title='Classes')
 
         elif self.data_type == 2:
+            data = np.array(self.data).copy()
+            if self.normalization: # denormalize before plotting
+                for i in range(self.n_features + self.n_targets):
+                    data[:, i] = self.data.iloc[:, i] * (self.maxima.iloc[i] - self.minima.iloc[i]) + self.minima.iloc[i]
+
             n_plots = (self.n_features + self.n_targets) * (self.n_features + self.n_targets - 1) // 2
             n_cols = 2
             n_rows = int(np.ceil(n_plots / n_cols))
@@ -274,21 +279,21 @@ class DataFromExcel(Dataset):
             ax = fig.subplots(n_rows, n_cols)
             k = 0
             for i in range(self.n_features + self.n_targets - 1):
-                if type(self.data.iloc[0, i]) is not str:
+                if type(data[0, i]) is not str:
                     for j in range(i+1, self.n_features + self.n_targets):
-                        if type(self.data.iloc[0, j]) is not str:
+                        if type(data[0, j]) is not str:
                             row = k // n_cols
                             col = k % n_cols
                             if n_plots == 1:
-                                ax.scatter(self.data.iloc[:, i], self.data.iloc[:, j], c=(4/255, 151/255, 185/255))
+                                ax.scatter(data[:, i], data[:, j], c=(4/255, 151/255, 185/255))
                                 ax.set_xlabel(self.data.columns[i].replace('_', ' '))
                                 ax.set_ylabel(self.data.columns[j].replace('_', ' '))
                             elif n_rows == 1:
-                                ax[col].scatter(self.data.iloc[:, i], self.data.iloc[:, j], c=(4/255, 151/255, 185/255))
+                                ax[col].scatter(data[:, i], data[:, j], c=(4/255, 151/255, 185/255))
                                 ax[col].set_xlabel(self.data.columns[i].replace('_', ' '))
                                 ax[col].set_ylabel(self.data.columns[j].replace('_', ' '))
                             else: 
-                                ax[row, col].scatter(self.data.iloc[:, i], self.data.iloc[:, j], c=(4/255, 151/255, 185/255))
+                                ax[row, col].scatter(data[:, i], data[:, j], c=(4/255, 151/255, 185/255))
                                 ax[row, col].set_xlabel(self.data.columns[i].replace('_', ' '))
                                 ax[row, col].set_ylabel(self.data.columns[j].replace('_', ' '))
                             k += 1
@@ -321,15 +326,20 @@ class DataFromExcel(Dataset):
                 Z = np.array(model.predict(mesh.reshape(self.n_features, -1).T))
                 Z = Z.reshape(mesh[0].shape)
 
+                data = np.array(self.data.loc[:, self.feature_names]).copy()
+                if self.normalization: # denormalize before plotting
+                    for i, f in enumerate(self.feature_names):
+                        data[:, i] = self.data.loc[:, f] * (self.maxima.iloc[i] - self.minima.iloc[i]) + self.minima.iloc[i]
+
                 ax.contourf(mesh[0], mesh[1], Z, alpha=0.5)
-                ax.scatter(self.data.loc[:, self.feature_names[0]], self.data.loc[:, self.feature_names[1]], c=self.data.loc[:, 'Target'])
+                ax.scatter(data[:, 0], data[:, 1], c=self.data.loc[:, 'Target'])
 
                 ax.set_xlabel(self.feature_names[0].replace('_', ' '))
                 ax.set_ylabel(self.feature_names[1].replace('_', ' '))
 
-                if self.normalization:
-                    ax.set_xlim(-0.1, 1.1)
-                    ax.set_ylim(-0.1, 1.1)
+                # if self.normalization:
+                #     ax.set_xlim(-0.1, 1.1)
+                #     ax.set_ylim(-0.1, 1.1)
                 # else:
                 #     ax.set_xlim(self.minima[0]-abs(self.minima[0])*step, self.maxima[0]-abs(self.maxima[0])*step)
                 #     ax.set_ylim(self.minima[1]-abs(self.minima[1])*step, self.maxima[1]-abs(self.maxima[1])*step)
@@ -343,10 +353,10 @@ class DataFromExcel(Dataset):
 
         elif self.data_type == 2:
             if self.n_features == 1 and self.n_targets == 1:
+                mini, maxi = self.minima[0], self.maxima[0]
                 if self.normalization:
                     inp = np.arange(-0.1, 1.1, step)
                 else:
-                    mini, maxi = self.minima[0], self.maxima[0]
                     inp = np.arange(mini, maxi, (maxi-mini)*step)
 
                 # Plot the decision boundary. For that, we will assign a color to each
@@ -354,22 +364,28 @@ class DataFromExcel(Dataset):
                 inp = np.array(inp)
                 Z = np.array(model.predict(inp.reshape(self.n_features, -1).T, typ=2))
                 Z = Z[:, 0]
-                print("First 5 predictions: ", Z[:5])
+                
+                data = np.array(self.data).copy()
+                if self.normalization: # denormalize before plotting
+                    for i in range(self.n_features + self.n_targets):
+                        data[:, i] = self.data.iloc[:, i] * (self.maxima.iloc[i] - self.minima.iloc[i]) + self.minima.iloc[i]
+                    inp = inp * (self.maxima.iloc[0] - self.minima.iloc[0]) + self.minima.iloc[0]
+                    Z = Z * (self.maxima.iloc[1] - self.minima.iloc[1]) + self.minima.iloc[1]
                 
                 fig = mf.Figure()
                 ax = fig.subplots(1, 1)
 
-                ax.scatter(self.data.loc[:, self.feature_names[0]], self.data.loc[:, self.target_names[0]], color=(4/255, 151/255, 185/255))
+                ax.scatter(data[:, 0], data[:, self.n_features], color=(4/255, 151/255, 185/255))  # display first feature and first target
                 ax.plot(inp, Z, color=(185/255,38/255,4/255))
                 ax.set_xlabel(self.feature_names[0].replace('_', ' '))
                 ax.set_ylabel(self.target_names[0].replace('_', ' '))
 
-                if self.normalization:
-                    ax.set_xlim([0, 1])
-                    ax.set_ylim([0, 1])
-                else:
-                    ax.set_xlim(mini, maxi)
-                    ax.set_ylim(mini, maxi)
+                # if self.normalization:
+                #     ax.set_xlim([0, 1])
+                #     ax.set_ylim([0, 1])
+                # else:
+                ax.set_xlim(mini, maxi)
+                ax.set_ylim(mini, maxi)
                 
                 img = BytesIO()
                 fig.tight_layout()
@@ -378,20 +394,6 @@ class DataFromExcel(Dataset):
                 self.images.append(img.getvalue())
                 fig.clear()
 
-
-
-"""
-# _________________________________________________________________
-# TESTING
-d = DataFromExcel('TestR.csv', normalize=True, data_type=1)
-
-print(d.label_name(0))
-print(d.minima)
-norm = d.normalize([89, 20])
-print(norm)
-norm = [1, 1]
-print(d.denormalize(norm))
-"""
 
 
 class DataFromSklearn1(Dataset):  # this one is for load_wine(), etc.
@@ -468,6 +470,11 @@ class DataFromSklearn1(Dataset):  # this one is for load_wine(), etc.
         """Plots the data."""
         img = BytesIO()
 
+        data = self.data.copy()
+        if self.normalization: # denormalize before plotting
+            for i in range(self.n_features):
+                data[:, i] = self.data[:, i] * (self.maxima[i] - self.minima[i]) + self.minima[i]
+
         n_plots = self.n_features * (self.n_features - 1) // 2
         n_cols = 2
         n_rows = int(np.ceil(n_plots / n_cols))
@@ -479,21 +486,21 @@ class DataFromSklearn1(Dataset):  # this one is for load_wine(), etc.
         k = 0
 
         for i in range(self.n_features-1):
-            if type(self.data[0, i]) is not str:
+            if type(data[0, i]) is not str:
                 for j in range(i+1, self.n_features):
-                    if type(self.data[0, j]) is not str:
+                    if type(data[0, j]) is not str:
                         row = k // n_cols
                         col = k % n_cols
                         if n_plots == 1:
-                            ax.scatter(self.data[:, i], self.data[:, j], c=self.targets)
+                            ax.scatter(data[:, i], data[:, j], c=self.targets)
                             ax.set_xlabel(self.feature_names[i].replace('_', ' '))
                             ax.set_ylabel(self.feature_names[j].replace('_', ' '))
                         elif n_rows == 1:
-                            ax[col].scatter(self.data[:, i], self.data[:, j], c=self.targets)
+                            ax[col].scatter(data[:, i], data[:, j], c=self.targets)
                             ax[col].set_xlabel(self.feature_names[i].replace('_', ' '))
                             ax[col].set_ylabel(self.feature_names[j].replace('_', ' '))
                         else:
-                            ax[row, col].scatter(self.data[:, i], self.data[:, j], c=self.targets)
+                            ax[row, col].scatter(data[:, i], data[:, j], c=self.targets)
                             ax[row, col].set_xlabel(self.feature_names[i].replace('_', ' '))
                             ax[row, col].set_ylabel(self.feature_names[j].replace('_', ' '))
                         k += 1
@@ -518,6 +525,11 @@ class DataFromSklearn1(Dataset):  # this one is for load_wine(), etc.
             mesh = np.array(mesh)
             Z = np.array(model.predict(mesh.reshape(self.n_features, -1).T))
             Z = Z.reshape(mesh[0].shape)
+            
+            data = self.data.copy()
+            if self.normalization: # denormalize before plotting
+                for i in range(self.n_features):
+                    data[:, i] = self.data[:, i] * (self.maxima[i] - self.minima[i]) + self.minima[i]
 
             n_plots = self.n_features * (self.n_features - 1) // 2
             n_cols = 2
@@ -530,9 +542,9 @@ class DataFromSklearn1(Dataset):  # this one is for load_wine(), etc.
             k = 0
 
             for i in range(self.n_features):
-                if type(self.data[0, i]) is not str:
+                if type(data[0, i]) is not str:
                     for j in range(i + 1, self.n_features + 1):
-                        if type(self.data[0, j]) is not str:
+                        if type(data[0, j]) is not str:
                             # Put the result into a color plot
                             row = k // n_cols
                             col = k % n_cols
@@ -540,13 +552,13 @@ class DataFromSklearn1(Dataset):  # this one is for load_wine(), etc.
                                 ax.contourf(mesh[i][0],
                                             mesh[j][0],
                                             Z, alpha=0.5)
-                                ax.scatter(self.data[:, i], self.data[:, j], c=self.targets)
+                                ax.scatter(data[:, i], data[:, j], c=self.targets)
                                 ax.set_xlabel(self.feature_names[i].replace('_', ' '))
                                 ax.set_ylabel(self.feature_names[j].replace('_', ' '))
                                 
-                                if self.normalization:
-                                    ax.set_xlim(-0.1, 1.1)
-                                    ax.set_ylim(-0.1, 1.1)
+                                # if self.normalization:
+                                #     ax.set_xlim(-0.1, 1.1)
+                                #     ax.set_ylim(-0.1, 1.1)
                                 # else:
                                 #     ax.set_xlim(self.minima[i], self.maxima[i])
                                 #     ax.set_ylim(self.minima[j], self.maxima[j])
@@ -555,14 +567,14 @@ class DataFromSklearn1(Dataset):  # this one is for load_wine(), etc.
                                 ax[col].contourf(mesh[i][0],
                                                 mesh[j][0],
                                                 Z, alpha=0.5)
-                                ax[col].scatter(self.data[:, i], self.data[:, j], c=self.targets)
+                                ax[col].scatter(data[:, i], data[:, j], c=self.targets)
                                 ax[col].set_xlabel(self.feature_names[i].replace('_', ' '))
                                 ax[col].set_ylabel(self.feature_names[j].replace('_', ' '))
                             else:
                                 ax[row, col].contourf(mesh[i][0],
                                              mesh[j][0],
                                              Z, alpha=0.5)
-                                ax[row, col].scatter(self.data[:, i], self.data[:, j], c=self.targets)
+                                ax[row, col].scatter(data[:, i], data[:, j], c=self.targets)
                                 ax[row, col].set_xlabel(self.feature_names[i].replace('_', ' '))
                                 ax[row, col].set_ylabel(self.feature_names[j].replace('_', ' '))
                             k += 1
@@ -613,7 +625,7 @@ class DataFromSklearn2(Dataset):  # this one is for make_moons(n_samples, noise)
                                           (self.target_maxima[i] - self.target_minima[i]))
 
         self.images = []
-        self.plot_data()  # uncomment if you want plots of the data; they will be saved in plt_dir
+        self.plot_data()  # uncomment if you want plots of the data; they will be saved in plt_dir # TODO are they? 
 
     def __len__(self):
         return self.n_objects
@@ -688,6 +700,12 @@ class DataFromSklearn2(Dataset):  # this one is for make_moons(n_samples, noise)
         img = BytesIO()
 
         if self.data_type == 1:
+            
+            data = self.data.copy()
+            if self.normalization: # denormalize before plotting
+                for i in range(self.n_features):
+                    data[:, i] = self.data[:, i] * (self.maxima[i] - self.minima[i]) + self.minima[i]
+                        
             n_plots = self.n_features * (self.n_features - 1) // 2
             n_cols = 2
             n_rows = int(np.ceil(n_plots / n_cols))
@@ -699,29 +717,35 @@ class DataFromSklearn2(Dataset):  # this one is for make_moons(n_samples, noise)
             k = 0
 
             for i in range(self.n_features - 1):
-                if type(self.data[0, i]) is not str:
+                if type(data[0, i]) is not str:
                     for j in range(i + 1, self.n_features):
-                        if type(self.data[0, j]) is not str:
+                        if type(data[0, j]) is not str:
                             row = k // n_cols
                             col = k % n_cols
                             if n_plots == 1:
-                                ax.scatter(self.data[:, i], self.data[:, j], c=self.targets)
+                                ax.scatter(data[:, i], data[:, j], c=self.targets)
                                 ax.set_xlabel(self.feature_names[i].replace('_', ' '))
                                 ax.set_ylabel(self.feature_names[j].replace('_', ' '))
                             elif n_rows == 1:
-                                ax[col].scatter(self.data[:, i], self.data[:, j], c=self.targets)
+                                ax[col].scatter(data[:, i], data[:, j], c=self.targets)
                                 ax[col].set_xlabel(self.feature_names[i].replace('_', ' '))
                                 ax[col].set_ylabel(self.feature_names[j].replace('_', ' '))
                             else:
-                                ax[row, col].scatter(self.data[:, i], self.data[:, j], c=self.targets)
+                                ax[row, col].scatter(data[:, i], data[:, j], c=self.targets)
                                 ax[row, col].xlabel(self.feature_names[i].replace('_', ' '))
                                 ax[row, col].ylabel(self.feature_names[j].replace('_', ' '))
                             k += 1
 
         else:
-            d = np.concatenate((self.data, self.targets), axis=1)
+            d = np.concatenate((self.data.copy(), self.targets.copy()), axis=1)
             c = self.feature_names + self.target_names
             # nothing to see here, just move along
+            
+            if self.normalization:  # denormalize before plotting
+                for i in range(self.n_features):
+                    d[:, i] = self.data[:, i] * (self.maxima[i] - self.minima[i]) + self.minima[i]
+                for j in range(self.n_targets):
+                    d[:, i+j] = self.targets[:, j] * (self.target_maxima[j] - self.target_minima[j]) + self.target_minima[j]
 
             n_plots = (self.n_features + self.n_targets) * (self.n_features + self.n_targets - 1) // 2
             n_cols = 2
@@ -779,15 +803,21 @@ class DataFromSklearn2(Dataset):  # this one is for make_moons(n_samples, noise)
                 Z = np.array(model.predict(mesh.reshape(self.n_features, -1).T))
                 Z = Z.reshape(mesh[0].shape)
 
+                data = self.data.copy()
+                if self.normalization: # denormalize before plotting
+                    for i in range(self.n_features):
+                        mesh[i] = mesh[i] * (self.maxima[i] - self.minima[i]) + self.minima[i]
+                        data[:, i] = self.data[:, i] * (self.maxima[i] - self.minima[i]) + self.minima[i]
+
                 ax.contourf(mesh[0], mesh[1], Z, alpha=0.5)
-                ax.scatter(self.data[:, 0], self.data[:, 1], c=self.targets)
+                ax.scatter(data[:, 0], data[:, 1], c=self.targets)
 
                 ax.set_xlabel("Feature 1")
                 ax.set_ylabel("Feature 2")
 
-                if self.normalization:
-                    ax.set_xlim(-0.1, 1.1)
-                    ax.set_ylim(-0.1, 1.1)
+                # if self.normalization:
+                #     ax.set_xlim(-0.1, 1.1)
+                #     ax.set_ylim(-0.1, 1.1)
                 # else:
                 #     ax.set_xlim(self.minima[0], self.maxima[0])
                 #     ax.set_ylim(self.minima[1], self.maxima[1])
@@ -806,15 +836,26 @@ class DataFromSklearn2(Dataset):  # this one is for make_moons(n_samples, noise)
                 Z = np.array(model.predict(inp.reshape(self.n_features, -1).T, typ=2))
                 Z = Z[:, 0]
 
+                data = self.data.copy()
+                targets = self.targets.copy()
+                if self.normalization: # denormalize before plotting
+                    for i in range(self.n_features):
+                        inp[:, i] = inp[:, i] * (self.maxima[i] - self.minima[i]) + self.minima[i]
+                        data[:, i] = self.data[:, i] * (self.maxima[i] - self.minima[i]) + self.minima[i]
+                    for j in range(self.n_targets):
+                        Z[:, j] = Z[:, j] * (self.target_maxima[j] - self.target_minima[j]) + self.target_minima[j]
+                        targets[:, j] = self.targets[:, j] * (self.target_maxima[j] - self.target_minima[j]) + self.target_minima[j]
+
+
                 ax.plot(inp, Z, color=(185/255,38/255,4/255))
-                ax.scatter(self.data[:, 0], self.targets[:, 0])
+                ax.scatter(data[:, 0], targets[:, 0])
 
                 ax.set_xlabel("Feature")
                 ax.set_ylabel("Target")
 
-                if self.normalization:
-                    ax.set_xlim(-0.1, 1.1)
-                    ax.set_ylim(-0.1, 1.1)
+                # if self.normalization:
+                #     ax.set_xlim(-0.1, 1.1)
+                #     ax.set_ylim(-0.1, 1.1)
                 # else:
                 #     ax.set_xlim(mini, maxi)
                 #     ax.set_ylim(self.target_minima[0], self.target_maxima[0])
@@ -875,7 +916,7 @@ class DataFromFunction(Dataset):  # this one is for one to one regression on sim
     # some extra functions
 
     def normalize(self, x):
-        assert len(x) == 1 or type(x) is float
+        assert len(x) == 1
         out = []
         for i, x in enumerate(x):
             mini = self.minima
@@ -884,12 +925,12 @@ class DataFromFunction(Dataset):  # this one is for one to one regression on sim
         return out
 
     def denormalize(self, y):
-        assert len(y) == 1 or type(y) is float
+        assert len(y) == 1 
         out = []
         for i, y in enumerate(y):
             mini = self.target_minima
             maxi = self.target_maxima
-            out += [y*(maxi-mini)+mini]
+            out += [y*(maxi-mini) + mini]
         return out
 
     def label_name(self, i):
@@ -913,11 +954,15 @@ class DataFromFunction(Dataset):  # this one is for one to one regression on sim
         """Plots the data."""
         fig = mf.Figure()
         ax = fig.subplots(1, 1)
-
         img = BytesIO()
-        data = self.data
-        # if self.normalization: data = [self.denormalize(x) for x in self.data]
-        ax.scatter(data, self.targets, color=(4/255, 151/255, 185/255))
+
+        data = self.data.copy()
+        targets = self.targets
+        if self.normalization: 
+            data = self.data*(self.maxima-self.minima) + self.minima 
+            targets = [self.denormalize([y])[0] for y in self.targets]
+
+        ax.scatter(data, targets, color=(4/255, 151/255, 185/255))
         ax.set_xlabel(self.feature_names[0].replace('_', ' '))
         ax.set_ylabel(self.target_names[0].replace('_', ' '))
         
@@ -938,20 +983,27 @@ class DataFromFunction(Dataset):  # this one is for one to one regression on sim
             mini, maxi = self.minima, self.maxima
             inp = np.arange(mini, maxi, step)
 
-        # Plot the decision boundary. For that, we will assign a color to each
-        # point in the mesh.
+        # Plot the predicted function. 
         inp = np.array(inp)
         Z = np.array(model.predict(inp.reshape(self.n_features, -1).T, typ=2))
         Z = Z[:, 0]
+
+        data = self.data.copy()
+        targets = self.targets.copy()
+        if self.normalization: 
+            inp = inp*(self.maxima-self.minima) + self.minima 
+            Z = [self.denormalize([y])[0] for y in Z]
+            data = self.data*(self.maxima-self.minima) + self.minima 
+            targets = [self.denormalize([y])[0] for y in self.targets]
         
-        ax.scatter(self.data, self.targets, color=(4/255, 151/255, 185/255))
+        ax.scatter(data, targets, color=(4/255, 151/255, 185/255))
         ax.plot(inp, Z, color=(185/255,38/255,4/255))
         ax.set_xlabel(self.feature_names[0].replace('_', ' '))
         ax.set_ylabel(self.target_names[0].replace('_', ' '))
 
-        if self.normalization:
-            ax.set_xlim(-0.1, 1.1)
-            ax.set_ylim(-0.1, 1.1)
+        # if self.normalization:
+        #     ax.set_xlim(-0.1, 1.1)
+        #     ax.set_ylim(-0.1, 1.1)
         # else:
         #     ax.set_xlim(mini, maxi)
         #     ax.set_ylim(self.target_minima, self.target_maxima)

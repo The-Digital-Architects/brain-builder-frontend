@@ -10,6 +10,8 @@ bb_env/
 # testing
 /coverage
 testing.js
+testing.py
+test.png
 
 # production
 /build

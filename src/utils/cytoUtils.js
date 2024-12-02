@@ -69,6 +69,7 @@ export function generateCytoElements(list, apiData, isTraining, weights, biases)
       }
     }
   });
+  console.log(`cElements: ${cElements}`)  // weights logging
 
   return cElements;
 }
@@ -96,7 +97,8 @@ export function generateCytoStyle(list = []) {
       }
     }
   ];
-  console.log(`Styling weights: ${cStyle['edge']}`)  // weights logging
+  console.log(`Styling list: ${list[0]}`)  // weights logging
+  console.log(`Styling cStyle: ${cStyle[0]}`)  // weights logging
   return cStyle;
 }
 
