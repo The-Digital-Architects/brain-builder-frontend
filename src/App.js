@@ -732,7 +732,7 @@ function App() {
     setCytoStyle(NNTaskIds.map((taskId, index) => 
       generateCytoStyle(cytoLayers[index])
     ));
-  }, [NNTaskIds, cytoLayers]);
+  }, [NNTaskIds, cytoLayers, cytoElements]);
 
 
   const cancelRequestRef = useRef(null);
