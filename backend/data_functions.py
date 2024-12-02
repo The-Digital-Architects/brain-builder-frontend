@@ -915,7 +915,9 @@ class DataFromFunction(Dataset):  # this one is for one to one regression on sim
         ax = fig.subplots(1, 1)
 
         img = BytesIO()
-        ax.scatter(self.data, self.targets, color=(4/255, 151/255, 185/255))
+        data = self.data
+        # if self.normalization: data = [self.denormalize(x) for x in self.data]
+        ax.scatter(data, self.targets, color=(4/255, 151/255, 185/255))
         ax.set_xlabel(self.feature_names[0].replace('_', ' '))
         ax.set_ylabel(self.target_names[0].replace('_', ' '))
         

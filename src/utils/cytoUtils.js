@@ -96,7 +96,7 @@ export function generateCytoStyle(list = []) {
       }
     }
   ];
-  console.log(`Styling weights: ${cStyle}`)  // weights logging
+  console.log(`Styling weights: ${cStyle['edge']}`)  // weights logging
   return cStyle;
 }
 
