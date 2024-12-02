@@ -719,6 +719,7 @@ function App() {
 
   // Update the state when the dependencies change
   useEffect(() => {
+    console.log(`App.js weights = ${weights}`)  // weights logging
     if (Array.isArray(cytoLayers)) {
       setCytoElements(NNTaskIds.map((taskId, index) => {
         return generateCytoElements(cytoLayers[index], apiData[index], isTraining[taskIds.indexOf(NNTaskIds[index])], weights[index], biases[index])

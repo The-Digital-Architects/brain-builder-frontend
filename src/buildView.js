@@ -259,6 +259,7 @@ class Building extends React.Component {
         if (this.props.isTraining === 1) {
           this.props.cancelRequestRef.current(this.props.taskId, this.props.index)
         } else { 
+          console.log(`this.props.weights = ${this.props.weights}`) // weight logging
           let putRequestParams = {
             cytoLayers: this.props.cytoLayers,
             learningRate: this.props.learningRate,

@@ -3,7 +3,7 @@ export default function cancelRequest(NNIndex, index, ws, timeoutId, params) {
     /*cancel the training process*/
 
     if (ws && ws.readyState === WebSocket.OPEN) {
-        const message = {'header': 'cancel'};
+        const message = {'header': 'cancel', 'task_id': params.taskId};
         try {
             ws.send(JSON.stringify(message));
             ws.close();
