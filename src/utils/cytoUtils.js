@@ -96,6 +96,7 @@ export function generateCytoStyle(list = []) {
       }
     }
   ];
+  console.log(`Styling weights`)  // weights logging
   return cStyle;
 }
 

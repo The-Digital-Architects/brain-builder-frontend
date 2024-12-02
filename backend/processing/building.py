@@ -92,6 +92,7 @@ def train_nn(data, train_set, test_set, nn, epochs, learning_rate, typ, optimize
     # first, reset all variables
     progress = 0
     errors = []
+    w, b, e = [], [], []
     plot = None
 
     #send_update(user_id=user_id, task_id=task_id, var_names=['progress'], vars=(progress,))

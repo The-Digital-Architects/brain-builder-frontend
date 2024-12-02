@@ -49,7 +49,7 @@ class Transceiver(AsyncWebsocketConsumer):
         if task_type == 'start':
 
             # start the process
-            communication.cancel_vars[(self.user_id, task_id)] = False
+            communication.cancel_vars[(str(self.user_id), str(task_id))] = False
             communication.send_fn_vars[(str(self.user_id), str(task_id))] = self.async_send
             self.secondary_thread_is_running = True
 
