@@ -29,6 +29,8 @@ export default function handleMessage(event, ws, params) {
         updateErrorListIfNeeded(data, params);
         updateF1ScoreIfNeeded(data, params);
         
+        console.log(`params.weights = ${params.weights}`)
+        console.log(`data.network_weights = ${data.network_weights}`)
         updateWeightsIfNeeded(data, params);
 
         updateBiasesIfNeeded(data, params);
