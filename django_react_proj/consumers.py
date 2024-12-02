@@ -62,7 +62,8 @@ class Transceiver(AsyncWebsocketConsumer):
             self.secondary_thread.start()
         
         elif task_type == 'cancel':
-            communication.cancel_vars[(self.user_id, task_id)] = True
+            communication.cancel_vars[(str(self.user_id), str(task_id))] = True
+            print('Cancel vars: ', communication.cancel_vars)  # debugging
 
         elif task_type == 'code':
             nb_id = instructions['notebook_id']
