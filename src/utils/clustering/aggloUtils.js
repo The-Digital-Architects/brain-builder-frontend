@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as d3 from 'd3';
 
-function initAgglo(numPoints, setGroups, setFlag, setDots, width, height) {
+function initAgglo(numPoints, setGroups, setDots, width, height) {
   const N = numPoints;
 
   let newGroups = [];
@@ -33,7 +33,6 @@ function initAgglo(numPoints, setGroups, setFlag, setDots, width, height) {
 
   setGroups(newGroups);
   setDots(newDots);
-  setFlag(false);
 
   return { newGroups, newDots };
 }
@@ -95,13 +94,13 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
   draw(linegRef.current, dotgRef.current, centergRef.current, newGroups, dots);
 }
 
-function restartAgglo(groups, setGroups, dots, setDots, setFlag) {
-  setFlag(false);
+function restartAgglo(setGroups, dots, setDots) {
+  const N = dots.length;
 
-  const updatedGroups = dots.map(dot => ({
+  const updatedGroups = dots.map((dot, i) => ({
     id: uuidv4(),
     dots: [dot],
-    color: dot.group.color,
+    color: 'hsl(' + (i * 360 / N) + ',100%,50%)',
     center: { x: dot.init.x, y: dot.init.y }
   }));
 

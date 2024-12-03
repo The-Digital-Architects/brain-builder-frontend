@@ -118,7 +118,7 @@ function ClusteringVisualization({clusteringId}) {
         if (clusteringMethod === 'kmeans') {
             initOutput = initKMeans(numPoints, numClusters, setGroups, setFlag, setDots, width, height);
         } else {
-            initOutput = initAgglo(numPoints, setGroups, setFlag, setDots, width, height);
+            initOutput = initAgglo(numPoints, setGroups, setDots, width, height);
         }
         // Use refs to access SVG and groups
         draw(linegRef.current, dotgRef.current, centergRef.current, initOutput.newGroups, initOutput.newDots);
@@ -146,7 +146,7 @@ function ClusteringVisualization({clusteringId}) {
         if (clusteringMethod === 'kmeans') {
             restartOutput = restartKMeans(groups, setGroups, dots, setDots, setFlag);
         } else {
-            restartOutput = restartAgglo(groups, setGroups, dots, setDots, setFlag);
+            restartOutput = restartAgglo(groups, setGroups, dots, setDots);
         }
         draw(linegRef.current, dotgRef.current, centergRef.current, restartOutput.newGroups, restartOutput.newDots);
     };
