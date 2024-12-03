@@ -238,23 +238,23 @@ class DataFromExcel(Dataset):
             k = 0
 
             for i in range(self.n_features-1):
-                if type(self.data.iloc[0, i]) is not str:
+                if type(data[0, i]) is not str:
                     for j in range(i+1, self.n_features):
-                        if type(self.data.iloc[0, j]) is not str:
+                        if type(data[0, j]) is not str:
                             row = k // n_cols
                             col = k % n_cols
                             if n_plots == 1:
                                 scatter = ax.scatter(data[:, i], data[:, j], c=self.data.loc[:, 'Target'])
-                                ax.set_xlabel(self.data.columns[i].replace('_', ' '))
-                                ax.set_ylabel(self.data.columns[j].replace('_', ' '))
+                                ax.set_xlabel(self.feature_names[i].replace('_', ' '))
+                                ax.set_ylabel(self.feature_names[j].replace('_', ' '))
                             elif n_rows == 1:
                                 scatter = ax[col].scatter(data[:, i], data[:, j], c=self.data.loc[:, 'Target'])
-                                ax[col].set_xlabel(self.data.columns[i].replace('_', ' '))
-                                ax[col].set_ylabel(self.data.columns[j].replace('_', ' '))
+                                ax[col].set_xlabel(self.feature_names[i].replace('_', ' '))
+                                ax[col].set_ylabel(self.feature_names[j].replace('_', ' '))
                             else: 
                                 scatter = ax[row, col].scatter(data[:, i], data[:, j], c=self.data.loc[:, 'Target'])
-                                ax[row, col].set_xlabel(self.data.columns[i].replace('_', ' '))
-                                ax[row, col].set_ylabel(self.data.columns[j].replace('_', ' '))
+                                ax[row, col].set_xlabel(self.feature_names[i].replace('_', ' '))
+                                ax[row, col].set_ylabel(self.feature_names[j].replace('_', ' '))
                             k += 1
             # Create a legend
             cmap = scatter.get_cmap()
@@ -299,7 +299,7 @@ class DataFromExcel(Dataset):
                             k += 1
 
         fig.tight_layout()
-        fig.savefig(img, format='png')
+        fig.savefig(img, format='png', bbox_inches='tight')
         img.seek(0)
         self.images.append(img.getvalue())
         fig.clear()

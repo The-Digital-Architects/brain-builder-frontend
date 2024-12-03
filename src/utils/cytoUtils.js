@@ -97,8 +97,8 @@ export function generateCytoStyle(list = []) {
       }
     }
   ];
-  console.log(`Styling list: ${list[0]}`)  // weights logging
-  console.log(`Styling cStyle: ${cStyle[0]}`)  // weights logging
+  console.log(`Styling list: ${list}`)  // weights logging
+  console.log(`Styling cStyle: ${cStyle[0][0]}`)  // weights logging
   return cStyle;
 }
 
