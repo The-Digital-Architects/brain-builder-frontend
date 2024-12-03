@@ -722,6 +722,7 @@ function App() {
     console.log(`App.js weights = ${weights}`)  // weights logging
     if (Array.isArray(cytoLayers)) {
       setCytoElements(NNTaskIds.map((taskId, index) => {
+        console.log(`App.js weights[index] = ${weights[index]}`)
         return generateCytoElements(cytoLayers[index], apiData[index], isTraining[taskIds.indexOf(NNTaskIds[index])], weights[index], biases[index])
       }
       ));

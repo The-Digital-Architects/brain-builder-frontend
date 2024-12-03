@@ -103,6 +103,13 @@ def ManualPCA(a=None, task_id=None, user_id=None):
             ax.set_xlim(-15, 15)
             ax.set_title('Projection')
 
+            # make this look like a 1D-plot
+            ax.spines['left'].set_color('none') 
+            ax.spines['right'].set_color('none')
+            ax.spines['top'].set_color('none')  
+            ax.spines['bottom'].set_position('zero')  # Position the bottom spine at y=0
+            ax.yaxis.set_ticks_position('none')  # Remove y-axis ticks
+
         # save the image to a BytesIO and return it
         img = BytesIO()
         fig.tight_layout()

@@ -309,7 +309,9 @@ class OtherTask extends Component {
             <Box style={{ flex:1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: window.innerHeight-52, padding:'30px 50px',  }}>
                 <Flex direction='column' gap="0" style={{ alignItems: 'center', justifyContent: 'center' }}>
                 
+                {this.state.in1Name !== 'Angle' && (
                 <div>{this.state.in1Name}: {this.state.in1}</div>
+                )}
                 <div className="slider" style={{ marginTop:10, height:50 }}>
                     {
                     (this.props.type === 'ManualLinReg' || this.props.type === 'ManualPCA') ? weightSlider

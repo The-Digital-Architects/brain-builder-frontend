@@ -96,13 +96,6 @@ export function generateCytoStyle(list = []) {
       }
     }
   ];
-  console.log(`Styling list: ${list}`)  // weights logging
-  // Log the weight values of the edges
-  list.forEach(ele => {
-    if (ele.group === 'edges') {
-      console.log(`Edge weight: ${ele.data.weight}`);  // weights logging
-    }
-  });
   return cStyle;
 }
 
