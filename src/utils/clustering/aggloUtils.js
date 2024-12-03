@@ -107,12 +107,19 @@ function restartAgglo(setGroups, dots, setDots) {
     center: { x: dot.init.x, y: dot.init.y }
   }));
 
-  const updatedDots = dots.map(dot => ({
-    ...dot,
-    x: dot.init.x,
-    y: dot.init.y,
-    group: updatedGroups.find(group => group.dots.includes(dot))
-  }));
+  const updatedDots = dots.map(dot => {
+    const group = updatedGroups.find(group => group.dots.includes(dot));
+    return {
+      ...dot,
+      x: dot.init.x,
+      y: dot.init.y,
+      group: group,
+      init: {
+        ...dot.init,
+        group: group
+      }
+    };
+  });
 
   setGroups(updatedGroups);
   setDots(updatedDots);
