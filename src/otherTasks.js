@@ -178,19 +178,18 @@ class OtherTask extends Component {
 
             <Box style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', fontFamily: 'monospace', height: window.innerHeight-52, width:'100vw' }}>
                 <Flex direction='row' gap="0" style={{ height: window.innerHeight-52, width:'100vw', alignItems: 'center', justifyContent: 'center' }}>
-                    {this.props.type !== 'ManualEmissions' && (
-                        <>
-                        <Box style={{ flex:1, display: 'flex', flexDirection: 'column', textAlign:'justify', alignItems: 'flex-start', justifyContent: 'center', height: window.innerHeight-52, padding:'30px 50px' }}>
-                            {Array.isArray(this.props.description) && this.props.description.map(([subtitle, text], index) => (
-                                <div key={index}>
-                                <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7 }}>&gt;_{subtitle} </Heading>
-                                <p>{text}</p>
-                                </div>
-                            ))}
-                        </Box>
-                        <Separator orientation='vertical' style = {{ height: window.innerHeight-110 }}/>
-                        </>
-                    )}
+                    
+                    <Box style={{ flex:1, display: 'flex', flexDirection: 'column', textAlign:'justify', alignItems: 'flex-start', justifyContent: 'center', height: window.innerHeight-52, padding:'30px 50px' }}>
+                        {Array.isArray(this.props.description) && this.props.description.map(([subtitle, text], index) => (
+                            <div key={index}>
+                            <Heading as='h2' size='5' style={{ color: 'var(--slate-12)', marginBottom:7 }}>&gt;_{subtitle} </Heading>
+                            <p>{text}</p>
+                            </div>
+                        ))}
+                    </Box>
+                    
+                    <Separator orientation='vertical' style = {{ height: window.innerHeight-110 }}/>
+                    
                     <Box style={{ flex: 2}}>
                         {this.props.type === 'ManualEmissions' ? renderEmissions( [this.state.out1, this.state.out2], this.setResult, [this.state.in1, this.state.in2], this.updateTime, this.updateWords ) : this.animation()}
                     </Box>
