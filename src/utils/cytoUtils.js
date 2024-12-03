@@ -69,7 +69,6 @@ export function generateCytoElements(list, apiData, isTraining, weights, biases)
       }
     }
   });
-  console.log(`cElements: ${cElements}`)  // weights logging
 
   return cElements;
 }
@@ -98,7 +97,12 @@ export function generateCytoStyle(list = []) {
     }
   ];
   console.log(`Styling list: ${list}`)  // weights logging
-  console.log(`Styling cStyle: ${cStyle[0][0]}`)  // weights logging
+  // Log the weight values of the edges
+  list.forEach(ele => {
+    if (ele.group === 'edges') {
+      console.log(`Edge weight: ${ele.data.weight}`);  // weights logging
+    }
+  });
   return cStyle;
 }
 
