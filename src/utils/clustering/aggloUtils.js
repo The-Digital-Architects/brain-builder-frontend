@@ -25,7 +25,8 @@ function initAgglo(numPoints, setGroups, setDots, width, height) {
     dot.init = {
       x: dot.x,
       y: dot.y,
-      group: dot.group
+      group: dot.group,
+      color: dot.group.color
     };
     newDots.push(dot);
     newGroups.push(dot.group);
@@ -95,12 +96,11 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
 }
 
 function restartAgglo(setGroups, dots, setDots) {
-  const N = dots.length;
-
-  const updatedGroups = dots.map((dot, i) => ({
+  
+  const updatedGroups = dots.map(dot => ({
     id: uuidv4(),
     dots: [dot],
-    color: 'hsl(' + (i * 360 / N) + ',100%,50%)',
+    color: dot.init.color,
     center: { x: dot.init.x, y: dot.init.y }
   }));
 

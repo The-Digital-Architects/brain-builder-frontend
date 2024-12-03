@@ -146,7 +146,7 @@ function ClusteringVisualization({clusteringId}) {
         if (clusteringMethod === 'kmeans') {
             restartOutput = restartKMeans(groups, setGroups, dots, setDots, setFlag);
         } else {
-            restartOutput = restartAgglo(groups, setGroups, dots, setDots);
+            restartOutput = restartAgglo(setGroups, dots, setDots);
         }
         draw(linegRef.current, dotgRef.current, centergRef.current, restartOutput.newGroups, restartOutput.newDots);
     };
