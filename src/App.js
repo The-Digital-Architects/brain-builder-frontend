@@ -55,7 +55,7 @@ function App() {
     };
   }, []);
 
-  const loadData = (taskId, index, normalization, gamesData) => {
+  const loadData = (taskId, index) => {
     // TODO: INDICES !!!
 
     setIsTraining(prevIsTraining => {
@@ -66,7 +66,7 @@ function App() {
     var userId = getCookie('user_id');
     var csrftoken = getCookie('csrftoken');
 
-    normalization = false;  // TODO: make this an actual variable
+    let normalization = false;  // TODO: make this an actual variable
 
     const checkGamesData = () => {
       if (gamesData) {

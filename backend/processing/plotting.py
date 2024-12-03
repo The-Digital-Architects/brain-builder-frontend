@@ -109,6 +109,7 @@ def ManualPCA(a=None, task_id=None, user_id=None):
             ax.spines['top'].set_color('none')  
             ax.spines['bottom'].set_position('zero')  # Position the bottom spine at y=0
             ax.yaxis.set_ticks_position('none')  # Remove y-axis ticks
+            ax.set_yticks([])  # Remove values as well
 
         # save the image to a BytesIO and return it
         img = BytesIO()
