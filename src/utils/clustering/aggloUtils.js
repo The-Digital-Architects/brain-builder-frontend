@@ -41,11 +41,11 @@ function initAgglo(numPoints, setGroups, setDots, width, height) {
   return { newGroups, newDots };
 }
 
-function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, groups, setGroups, dots) {
+function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots) {
   if (groups.length <= 2) {
     setIsStepDisabled(true);
   }
-  
+
   if (groups.length <= 1) {
     return;
   }
@@ -56,7 +56,9 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
 
   for (let i = 0; i < groups.length; i++) {
     for (let j = i + 1; j < groups.length; j++) {
-      let distance = Math.pow(groups[i].center.x - groups[j].center.x, 2) + Math.pow(groups[i].center.y - groups[j].center.y, 2);
+      let distance =
+        Math.pow(groups[i].center.x - groups[j].center.x, 2) +
+        Math.pow(groups[i].center.y - groups[j].center.y, 2);
       if (distance < minDistance) {
         minDistance = distance;
         closestPair = [i, j];
@@ -65,37 +67,55 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
   }
 
   // Merge the two closest groups
-  let [i, j] = closestPair;
-  let mergedGroup = {
+  const [i, j] = closestPair;
+  const groupI = groups[i];
+  const groupJ = groups[j];
+
+  const mergedGroup = {
     id: uuidv4(),
-    dots: [...groups[i].dots, ...groups[j].dots],
-    color: averageColor(groups[i].color, groups[j].color),
-    center: {}
+    dots: [...groupI.dots, ...groupJ.dots],
+    color: averageColor(groupI.color, groupJ.color),
+    center: {},
   };
 
   // Update the center of the merged group
-  const { x, y } = mergedGroup.dots.reduce((acc, dot) => {
-    acc.x += dot.x;
-    acc.y += dot.y;
-    return acc;
-  }, { x: 0, y: 0 });
+  const { x, y } = mergedGroup.dots.reduce(
+    (acc, dot) => {
+      acc.x += dot.x;
+      acc.y += dot.y;
+      return acc;
+    },
+    { x: 0, y: 0 }
+  );
 
   mergedGroup.center = {
     x: x / mergedGroup.dots.length,
-    y: y / mergedGroup.dots.length
+    y: y / mergedGroup.dots.length,
   };
 
-  // Update the group references in the dots
-  mergedGroup.dots.forEach(dot => {
-    dot.group = mergedGroup;
+  // Update group references in dots without mutating
+  const updatedDots = dots.map((dot) => {
+    if (groupI.dots.includes(dot) || groupJ.dots.includes(dot)) {
+      return {
+        ...dot,
+        group: mergedGroup,
+      };
+    }
+    return dot;
   });
 
   // Remove the merged groups and add the new merged group
-  let newGroups = groups.filter((_, index) => index !== i && index !== j);
+  const newGroups = groups.filter(
+    (group) => group !== groupI && group !== groupJ
+  );
   newGroups.push(mergedGroup);
 
+  // Update state
   setGroups(newGroups);
-  draw(linegRef.current, dotgRef.current, centergRef.current, newGroups, dots);
+  setDots(updatedDots);
+
+  // Redraw visualization
+  draw(linegRef.current, dotgRef.current, centergRef.current, newGroups, updatedDots);
 }
 
 function restartAgglo(setGroups, dots, setDots) {
