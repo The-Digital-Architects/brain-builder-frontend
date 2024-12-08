@@ -56,9 +56,9 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
 
   for (let i = 0; i < groups.length; i++) {
     for (let j = i + 1; j < groups.length; j++) {
-      let distance =
-        Math.pow(groups[i].center.x - groups[j].center.x, 2) +
-        Math.pow(groups[i].center.y - groups[j].center.y, 2);
+      let dx = groups[i].center.x - groups[j].center.x;
+      let dy = groups[i].center.y - groups[j].center.y;
+      let distance = dx * dx + dy * dy;
       if (distance < minDistance) {
         minDistance = distance;
         closestPair = [i, j];
@@ -75,7 +75,7 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
     id: uuidv4(),
     dots: [...groupI.dots, ...groupJ.dots],
     color: averageColor(groupI.color, groupJ.color),
-    center: {},
+    center: {}
   };
 
   // Update the center of the merged group
@@ -90,24 +90,19 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
 
   mergedGroup.center = {
     x: x / mergedGroup.dots.length,
-    y: y / mergedGroup.dots.length,
+    y: y / mergedGroup.dots.length
   };
 
-  // Update group references in dots without mutating
-  const updatedDots = dots.map((dot) => {
+  // Update group references in dots
+  const updatedDots = dots.map(dot => {
     if (groupI.dots.includes(dot) || groupJ.dots.includes(dot)) {
-      return {
-        ...dot,
-        group: mergedGroup,
-      };
+      return { ...dot, group: mergedGroup };
     }
     return dot;
   });
 
   // Remove the merged groups and add the new merged group
-  const newGroups = groups.filter(
-    (group) => group !== groupI && group !== groupJ
-  );
+  const newGroups = groups.filter((_, index) => index !== i && index !== j);
   newGroups.push(mergedGroup);
 
   // Update state
@@ -119,36 +114,39 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
 }
 
 function restartAgglo(setGroups, dots, setDots) {
-  // Step 1: Create new groups and dots without mutating existing ones
-  const updatedGroups = dots.map(dot => ({
-    id: uuidv4(),
-    dots: [],
-    color: dot.init.color,
-    center: { x: dot.init.x, y: dot.init.y },
-  }));
+  // Create a mapping from dot IDs to new group objects
+  const dotToGroupMap = new Map();
 
-  // Map to associate dots with their new groups
-  const dotGroupMap = new Map();
+  // Create updated groups
+  const updatedGroups = dots.map(dot => {
+    const newGroup = {
+      id: uuidv4(),
+      dots: [], // We'll assign dots after updating
+      color: dot.init.color,
+      center: { x: dot.init.x, y: dot.init.y }
+    };
+    dotToGroupMap.set(dot.id, newGroup);
+    return newGroup;
+  });
 
-  // Step 2: Update dots to reference new groups
-  const updatedDots = dots.map((dot, index) => {
-    const newGroup = updatedGroups[index];
-    newGroup.dots.push(dot); // Add dot to group's dots
-    dotGroupMap.set(dot.id, newGroup); // Map dot ID to new group
-
-    return {
+  // Update dots and assign to their new groups
+  const updatedDots = dots.map(dot => {
+    const newGroup = dotToGroupMap.get(dot.id);
+    const updatedDot = {
       ...dot,
       x: dot.init.x,
       y: dot.init.y,
-      group: newGroup,
+      group: newGroup, // Assign new group
       init: {
         ...dot.init,
-        group: newGroup,
-      },
+        group: newGroup
+      }
     };
+    newGroup.dots.push(updatedDot); // Add dot to group's dots
+    return updatedDot;
   });
 
-  // Step 3: Update state
+  // Set the new state
   setGroups(updatedGroups);
   setDots(updatedDots);
 
