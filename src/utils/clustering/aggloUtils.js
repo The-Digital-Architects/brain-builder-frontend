@@ -99,31 +99,38 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
 }
 
 function restartAgglo(setGroups, dots, setDots) {
-
+  // Step 1: Create new groups and dots without mutating existing ones
   const updatedGroups = dots.map(dot => ({
     id: uuidv4(),
-    dots: [dot],
+    dots: [],
     color: dot.init.color,
-    center: { x: dot.init.x, y: dot.init.y }
+    center: { x: dot.init.x, y: dot.init.y },
   }));
 
-  const updatedDots = dots.map(dot => {
-    const group = updatedGroups.find(group => group.dots.includes(dot));
+  // Map to associate dots with their new groups
+  const dotGroupMap = new Map();
+
+  // Step 2: Update dots to reference new groups
+  const updatedDots = dots.map((dot, index) => {
+    const newGroup = updatedGroups[index];
+    newGroup.dots.push(dot); // Add dot to group's dots
+    dotGroupMap.set(dot.id, newGroup); // Map dot ID to new group
+
     return {
       ...dot,
       x: dot.init.x,
       y: dot.init.y,
-      group: group,
+      group: newGroup,
       init: {
         ...dot.init,
-        group: group
-      }
+        group: newGroup,
+      },
     };
   });
 
+  // Step 3: Update state
   setGroups(updatedGroups);
   setDots(updatedDots);
-
 
   console.log("groups after restart:", updatedGroups);
   console.log("dots after restart:", updatedDots);
