@@ -35,9 +35,6 @@ function initAgglo(numPoints, setGroups, setDots, width, height) {
   setGroups(newGroups);
   setDots(newDots);
 
-  console.log("groups after init:", newGroups);
-  console.log("dots after init:", newDots);
-
   return { newGroups, newDots };
 }
 
@@ -157,9 +154,6 @@ function restartAgglo(setGroups, dots, setDots) {
   // Update the state
   setGroups(updatedGroups);
   setDots(updatedDots);
-
-  console.log("groups after restart:", updatedGroups);
-  console.log("dots after restart:", updatedDots);
 
   return { newGroups: updatedGroups, newDots: updatedDots };
 }
