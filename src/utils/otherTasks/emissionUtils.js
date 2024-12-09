@@ -64,10 +64,10 @@ function renderEmissions( result, setResult, ins, updateTime, updateWords, writi
               ))}
         </RadioGroup.Root>,
         <TextField.Root size="2">
-            <TextField.Input type="number" onChange={(event) => updateTime(event.target.value, ins[1][1])} />
+            <TextField.Slot type="number" onChange={(event) => updateTime(event.target.value, ins[1][1])} />
         </TextField.Root>,
         <TextField.Root size="2">
-            <TextField.Input type="number" onChange={(event) => updateTime(ins[1][0], event.target.value)} />
+            <TextField.Slot type="number" onChange={(event) => updateTime(ins[1][0], event.target.value)} />
         </TextField.Root>,
     ]
     const texts = [

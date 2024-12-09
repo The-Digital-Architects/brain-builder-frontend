@@ -91,7 +91,7 @@ const FeedbackForm = ({ questions, host, cookie }) => {
         </Flex>
         <form >
           <Flex gap="2" direction="column" style={{ justifyContent: 'center', alignItems: 'center' }}>
-          {questions[currentQuestion].question_type === "text" ? (<TextField.Root> <TextField.Input color="gray" placeholder="Type your answer…" style={{ width:window.innerWidth/3.75 }} onChange={event => setTextInputValue(event.target.value)} onKeyDown={event => {
+          {questions[currentQuestion].question_type === "text" ? (<TextField.Root> <TextField.Slot color="gray" placeholder="Type your answer…" style={{ width:window.innerWidth/3.75 }} onChange={event => setTextInputValue(event.target.value)} onKeyDown={event => {
             if (event.key === 'Enter') {
               handleOptionClick(event);
             }}}/>

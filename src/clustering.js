@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import Header from './common/header';
-import { Flex, Button, TextFieldRoot, TextFieldInput, Box, Card, Text } from '@radix-ui/themes';
+import { Flex, Button, Box, Card, Text, TextField } from '@radix-ui/themes';
 import { initKMeans, stepKMeans, restartKMeans } from './utils/clustering/kmeansUtils';
 import { initAgglo, stepAgglo, restartAgglo } from './utils/clustering/aggloUtils';
 
@@ -174,9 +174,9 @@ function ClusteringVisualization({clusteringId}) {
                             </label>
                             
                             <Box maxWidth="15vw">
-                                <TextFieldRoot size="2">
-                                    <TextFieldInput type="number" value={numPoints} onChange={(e) => setNumPoints(Number(e.target.value))} />
-                                </TextFieldRoot>
+                                <TextField.Root size="2">
+                                    <TextField.Slot type="number" value={numPoints} onChange={(e) => setNumPoints(Number(e.target.value))} />
+                                </TextField.Root>
                             </Box>
                         </Flex>
 
@@ -187,9 +187,9 @@ function ClusteringVisualization({clusteringId}) {
                                 </label>
 
                                 <Box maxWidth="15vw">
-                                    <TextFieldRoot size="2">
-                                        <TextFieldInput type="number" value={numClusters} onChange={(e) => setNumClusters(Number(e.target.value))} />
-                                    </TextFieldRoot>
+                                    <TextField.Root size="2">
+                                        <TextField.Slot type="number" value={numClusters} onChange={(e) => setNumClusters(Number(e.target.value))} />
+                                    </TextField.Root>
                                 </Box>
                             </Flex>
                         )}

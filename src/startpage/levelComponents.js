@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Button, TextField, Flex, Box, Heading, IconButton } from '@radix-ui/themes';
+import { Button, Flex, Box, Heading, IconButton, TextField } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { RocketIcon, Pencil2Icon, Link2Icon, CopyIcon, CodeIcon } from '@radix-ui/react-icons';
@@ -221,7 +221,7 @@ function ProgressBox({progress}) {
         <label style={{paddingTop: 5, fontSize: 'var(--font-size-2)'}}>Do you already have a code? Enter it below!</label>
         <Box maxWidth="15vw">
           <TextField.Root size="1">
-            <TextField.Input placeholder="Paste and click Enter..." onChange={handleCodeChange} onKeyDown={handleSubmit} />
+            <TextField.Slot placeholder="Paste and click Enter..." onChange={handleCodeChange} onKeyDown={handleSubmit} />
           </TextField.Root>
         </Box>
       </Flex>
