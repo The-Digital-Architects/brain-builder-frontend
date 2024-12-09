@@ -4,7 +4,7 @@ import '../css/App.css';
 import { Flex } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import Level from './level';
-import { ProgressBox, GettingStarted, WrappingUp, ReadmeBox } from './levelComponents';
+import {ReadmeBox } from './levelComponents';
 
 // Function to retrieve progressData from a cookie
 function getProgress() {
@@ -161,13 +161,6 @@ class StartPage extends React.Component {
         <Flex direction='row' gap='3' style={{padding:'10px 10px', alignItems: 'flex-start' }}>
 
             <Flex direction='column' gap='3' style={{ flex:1 }}>
-
-                {/*<ProgressBox progress={this.state.percentCompleted} /> --> disabled because we're not tracking progress*/}
-
-                {/* 
-                <GettingStarted showContent={this.state.showContent[this.state.showContent.length-1]} handleShowContent={this.handleShowContent} />  
-                // TODO: deprecated
-                */} 
 
                 {Object.entries(this.state.tasksByLevel).map(([level, challenges]) => (
                     <Level key={level} level={level} levelNames={this.props.levelNames} taskNames={this.props.taskNames} introData={this.props.introData} quizData={this.props.quizData} introsByLevel={this.state.introsByLevel} quizzesByLevel={this.state.quizzesByLevel} challengeIcons={this.state.iconsByLevel[level]} challenges={challenges} showContent={this.state.showContent[level-1]} handleShowContent={this.handleShowContent} progressData={this.state.progressData} links={this.props.links} />

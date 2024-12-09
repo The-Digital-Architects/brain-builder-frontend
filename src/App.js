@@ -11,7 +11,6 @@ import BuildView from './newBuildView';
 import Introduction from './introduction';
 import QuizApp from './quiz';
 import OtherTask from './otherTasks';
-import Tutorial from './tutorial';
 import FeedbackApp from './feedback';
 import LinksPage from './links';
 import NotFound from './common/notFound';
@@ -822,53 +821,6 @@ function App() {
             }
             </>
           ))}
-
-          <Route path="/tutorial" element={
-            <Tutorial
-              nOfInputs={4}
-              nOfOutputs={3}
-              maxLayers={10}
-              taskId={0}
-              index={null}
-              updateCytoLayers={null}
-              loadLastCytoLayers={null}
-              iterations={null}
-              setIterations={null}
-              learningRate={null}
-              setLearningRate={null}
-              isTraining={0}
-              setIsTraining={null}
-              apiData={null}
-              setApiData={null}
-              taskData={null}
-              setTaskData={null}
-              putRequest={null}
-              accuracy={null}
-              setAccuracy={null}
-              accuracyColor={accuracyColor}
-              handleSubmit={null}
-              isResponding={null}
-              setIsResponding={null}
-              progress={null}
-              featureNames={null}
-              errorList={null}
-              img={null}
-              loadData={null}
-              normalization={null}
-              normalizationVisibility={true}
-              af={null}
-              afVisibility={true}
-              iterationsSliderVisibility={true}
-              lrSliderVisibility={true}
-              initPlot={null}
-              setProgress={null}
-              setErrorList={null}
-              setWeights={null}
-              setBiases={null}
-              maxNodes={maxNodes}
-              gamesData={gamesData}
-            />
-          }/>
 
           {clusteringTaskIds.map((clusteringId, index) => (
             <Route path={`/exercise${clusteringId/10}`} element={<ClusteringTest clusteringId={clusteringId} />} />

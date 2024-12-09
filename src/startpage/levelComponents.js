@@ -229,48 +229,6 @@ function ProgressBox({progress}) {
   );
 }
 
-function GettingStarted({showContent, handleShowContent}) {
-
-  const toggleContent = () => handleShowContent(-1, !showContent);
-
-  return (
-      <Box style={{ border: "2px solid",
-          borderColor: "var(--slate-8)",
-          borderRadius: "var(--radius-3)",
-          padding: '10px 24px',
-          cursor: 'pointer', // Change cursor to pointer
-          transition: 'background-color 0.3s', // Smooth transition for background color
-          ':hover': {
-            backgroundColor: "var(--slate-2)", // Change background color on hover
-          }}}   onClick={toggleContent} >
-
-              <LevelHeading level={-1} name="Getting Started" />
-              {showContent && (
-                  <GridBox>
-                      <ChallengeButton link="tutorial" label="Tutorial" Icon={RocketIcon} active={true} />
-                      <ChallengeButton link="custom11" label="The Perceptron 1" Icon={RocketIcon} active={true} />
-                  </GridBox>
-              )}
-      </Box>
-  );
-}
-
-function WrappingUp() {
-  return (
-      <Box style={{ border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 24px' }}>
-          <LevelHeading level={-1} name="Miscellaneous" />
-          <GridBox>
-              <ChallengeButton link="tutorial" label="Tutorial" Icon={RocketIcon} active={true} />
-              <ChallengeButton link="notebookTest" label="Custom ipynb" Icon={CodeIcon} active={true} />
-              <ChallengeButton link="feedback" label="Give Feedback" Icon={Pencil2Icon} active={true} />
-              <ChallengeButton link="links" label="Useful Links" Icon={Link2Icon} active={true} />
-              <ChallengeButton link="jupyterLite" label="JupyterLite" Icon={CodeIcon} active={true} />
-              <ChallengeButton link="clusteringTest" label="Clustering" Icon={RocketIcon} active={true} />
-          </GridBox>
-      </Box>
-  );
-}
-
 function ReadmeBox() {
   return (
       <Box style={{ flex: 1, border: "2px solid", borderColor: "var(--slate-8)", borderRadius: "var(--radius-3)", padding: '10px 30px' }}>
@@ -282,4 +240,4 @@ function ReadmeBox() {
   );
 }
 
-export { ChallengeButton, OtherButton, LevelBox, LevelHeading, GridBox, ProgressBox, GettingStarted, WrappingUp, ReadmeBox };
+export { ChallengeButton, OtherButton, LevelBox, LevelHeading, GridBox, ProgressBox, ReadmeBox };
