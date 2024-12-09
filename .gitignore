@@ -4,6 +4,7 @@
 brain_builder_env/
 bb_env/
 /node_modules
+/node_modules_bak
 /.pnp
 .pnp.js
 
