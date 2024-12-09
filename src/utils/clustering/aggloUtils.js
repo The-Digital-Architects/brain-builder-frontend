@@ -71,12 +71,28 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
   const group1 = groups[i];
   const group2 = groups[j];
 
+  // Create the merged group with an empty dots array for now
   const mergedGroup = {
     id: uuidv4(),
-    dots: [...group1.dots, ...group2.dots],
+    dots: [], // Will populate this later
     color: averageColor(group1.color, group2.color),
     center: {},
   };
+
+  // Update the group references in the dots and create a new dots array
+  const updatedDots = dots.map((dot) => {
+    if (dot.group.id === group1.id || dot.group.id === group2.id) {
+      // Create a new dot object with the updated group reference
+      const newDot = {
+        ...dot,
+        group: mergedGroup,
+      };
+      mergedGroup.dots.push(newDot); // Add the new dot to merged group dots
+      return newDot;
+    } else {
+      return dot;
+    }
+  });
 
   // Update the center of the merged group
   const { x, y } = mergedGroup.dots.reduce(
@@ -93,20 +109,10 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
     y: y / mergedGroup.dots.length,
   };
 
-  // Update the group references in the dots and create a new dots array
-  const updatedDots = dots.map((dot) => {
-    if (group1.dots.includes(dot) || group2.dots.includes(dot)) {
-      return {
-        ...dot,
-        group: mergedGroup,
-      };
-    } else {
-      return dot;
-    }
-  });
-
   // Remove the merged groups and add the new merged group
-  const newGroups = groups.filter((_, index) => index !== i && index !== j);
+  const newGroups = groups.filter(
+    (group) => group.id !== group1.id && group.id !== group2.id
+  );
   newGroups.push(mergedGroup);
 
   // Update the state
@@ -114,7 +120,13 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
   setDots(updatedDots);
 
   // Redraw the visualization using the updated dots
-  draw(linegRef.current, dotgRef.current, centergRef.current, newGroups, updatedDots);
+  draw(
+    linegRef.current,
+    dotgRef.current,
+    centergRef.current,
+    newGroups,
+    updatedDots
+  );
 }
 
 function restartAgglo(setGroups, dots, setDots) {
