@@ -132,7 +132,7 @@ const Quiz = ({ questions }) => {
                 </label>
               </div>
             ))}
-          </RadioGroup.Root>): questions[currentQuestion].question_type === "text" ? (<TextField.Root> <TextField.Slot color="gray" placeholder="Type your answer…" style={{ width:window.innerWidth/3.75 }} onChange={event => setTextInputValue(event.target.value)} onKeyDown={event => {
+          </RadioGroup.Root>): questions[currentQuestion].question_type === "text" ? (<TextField.Root> <input color="gray" placeholder="Type your answer…" style={{ width:window.innerWidth/3.75 }} onChange={event => setTextInputValue(event.target.value)} onKeyDown={event => {
             if (event.key === 'Enter') {
               handleOptionClick(event);
             }}}/>
@@ -141,7 +141,7 @@ const Quiz = ({ questions }) => {
             <SyntaxHighlighter language="python" style={a11yDark} customStyle={{ width:window.innerWidth/3.75 }} wrapLongLines={true} showLineNumbers={true}>
               {questions[currentQuestion].code.trim()}
             </SyntaxHighlighter>
-            <TextField.Root style={{ marginTop:20 }} > <TextField.Slot 
+            <TextField.Root style={{ marginTop:20 }} > <input 
               color="gray" 
               placeholder="Type your answer…" 
               style={{ width:window.innerWidth/3.75 }} 
