@@ -132,7 +132,7 @@ function ClusteringVisualization({clusteringId}) {
             stepKMeans(setIsStepDisabled, flag, setFlag, draw, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots);
         } else {
             setNOfSteps(nOfSteps + 1);
-            stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, groups, setGroups, dots);
+            stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots);
         }
     };
     

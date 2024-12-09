@@ -41,11 +41,11 @@ function initAgglo(numPoints, setGroups, setDots, width, height) {
   return { newGroups, newDots };
 }
 
-function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, groups, setGroups, dots) {
+function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, groups, setGroups, dots, setDots) {
   if (groups.length <= 2) {
     setIsStepDisabled(true);
   }
-  
+
   if (groups.length <= 1) {
     return;
   }
@@ -56,7 +56,9 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
 
   for (let i = 0; i < groups.length; i++) {
     for (let j = i + 1; j < groups.length; j++) {
-      let distance = Math.pow(groups[i].center.x - groups[j].center.x, 2) + Math.pow(groups[i].center.y - groups[j].center.y, 2);
+      let dx = groups[i].center.x - groups[j].center.x;
+      let dy = groups[i].center.y - groups[j].center.y;
+      let distance = dx * dx + dy * dy;
       if (distance < minDistance) {
         minDistance = distance;
         closestPair = [i, j];
@@ -65,65 +67,84 @@ function stepAgglo(setIsStepDisabled, draw, linegRef, dotgRef, centergRef, group
   }
 
   // Merge the two closest groups
-  let [i, j] = closestPair;
-  let mergedGroup = {
+  const [i, j] = closestPair;
+  const group1 = groups[i];
+  const group2 = groups[j];
+
+  const mergedGroup = {
     id: uuidv4(),
-    dots: [...groups[i].dots, ...groups[j].dots],
-    color: averageColor(groups[i].color, groups[j].color),
-    center: {}
+    dots: [...group1.dots, ...group2.dots],
+    color: averageColor(group1.color, group2.color),
+    center: {},
   };
 
   // Update the center of the merged group
-  const { x, y } = mergedGroup.dots.reduce((acc, dot) => {
-    acc.x += dot.x;
-    acc.y += dot.y;
-    return acc;
-  }, { x: 0, y: 0 });
+  const { x, y } = mergedGroup.dots.reduce(
+    (acc, dot) => {
+      acc.x += dot.x;
+      acc.y += dot.y;
+      return acc;
+    },
+    { x: 0, y: 0 }
+  );
 
   mergedGroup.center = {
     x: x / mergedGroup.dots.length,
-    y: y / mergedGroup.dots.length
+    y: y / mergedGroup.dots.length,
   };
 
-  // Update the group references in the dots
-  mergedGroup.dots.forEach(dot => {
-    dot.group = mergedGroup;
+  // Update the group references in the dots and create a new dots array
+  const updatedDots = dots.map((dot) => {
+    if (group1.dots.includes(dot) || group2.dots.includes(dot)) {
+      return {
+        ...dot,
+        group: mergedGroup,
+      };
+    } else {
+      return dot;
+    }
   });
 
   // Remove the merged groups and add the new merged group
-  let newGroups = groups.filter((_, index) => index !== i && index !== j);
+  const newGroups = groups.filter((_, index) => index !== i && index !== j);
   newGroups.push(mergedGroup);
 
+  // Update the state
   setGroups(newGroups);
-  draw(linegRef.current, dotgRef.current, centergRef.current, newGroups, dots);
+  setDots(updatedDots);
+
+  // Redraw the visualization using the updated dots
+  draw(linegRef.current, dotgRef.current, centergRef.current, newGroups, updatedDots);
 }
 
 function restartAgglo(setGroups, dots, setDots) {
-
-  const updatedGroups = dots.map(dot => ({
-    id: uuidv4(),
-    dots: [dot],
-    color: dot.init.color,
-    center: { x: dot.init.x, y: dot.init.y }
-  }));
-
-  const updatedDots = dots.map(dot => {
-    const group = updatedGroups.find(group => group.dots.includes(dot));
-    return {
+  // Create new groups and map dots to the new groups
+  const updatedGroups = [];
+  const updatedDots = dots.map((dot) => {
+    const newGroup = {
+      id: uuidv4(),
+      dots: [],
+      color: dot.init.color,
+      center: { x: dot.init.x, y: dot.init.y },
+    };
+    updatedGroups.push(newGroup);
+    const updatedDot = {
       ...dot,
       x: dot.init.x,
       y: dot.init.y,
-      group: group,
+      group: newGroup,
       init: {
         ...dot.init,
-        group: group
-      }
+        group: newGroup,
+      },
     };
+    newGroup.dots.push(updatedDot);
+    return updatedDot;
   });
 
+  // Update the state
   setGroups(updatedGroups);
   setDots(updatedDots);
-
 
   console.log("groups after restart:", updatedGroups);
   console.log("dots after restart:", updatedDots);
