@@ -1,22 +1,5 @@
-# Welcome to brAIn builder!
+# \*\*\*Just an Experiment\*\*\*
 
-This app was created in 2023 by two TU Delft students to support the course AE2224-II "Artificial Intelligence for Aerospace Engineering". It is meant to give you a conceptual idea of what neural networks are and what they can do, without getting into the math and programming. Please know it is still in development so some bugs are possible. We look forward to your feedback!
+This probably would not be easy to set up at all but I was wondering if we can make our slug radically lose weight by splitting the app into two - one for frontend and one for backend. Works in theory but we currently use Django to serve the frontend build so we'd have to do some redesigning there and I don't have that kind of time rn
 
-Laurens and Paweł
-
-## Authors
-
-- Laurens Ledeganck ([laurens.ledeganck@brain-builder.app](mailto:laurens.ledeganck@brain-builder.app))
-- Paweł Rok ([pawel.rok@brain-builder.app](mailto:pawel.rok@brain-builder.app))
-
-## Contact us
-
-Do you have a question, suggestion or want to report a bug? Send us an email at [info@brain-builder.app](mailto:info@brain-builder.app) and we'll be happy to take a look!
-
-## Resources Used
-
-This project was made using:
-- [Create React App](https://github.com/facebook/create-react-app)
-- [Radix UI](https://www.radix-ui.com/)
-- [Cytoscape.js](https://js.cytoscape.org/)
-- [PQINA](https://pqina.nl)
+So just gonna leave this here if we ever wanna come back to the idea
