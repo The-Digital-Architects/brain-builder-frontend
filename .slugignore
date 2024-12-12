@@ -1,0 +1,6 @@
+.github/
+node_modules/
+captain-definition
+README.md
+.gitignore
+get-pip.py
